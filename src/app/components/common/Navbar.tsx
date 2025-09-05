@@ -2,10 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"; // ShadCN Sheet
-import { Button } from "@/components/ui/button"; // ShadCN Button
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"; 
+import { Button } from "@/components/ui/button"; 
 import { Menu, X } from "lucide-react";
-
 const Navbar = () => {
   return (
     <nav className="bg-white fixed w-full z-50 shadow-md">
@@ -24,7 +23,6 @@ const Navbar = () => {
             <Link href="/contact" className="text-gray-700 hover:text-green-700 font-medium">Contact</Link>
           </div>
 
-          {/* Mobile Menu using Sheet */}
           <div className="md:hidden">
             <Sheet>
               <SheetTrigger asChild>

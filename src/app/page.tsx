@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="pt-16 space-y-32">
+      <main className="pt-16 space-y-32 ">
         <HeroSection />
         <WorkflowSection />
         <FeaturesSection />
@@ -19,7 +19,7 @@ export default function Home() {
         <TestimonialSection />
         <SignupCTASection />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

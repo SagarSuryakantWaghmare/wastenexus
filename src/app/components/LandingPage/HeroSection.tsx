@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button"; // Using ShadCN UI Button
 import Image from "next/image";
-
 export default function HeroSection() {
   return (
     <section className="h-screen flex flex-col justify-center items-center bg-green-50 px-6 text-center">
@@ -27,13 +26,16 @@ export default function HeroSection() {
 
       {/* Hero Image */}
       <div className="mt-12 w-full max-w-4xl">
-        <Image
-          src="/hero-wastepulse.png" // Replace with your hero image
-          alt="Waste Management"
-          width={1200}
-          height={600}
-          className="rounded-xl shadow-lg"
-        />
+        <div className="relative rounded-xl shadow-lg overflow-hidden bg-white p-4">
+          <Image
+            src="/Home/wastepulse.jpg"
+            alt="Smart Waste Management - Citizens and workers managing waste efficiently"
+            width={800}
+            height={600}
+            className="w-full h-auto rounded-lg"
+            priority
+          />
+        </div>
       </div>
     </section>
   );

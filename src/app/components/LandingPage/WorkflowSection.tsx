@@ -1,5 +1,5 @@
 import WorkflowStepCard from "./WorkflowStepCard";
-import { FaUpload, FaTruck, FaRecycle } from "react-icons/fa"; // example icons
+import { FaUpload, FaTruck, FaRecycle } from "react-icons/fa"; 
 
 export default function WorkflowSection() {
   const steps = [
