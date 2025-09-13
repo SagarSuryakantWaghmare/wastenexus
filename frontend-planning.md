@@ -26,14 +26,6 @@ UI/UX Libraries:
 ├── Lottie React (Animations)
 └── React Confetti (Celebrations)
 
-Mobile:
-├── React Native (Cross-platform)
-├── Expo (Development)
-├── React Navigation
-├── React Native Maps
-└── Push Notifications
-```
-
 ---
 
 ## 📱 **Application Structure**
@@ -56,7 +48,6 @@ Mobile:
 ├── Admin Dashboard (/admin)
 │   ├── Analytics (/admin/analytics)
 │   ├── User Management (/admin/users)
-│   ├── IoT Monitoring (/admin/monitoring)
 │   ├── Reports (/admin/reports)
 │   └── Settings (/admin/settings)
 ├── Green Champions (/champions)
