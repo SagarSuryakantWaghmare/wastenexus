@@ -359,3 +359,342 @@ export const mockStats = {
   completionRate: 78,
   avgScore: 85
 };
+
+// Worker-specific types and data
+export interface WorkerProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: 'worker';
+  avatar_url?: string;
+  assigned_area: string;
+  vehicle_id?: string;
+  created_at: string;
+  employee_id: string;
+  shift: 'morning' | 'afternoon' | 'night';
+  experience_years: number;
+  rating: number;
+  completed_collections: number;
+  safety_score: number;
+}
+
+export interface Route {
+  id: string;
+  date: string;
+  area: string;
+  optimized_path: Array<{lat: number, lng: number, address: string}>;
+  vehicle_id: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
+  assigned_worker_id: string;
+  start_time?: string;
+  end_time?: string;
+  estimated_duration: number;
+  distance_km: number;
+  fuel_estimate: number;
+}
+
+export interface CollectionTask {
+  id: string;
+  route_id: string;
+  location: {
+    address: string;
+    lat: number;
+    lng: number;
+  };
+  bin_id?: string;
+  waste_type: string[];
+  status: 'pending' | 'collected' | 'missed' | 'issue_reported' | 'in_progress';
+  assigned_worker_id: string;
+  scheduled_time: string;
+  collected_at?: string;
+  photo_url?: string;
+  issue_description?: string;
+  weight_kg?: number;
+  priority: 'low' | 'medium' | 'high';
+  estimated_time: number;
+}
+
+export interface SafetyChecklistItem {
+  id: string;
+  name: string;
+  category: 'ppe' | 'vehicle' | 'equipment' | 'health';
+  required: boolean;
+  checked: boolean;
+  notes?: string;
+}
+
+export interface SafetyChecklist {
+  id: string;
+  worker_id: string;
+  date: string;
+  shift: 'morning' | 'afternoon' | 'night';
+  pre_shift_checks: SafetyChecklistItem[];
+  post_shift_checks: SafetyChecklistItem[];
+  issues_found: string;
+  status: 'completed' | 'pending' | 'failed';
+  submitted_at?: string;
+  supervisor_approval?: boolean;
+}
+
+export interface PerformanceRecord {
+  id: string;
+  worker_id: string;
+  date: string;
+  tasks_assigned: number;
+  tasks_completed: number;
+  tasks_missed: number;
+  average_collection_time: number;
+  total_distance_km: number;
+  fuel_efficiency: number;
+  safety_score: number;
+  customer_feedback: number;
+  supervisor_rating: number;
+  incidents: number;
+  overtime_hours: number;
+  feedback: string;
+}
+
+export interface Vehicle {
+  id: string;
+  registration_number: string;
+  type: 'truck' | 'van' | 'compactor';
+  capacity_kg: number;
+  fuel_type: 'diesel' | 'electric' | 'cng';
+  status: 'available' | 'in_use' | 'maintenance' | 'breakdown';
+  last_maintenance: string;
+  mileage: number;
+  assigned_worker_id?: string;
+}
+
+// Mock Worker Data
+export const mockWorker: WorkerProfile = {
+  id: 'worker_001',
+  name: 'Rajesh Kumar',
+  email: 'rajesh.kumar@wastenexus.com',
+  phone: '+91 98765 43211',
+  role: 'worker',
+  avatar_url: '/avatars/worker.jpg',
+  assigned_area: 'Koramangala Zone-A',
+  vehicle_id: 'vehicle_001',
+  created_at: '2024-01-10T00:00:00Z',
+  employee_id: 'WN2024001',
+  shift: 'morning',
+  experience_years: 3,
+  rating: 4.7,
+  completed_collections: 2847,
+  safety_score: 96
+};
+
+export const mockRoutes: Route[] = [
+  {
+    id: 'route_001',
+    date: '2024-09-14',
+    area: 'Koramangala Zone-A',
+    optimized_path: [
+      { lat: 12.9352, lng: 77.6245, address: 'Koramangala 4th Block' },
+      { lat: 12.9368, lng: 77.6127, address: 'Koramangala 5th Block' },
+      { lat: 12.9298, lng: 77.6270, address: 'Koramangala 6th Block' },
+      { lat: 12.9344, lng: 77.6186, address: 'Koramangala 7th Block' },
+      { lat: 12.9279, lng: 77.6271, address: 'Koramangala 8th Block' }
+    ],
+    vehicle_id: 'vehicle_001',
+    status: 'in_progress',
+    assigned_worker_id: 'worker_001',
+    start_time: '2024-09-14T06:00:00Z',
+    estimated_duration: 240,
+    distance_km: 12.5,
+    fuel_estimate: 2.8
+  },
+  {
+    id: 'route_002',
+    date: '2024-09-15',
+    area: 'Koramangala Zone-A',
+    optimized_path: [
+      { lat: 12.9325, lng: 77.6201, address: 'Koramangala 1st Block' },
+      { lat: 12.9341, lng: 77.6198, address: 'Koramangala 2nd Block' },
+      { lat: 12.9356, lng: 77.6215, address: 'Koramangala 3rd Block' }
+    ],
+    vehicle_id: 'vehicle_001',
+    status: 'pending',
+    assigned_worker_id: 'worker_001',
+    estimated_duration: 180,
+    distance_km: 8.2,
+    fuel_estimate: 1.9
+  }
+];
+
+export const mockCollectionTasks: CollectionTask[] = [
+  {
+    id: 'task_001',
+    route_id: 'route_001',
+    location: {
+      address: 'MG Road Junction, Koramangala 4th Block',
+      lat: 12.9352,
+      lng: 77.6245
+    },
+    bin_id: 'bin_001',
+    waste_type: ['organic', 'plastic', 'paper'],
+    status: 'collected',
+    assigned_worker_id: 'worker_001',
+    scheduled_time: '2024-09-14T06:30:00Z',
+    collected_at: '2024-09-14T06:28:00Z',
+    photo_url: '/collection-proof/task_001.jpg',
+    weight_kg: 45,
+    priority: 'medium',
+    estimated_time: 15
+  },
+  {
+    id: 'task_002',
+    route_id: 'route_001',
+    location: {
+      address: 'Forum Mall Entrance, Koramangala 5th Block',
+      lat: 12.9368,
+      lng: 77.6127
+    },
+    bin_id: 'bin_002',
+    waste_type: ['plastic', 'paper', 'metal'],
+    status: 'in_progress',
+    assigned_worker_id: 'worker_001',
+    scheduled_time: '2024-09-14T07:00:00Z',
+    priority: 'high',
+    estimated_time: 20
+  },
+  {
+    id: 'task_003',
+    route_id: 'route_001',
+    location: {
+      address: 'Koramangala Metro Station, 6th Block',
+      lat: 12.9298,
+      lng: 77.6270
+    },
+    waste_type: ['organic', 'paper'],
+    status: 'pending',
+    assigned_worker_id: 'worker_001',
+    scheduled_time: '2024-09-14T07:30:00Z',
+    priority: 'low',
+    estimated_time: 12
+  },
+  {
+    id: 'task_004',
+    route_id: 'route_001',
+    location: {
+      address: 'Sony World Signal, Koramangala 7th Block',
+      lat: 12.9344,
+      lng: 77.6186
+    },
+    waste_type: ['plastic', 'organic'],
+    status: 'missed',
+    assigned_worker_id: 'worker_001',
+    scheduled_time: '2024-09-14T08:00:00Z',
+    issue_description: 'Bin was locked, unable to access',
+    priority: 'medium',
+    estimated_time: 15
+  }
+];
+
+export const mockSafetyChecklist: SafetyChecklist = {
+  id: 'safety_001',
+  worker_id: 'worker_001',
+  date: '2024-09-14',
+  shift: 'morning',
+  pre_shift_checks: [
+    { id: 'ppe_1', name: 'Safety Helmet', category: 'ppe', required: true, checked: true },
+    { id: 'ppe_2', name: 'Safety Gloves', category: 'ppe', required: true, checked: true },
+    { id: 'ppe_3', name: 'High-Vis Vest', category: 'ppe', required: true, checked: true },
+    { id: 'ppe_4', name: 'Safety Boots', category: 'ppe', required: true, checked: true },
+    { id: 'ppe_5', name: 'Face Mask', category: 'ppe', required: true, checked: true },
+    { id: 'vehicle_1', name: 'Vehicle Inspection', category: 'vehicle', required: true, checked: true },
+    { id: 'vehicle_2', name: 'Fuel Level Check', category: 'vehicle', required: true, checked: true },
+    { id: 'vehicle_3', name: 'Tire Condition', category: 'vehicle', required: true, checked: true },
+    { id: 'equipment_1', name: 'Collection Tools', category: 'equipment', required: true, checked: true },
+    { id: 'equipment_2', name: 'Cleaning Supplies', category: 'equipment', required: true, checked: true },
+    { id: 'health_1', name: 'Health Self-Assessment', category: 'health', required: true, checked: true }
+  ],
+  post_shift_checks: [
+    { id: 'post_1', name: 'Equipment Return', category: 'equipment', required: true, checked: false },
+    { id: 'post_2', name: 'Vehicle Cleaning', category: 'vehicle', required: true, checked: false },
+    { id: 'post_3', name: 'Incident Reporting', category: 'health', required: false, checked: false },
+    { id: 'post_4', name: 'PPE Condition Check', category: 'ppe', required: true, checked: false }
+  ],
+  issues_found: '',
+  status: 'pending'
+};
+
+export const mockPerformanceRecords: PerformanceRecord[] = [
+  {
+    id: 'perf_001',
+    worker_id: 'worker_001',
+    date: '2024-09-13',
+    tasks_assigned: 12,
+    tasks_completed: 11,
+    tasks_missed: 1,
+    average_collection_time: 14.5,
+    total_distance_km: 15.3,
+    fuel_efficiency: 8.2,
+    safety_score: 98,
+    customer_feedback: 4.6,
+    supervisor_rating: 4.8,
+    incidents: 0,
+    overtime_hours: 0.5,
+    feedback: 'Excellent performance. Handled difficult collection at Forum Mall efficiently.'
+  },
+  {
+    id: 'perf_002',
+    worker_id: 'worker_001',
+    date: '2024-09-12',
+    tasks_assigned: 10,
+    tasks_completed: 10,
+    tasks_missed: 0,
+    average_collection_time: 13.2,
+    total_distance_km: 12.8,
+    fuel_efficiency: 9.1,
+    safety_score: 95,
+    customer_feedback: 4.7,
+    supervisor_rating: 4.9,
+    incidents: 0,
+    overtime_hours: 0,
+    feedback: 'Perfect completion rate. Good time management.'
+  },
+  {
+    id: 'perf_003',
+    worker_id: 'worker_001',
+    date: '2024-09-11',
+    tasks_assigned: 14,
+    tasks_completed: 12,
+    tasks_missed: 2,
+    average_collection_time: 16.8,
+    total_distance_km: 18.5,
+    fuel_efficiency: 7.5,
+    safety_score: 92,
+    customer_feedback: 4.3,
+    supervisor_rating: 4.5,
+    incidents: 1,
+    overtime_hours: 1.2,
+    feedback: 'Two bins were inaccessible due to parking issues. Reported to authorities.'
+  }
+];
+
+export const mockVehicles: Vehicle[] = [
+  {
+    id: 'vehicle_001',
+    registration_number: 'KA01AB1234',
+    type: 'compactor',
+    capacity_kg: 5000,
+    fuel_type: 'diesel',
+    status: 'in_use',
+    last_maintenance: '2024-09-01',
+    mileage: 45678,
+    assigned_worker_id: 'worker_001'
+  },
+  {
+    id: 'vehicle_002',
+    registration_number: 'KA01CD5678',
+    type: 'truck',
+    capacity_kg: 3000,
+    fuel_type: 'cng',
+    status: 'available',
+    last_maintenance: '2024-08-28',
+    mileage: 32145
+  }
+];
