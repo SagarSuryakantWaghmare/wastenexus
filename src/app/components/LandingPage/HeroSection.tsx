@@ -2,17 +2,10 @@ import { ArrowRight, Recycle, Zap, Shield } from "lucide-react";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50 overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-      </div>
-
+    <section className="relative min-h-screen flex items-center justify-center  overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         {/* Badge */}
-        <div className="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-800 text-sm font-medium mb-8">
+        <div className="inline-flex items-center px-4 py-2 rounded-full  text-green-800 text-sm font-medium mb-8">
           <Zap className="w-4 h-4 mr-2" />
           Smart Waste Management Revolution
         </div>
@@ -72,11 +65,6 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-
-      {/* Floating Elements */}
-      <div className="absolute top-20 right-10 w-4 h-4 bg-green-400 rounded-full animate-bounce"></div>
-      <div className="absolute bottom-20 left-10 w-6 h-6 bg-blue-400 rounded-full animate-pulse"></div>
-      <div className="absolute top-1/2 right-20 w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
     </section>
   );
 };

@@ -1,5 +1,3 @@
-import Navbar from "@/app/components/common/Navbar";
-import Footer from "@/app/components/common/Footer";
 import HeroSection from "@/app/components/LandingPage/HeroSection";
 import ProblemSection from "@/app/components/LandingPage/ProblemSection";
 import SolutionSection from "@/app/components/LandingPage/SolutionSection";
@@ -11,7 +9,6 @@ import TestimonialSection from "@/app/components/LandingPage/TestimonialSection"
 export default function HomePage() {
   return (
     <>
-      <Navbar />
       <main>
         <HeroSection />
         <ProblemSection />
@@ -29,7 +26,6 @@ export default function HomePage() {
           <TestimonialSection />
         </div>
       </main>
-      <Footer />
     </>
   );
 }

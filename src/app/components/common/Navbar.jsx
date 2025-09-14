@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { Menu, X, Recycle, Leaf } from "lucide-react";
 
@@ -8,55 +9,54 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
+    { name: "Dashboard", href: "/" },
+    { name: "Citizen Portal", href: "/citizen" },
+    { name: "Worker Portal", href: "/worker" },
     { name: "Features", href: "#features" },
-    { name: "How It Works", href: "#workflow" },
     { name: "Impact", href: "#stats" },
-    { name: "Testimonials", href: "#testimonials" },
-    { name: "Contact", href: "#contact" }
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="sticky top-0 z-50 w-full border-b border-green-200/40 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="bg-gradient-to-br from-green-500 to-blue-500 rounded-lg p-2">
-              <Recycle className="w-6 h-6 text-white" />
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 text-white font-bold text-sm">
+              WN
             </div>
-            <div className="flex items-center space-x-1">
-              <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                Waste
+            <div className="hidden sm:flex items-center space-x-1">
+              <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                WasteNexus
               </span>
-              <span className="text-2xl font-bold text-gray-900">Nexus</span>
-              <Leaf className="w-5 h-5 text-green-500" />
+              <Leaf className="w-4 h-4 text-green-500" />
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
-              <a
+              <Link
                 key={item.name}
                 href={item.href}
-                className="text-gray-700 hover:text-green-600 font-medium transition-colors duration-200 relative group"
+                className="text-sm font-medium text-gray-700 hover:text-green-600 transition-colors duration-200 relative group"
               >
                 {item.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-600 transition-all duration-200 group-hover:w-full"></span>
-              </a>
+              </Link>
             ))}
           </div>
 
           {/* Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-3">
             <SignedOut>
-              <SignInButton mode="modal">
-                <button className="text-gray-700 hover:text-green-600 font-medium transition-colors duration-200">
+              <SignInButton>
+                <button className="inline-flex items-center justify-center rounded-lg border border-green-300 bg-white px-3 py-2 text-sm font-medium text-green-700 shadow-sm hover:bg-green-50 hover:border-green-400 transition-all duration-200">
                   Sign In
                 </button>
               </SignInButton>
-              <SignUpButton mode="modal">
-                <button className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-200 hover:scale-105">
+              <SignUpButton>
+                <button className="inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-lg hover:from-green-700 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                   Get Started
                 </button>
               </SignUpButton>
@@ -65,7 +65,9 @@ const Navbar = () => {
               <UserButton 
                 appearance={{
                   elements: {
-                    avatarBox: "w-10 h-10"
+                    avatarBox: "w-10 h-10 rounded-lg border-2 border-green-200 hover:border-green-300 transition-colors",
+                    userButtonPopoverCard: "shadow-xl border-green-100",
+                    userButtonPopoverActionButton: "hover:bg-green-50"
                   }
                 }}
               />
@@ -88,24 +90,24 @@ const Navbar = () => {
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
                   className="block px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}
-                </a>
+                </Link>
               ))}
               <div className="pt-4 space-y-2">
                 <SignedOut>
-                  <SignInButton mode="modal">
+                  <SignInButton>
                     <button className="w-full text-left px-3 py-2 text-gray-700 hover:text-green-600 font-medium transition-colors duration-200">
                       Sign In
                     </button>
                   </SignInButton>
-                  <SignUpButton mode="modal">
-                    <button className="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white px-3 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-200">
+                  <SignUpButton>
+                    <button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-3 py-2 rounded-lg font-medium hover:shadow-lg transition-all duration-200">
                       Get Started
                     </button>
                   </SignUpButton>
