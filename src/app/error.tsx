@@ -37,7 +37,7 @@ export default function Error({
           We encountered an unexpected error while loading your WasteNexus dashboard.
         </p>
         <p className="text-sm text-gray-500 mb-8">
-          Don't worry, our team has been notified and we're working to fix this issue.
+          Don&apos;t worry, our team has been notified and we&apos;re working to fix this issue.
         </p>
 
         {/* Error Details (Development only) */}
