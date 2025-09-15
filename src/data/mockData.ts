@@ -698,3 +698,408 @@ export const mockVehicles: Vehicle[] = [
     mileage: 32145
   }
 ];
+
+// Green Champions Mock Data
+export interface GreenChampion {
+  id: string;
+  name: string;
+  employeeId: string;
+  email: string;
+  phone: string;
+  level: 'Junior Champion' | 'Senior Champion' | 'Lead Champion';
+  areasAssigned: string[];
+  totalCitizens: number;
+  monthlyScore: number;
+  badge: string;
+  joinDate: string;
+  lastActive: string;
+  avatar?: string;
+}
+
+export interface AreaMonitoring {
+  id: string;
+  name: string;
+  status: 'active' | 'completed' | 'issues';
+  bins: number;
+  fullBins: number;
+  lastCollection: string;
+  nextCollection: string;
+  citizens: number;
+  complianceScore: number;
+  issues: number;
+  coordinates: { lat: number; lng: number };
+  alerts: Alert[];
+}
+
+export interface Alert {
+  id: string;
+  type: 'bin_full' | 'violation' | 'maintenance' | 'emergency';
+  message: string;
+  time: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  resolved: boolean;
+}
+
+export interface ComplianceAudit {
+  id: string;
+  area: string;
+  date: string;
+  auditor: string;
+  score: number;
+  status: 'completed' | 'pending' | 'review_required';
+  violations: number;
+  improvements: number;
+  nextAudit: string;
+  categories: {
+    segregation: number;
+    binMaintenance: number;
+    citizenCompliance: number;
+    collectionTiming: number;
+  };
+}
+
+export interface Violation {
+  id: string;
+  type: 'improper_segregation' | 'overflowing_bin' | 'missed_collection' | 'contamination';
+  severity: 'low' | 'medium' | 'high';
+  area: string;
+  reportedBy: string;
+  date: string;
+  status: 'pending' | 'resolved' | 'escalated';
+  description: string;
+  action: string;
+  resolvedDate?: string;
+  photos?: string[];
+}
+
+export interface CommunityChallenge {
+  id: string;
+  title: string;
+  description: string;
+  participants: number;
+  completions: number;
+  rewards: string;
+  duration: string;
+  startDate: string;
+  endDate: string;
+  status: 'active' | 'upcoming' | 'completed' | 'ending_soon';
+  difficulty: 'easy' | 'medium' | 'hard';
+  category: 'segregation' | 'community' | 'composting' | 'awareness';
+}
+
+export interface CommunityEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  attendees: number;
+  maxAttendees: number;
+  organizer: string;
+  type: 'meetup' | 'workshop' | 'training' | 'cleanup';
+  status: 'upcoming' | 'ongoing' | 'completed';
+}
+
+export interface CitizenLeaderboard {
+  rank: number;
+  name: string;
+  area: string;
+  points: number;
+  level: 'Eco Beginner' | 'Eco Warrior' | 'Green Guardian' | 'Eco Champion';
+  badges: number;
+  streak: number;
+  avatar?: string;
+  improvement: string;
+}
+
+export interface SmartBin {
+  id: string;
+  location: string;
+  fillLevel: number;
+  batteryLevel: number;
+  signalStrength: number;
+  lastUpdate: string;
+  temperature: number;
+  status: 'normal' | 'warning' | 'critical' | 'offline';
+  type: 'organic' | 'recyclable' | 'general';
+}
+
+// Mock Green Champions data
+export const mockGreenChampion: GreenChampion = {
+  id: 'gc-001',
+  name: 'Priya Sharma',
+  employeeId: 'GC-2024-001',
+  email: 'priya.sharma@wastenexus.com',
+  phone: '+91 98765 43210',
+  level: 'Senior Champion',
+  areasAssigned: ['sector-15-a', 'sector-12-b', 'sector-18-c'],
+  totalCitizens: 4580,
+  monthlyScore: 94,
+  badge: 'Environmental Guardian',
+  joinDate: '2023-08-15',
+  lastActive: '2024-09-15T10:30:00Z'
+};
+
+export const mockAreasData: AreaMonitoring[] = [
+  {
+    id: 'area-1',
+    name: 'Sector 15 - Block A',
+    status: 'active',
+    bins: 24,
+    fullBins: 3,
+    lastCollection: '2 hours ago',
+    nextCollection: 'Tomorrow 9:00 AM',
+    citizens: 450,
+    complianceScore: 92,
+    issues: 1,
+    coordinates: { lat: 12.9716, lng: 77.5946 },
+    alerts: [
+      {
+        id: 'alert-001',
+        type: 'bin_full',
+        message: 'Bin #15A-08 is 95% full',
+        time: '30 mins ago',
+        severity: 'medium',
+        resolved: false
+      }
+    ]
+  },
+  {
+    id: 'area-2',
+    name: 'Sector 12 - Block B',
+    status: 'completed',
+    bins: 18,
+    fullBins: 0,
+    lastCollection: '4 hours ago',
+    nextCollection: 'Day after tomorrow 10:00 AM',
+    citizens: 320,
+    complianceScore: 96,
+    issues: 0,
+    coordinates: { lat: 12.9616, lng: 77.5846 },
+    alerts: []
+  },
+  {
+    id: 'area-3',
+    name: 'Sector 18 - Block C',
+    status: 'issues',
+    bins: 30,
+    fullBins: 8,
+    lastCollection: '6 hours ago',
+    nextCollection: 'Today 2:00 PM',
+    citizens: 580,
+    complianceScore: 78,
+    issues: 3,
+    coordinates: { lat: 12.9816, lng: 77.6046 },
+    alerts: [
+      {
+        id: 'alert-002',
+        type: 'violation',
+        message: 'Improper segregation reported',
+        time: '1 hour ago',
+        severity: 'high',
+        resolved: false
+      },
+      {
+        id: 'alert-003',
+        type: 'bin_full',
+        message: 'Multiple bins reaching capacity',
+        time: '2 hours ago',
+        severity: 'medium',
+        resolved: false
+      }
+    ]
+  }
+];
+
+export const mockComplianceAudits: ComplianceAudit[] = [
+  {
+    id: 'AUDIT-2024-001',
+    area: 'Sector 15 - Block A',
+    date: '2024-09-15',
+    auditor: 'Priya Sharma',
+    score: 92,
+    status: 'completed',
+    violations: 2,
+    improvements: 5,
+    nextAudit: '2024-10-15',
+    categories: {
+      segregation: 95,
+      binMaintenance: 88,
+      citizenCompliance: 94,
+      collectionTiming: 90
+    }
+  },
+  {
+    id: 'AUDIT-2024-002',
+    area: 'Sector 18 - Block C',
+    date: '2024-09-14',
+    auditor: 'Priya Sharma',
+    score: 78,
+    status: 'review_required',
+    violations: 5,
+    improvements: 8,
+    nextAudit: '2024-09-21',
+    categories: {
+      segregation: 72,
+      binMaintenance: 85,
+      citizenCompliance: 75,
+      collectionTiming: 80
+    }
+  }
+];
+
+export const mockViolations: Violation[] = [
+  {
+    id: 'VIO-2024-045',
+    type: 'improper_segregation',
+    severity: 'medium',
+    area: 'Sector 15 - Block A',
+    reportedBy: 'Citizen App',
+    date: '2024-09-15',
+    status: 'resolved',
+    description: 'Mixed organic and plastic waste in green bin',
+    action: 'Citizen education provided',
+    resolvedDate: '2024-09-15'
+  },
+  {
+    id: 'VIO-2024-046',
+    type: 'overflowing_bin',
+    severity: 'high',
+    area: 'Sector 18 - Block C',
+    reportedBy: 'Smart Sensor',
+    date: '2024-09-14',
+    status: 'pending',
+    description: 'Bin exceeding capacity for 24+ hours',
+    action: 'Emergency collection scheduled'
+  }
+];
+
+export const mockCommunityLeaderboard: CitizenLeaderboard[] = [
+  {
+    rank: 1,
+    name: 'Rajesh Kumar',
+    area: 'Sector 15 - Block A',
+    points: 2850,
+    level: 'Eco Champion',
+    badges: 12,
+    streak: 45,
+    improvement: '+150'
+  },
+  {
+    rank: 2,
+    name: 'Priya Sharma',
+    area: 'Sector 12 - Block B',
+    points: 2720,
+    level: 'Green Guardian',
+    badges: 10,
+    streak: 38,
+    improvement: '+85'
+  },
+  {
+    rank: 3,
+    name: 'Amit Singh',
+    area: 'Sector 18 - Block C',
+    points: 2650,
+    level: 'Green Guardian',
+    badges: 9,
+    streak: 42,
+    improvement: '+120'
+  }
+];
+
+export const mockCommunityEvents: CommunityEvent[] = [
+  {
+    id: 'EVT-001',
+    title: 'Monthly Green Champions Meetup',
+    description: 'Community gathering to discuss environmental initiatives',
+    date: '2024-09-25',
+    time: '6:00 PM - 8:00 PM',
+    location: 'Community Center, Sector 15',
+    attendees: 156,
+    maxAttendees: 200,
+    organizer: 'Priya Sharma',
+    type: 'meetup',
+    status: 'upcoming'
+  },
+  {
+    id: 'EVT-002',
+    title: 'Composting Workshop',
+    description: 'Learn home composting techniques from experts',
+    date: '2024-09-28',
+    time: '10:00 AM - 12:00 PM',
+    location: 'Green Park, Sector 12',
+    attendees: 89,
+    maxAttendees: 150,
+    organizer: 'Rajesh Kumar',
+    type: 'workshop',
+    status: 'upcoming'
+  }
+];
+
+export const mockCommunityChallsges: CommunityChallenge[] = [
+  {
+    id: 'CHAL-001',
+    title: 'Zero Waste Week',
+    description: 'Achieve 100% waste segregation for 7 consecutive days',
+    participants: 1250,
+    completions: 847,
+    rewards: '500 Green Credits + Eco Badge',
+    duration: '7 days',
+    startDate: '2024-09-20',
+    endDate: '2024-09-27',
+    status: 'active',
+    difficulty: 'medium',
+    category: 'segregation'
+  },
+  {
+    id: 'CHAL-002',
+    title: 'Community Clean Drive',
+    description: 'Organize neighborhood cleanup and report waste hotspots',
+    participants: 890,
+    completions: 234,
+    rewards: '1000 Green Credits + Leader Badge',
+    duration: '14 days',
+    startDate: '2024-09-15',
+    endDate: '2024-09-29',
+    status: 'active',
+    difficulty: 'hard',
+    category: 'community'
+  }
+];
+
+export const mockSmartBins: SmartBin[] = [
+  {
+    id: 'BIN-15A-08',
+    location: 'Sector 15 - Corner Market',
+    fillLevel: 95,
+    batteryLevel: 78,
+    signalStrength: 85,
+    lastUpdate: '5 mins ago',
+    temperature: 28,
+    status: 'critical',
+    type: 'general'
+  },
+  {
+    id: 'BIN-15A-12',
+    location: 'Sector 15 - Residential Complex',
+    fillLevel: 67,
+    batteryLevel: 92,
+    signalStrength: 78,
+    lastUpdate: '8 mins ago',
+    temperature: 26,
+    status: 'normal',
+    type: 'organic'
+  },
+  {
+    id: 'BIN-15A-15',
+    location: 'Sector 15 - Bus Stop',
+    fillLevel: 45,
+    batteryLevel: 65,
+    signalStrength: 90,
+    lastUpdate: '3 mins ago',
+    temperature: 29,
+    status: 'normal',
+    type: 'recyclable'
+  }
+];
