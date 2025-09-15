@@ -16,44 +16,16 @@ export default function manifest(): MetadataRoute.Manifest {
     dir: 'ltr',
     icons: [
       {
-        src: '/icon-192.png',
-        sizes: '192x192',
-        type: 'image/png',
-        purpose: 'maskable'
-      },
-      {
-        src: '/icon-512.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'maskable'
-      },
-      {
-        src: '/icon-192.png',
-        sizes: '192x192',
-        type: 'image/png',
+        src: '/icon.svg',
+        sizes: 'any',
+        type: 'image/svg+xml',
         purpose: 'any'
       },
       {
-        src: '/icon-512.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'any'
-      }
-    ],
-    screenshots: [
-      {
-        src: '/screenshot-wide.png',
-        sizes: '1280x720',
-        type: 'image/png',
-        form_factor: 'wide',
-        label: 'WasteNexus Dashboard'
-      },
-      {
-        src: '/screenshot-narrow.png',
-        sizes: '720x1280',
-        type: 'image/png',
-        form_factor: 'narrow',
-        label: 'WasteNexus Mobile App'
+        src: '/icon.svg',
+        sizes: 'any',
+        type: 'image/svg+xml',
+        purpose: 'maskable'
       }
     ],
     shortcuts: [
@@ -61,22 +33,19 @@ export default function manifest(): MetadataRoute.Manifest {
         name: 'Report Waste',
         short_name: 'Report',
         description: 'Quickly report waste issues in your area',
-        url: '/citizen/report',
-        icons: [{ src: '/shortcut-report.png', sizes: '96x96' }]
+        url: '/citizen/report'
       },
       {
         name: 'Worker Dashboard',
         short_name: 'Dashboard',
         description: 'Access worker tools and routes',
-        url: '/worker',
-        icons: [{ src: '/shortcut-worker.png', sizes: '96x96' }]
+        url: '/worker'
       },
       {
         name: 'Safety Checklist',
         short_name: 'Safety',
         description: 'Complete safety inspections',
-        url: '/worker/safety',
-        icons: [{ src: '/shortcut-safety.png', sizes: '96x96' }]
+        url: '/worker/safety'
       }
     ],
     related_applications: [
