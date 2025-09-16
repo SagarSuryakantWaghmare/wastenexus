@@ -13,6 +13,7 @@ const Navbar = () => {
     { name: "Citizen Portal", href: "/citizen" },
     { name: "Worker Portal", href: "/worker" },
     { name: "Green Champions", href: "/champions" },
+    { name: "Government", href: "/government" },
     { name: "Features", href: "#features" },
     { name: "Impact", href: "#stats" },
   ];
