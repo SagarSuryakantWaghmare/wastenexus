@@ -14,6 +14,7 @@ const Navbar = () => {
     { name: "Worker Portal", href: "/worker" },
     { name: "Green Champions", href: "/champions" },
     { name: "Government", href: "/government" },
+    { name: "Admin Portal", href: "/admin" },
     { name: "Features", href: "#features" },
     { name: "Impact", href: "#stats" },
   ];

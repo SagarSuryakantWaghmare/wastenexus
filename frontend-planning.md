@@ -54,10 +54,7 @@ UI/UX Libraries:
 │   ├── Area Monitoring (/champions/areas)
 │   ├── Compliance Check (/champions/compliance)
 │   └── Community (/champions/community)
-└── Government Portal (/government)
-    ├── City Overview (/government/overview)
-    ├── Policy Tools (/government/policy)
-    └── Audit Reports (/government/audit)
+└──  \
 ```
 
 ---
