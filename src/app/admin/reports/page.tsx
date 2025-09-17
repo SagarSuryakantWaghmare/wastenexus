@@ -8,18 +8,13 @@ import {
   Filter, 
   Search, 
   TrendingUp, 
-  PieChart, 
-  BarChart3, 
-  Globe, 
   Users, 
   Trash2, 
   Recycle, 
-  Target, 
   AlertTriangle,
   CheckCircle,
   Clock,
   FileSpreadsheet,
-  FilePdf,
   FileImage,
   RefreshCw,
   Eye,
@@ -171,7 +166,7 @@ export default function Reports() {
 
   const getFormatIcon = (format: string) => {
     switch (format) {
-      case 'PDF': return <FilePdf className="w-4 h-4 text-red-500" />;
+      case 'PDF': return <FileText className="w-4 h-4 text-red-500" />;
       case 'Excel': return <FileSpreadsheet className="w-4 h-4 text-green-500" />;
       case 'Image': return <FileImage className="w-4 h-4 text-blue-500" />;
       default: return <FileText className="w-4 h-4 text-gray-500" />;

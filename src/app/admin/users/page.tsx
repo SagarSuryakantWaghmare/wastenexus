@@ -403,7 +403,7 @@ export default function UserManagement() {
                 {filteredUsers.map((user) => (
                   <div key={user.id} className="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={user.avatar} />
+                      <AvatarImage src={user.avatar || undefined} />
                       <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                     </Avatar>
                     

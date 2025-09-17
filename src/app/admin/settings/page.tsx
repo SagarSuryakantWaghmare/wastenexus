@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { 
-  Settings, 
   Shield, 
   Bell, 
   Globe, 
@@ -29,10 +28,81 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Switch } from '@/components/ui/switch';
 import { Progress } from '@/components/ui/progress';
 
-const mockSettingsData = {
+// Simple Switch component
+interface SwitchProps {
+  checked?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
+  disabled?: boolean;
+}
+
+const Switch = ({ checked = false, onCheckedChange, disabled = false }: SwitchProps) => {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={() => onCheckedChange?.(!checked)}
+      className={`inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 ${
+        checked ? 'bg-blue-600' : 'bg-gray-200'
+      }`}
+    >
+      <span
+        className={`pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform ${
+          checked ? 'translate-x-5' : 'translate-x-0'
+        }`}
+      />
+    </button>
+  );
+};
+
+type SettingsData = {
+  systemInfo: {
+    version: string;
+    lastUpdated: string;
+    uptime: string;
+    environment: string;
+    database: string;
+    serverStatus: string;
+    backupStatus: string;
+    maintenanceWindow: string;
+  };
+  securitySettings: {
+    twoFactorEnabled: boolean;
+    passwordPolicy: {
+      minLength: number;
+      requireSpecialChars: boolean;
+      requireNumbers: boolean;
+      requireUppercase: boolean;
+      passwordExpiry: number;
+    };
+    sessionTimeout: number;
+    maxLoginAttempts: number;
+    ipRestrictions: boolean;
+    encryptionLevel: string;
+  };
+  notificationSettings: {
+    emailNotifications: boolean;
+    smsNotifications: boolean;
+    pushNotifications: boolean;
+    systemAlerts: boolean;
+    reportNotifications: boolean;
+    userActivityAlerts: boolean;
+    maintenanceAlerts: boolean;
+  };
+  systemMetrics: {
+    cpu: number;
+    memory: number;
+    storage: number;
+    bandwidth: number;
+    activeConnections: number;
+    dailyTransactions: number;
+  };
+};
+
+const mockSettingsData: SettingsData = {
   systemInfo: {
     version: '2.1.4',
     lastUpdated: '2024-01-20',
@@ -77,10 +147,10 @@ const mockSettingsData = {
 };
 
 export default function Settings() {
-  const [settings, setSettings] = useState(mockSettingsData);
+  const [settings, setSettings] = useState<SettingsData>(mockSettingsData);
   const [hasChanges, setHasChanges] = useState(false);
 
-  const handleSettingChange = (section: string, key: string, value: unknown) => {
+  const handleSettingChange = (section: keyof SettingsData, key: string, value: unknown) => {
     setSettings(prev => ({
       ...prev,
       [section]: {
@@ -203,7 +273,7 @@ export default function Settings() {
                   </div>
                   <Switch 
                     checked={settings.securitySettings.twoFactorEnabled}
-                    onCheckedChange={(value) => handleSettingChange('securitySettings', 'twoFactorEnabled', value)}
+                    onCheckedChange={(value: boolean) => handleSettingChange('securitySettings', 'twoFactorEnabled', value)}
                   />
                 </div>
 
@@ -214,7 +284,7 @@ export default function Settings() {
                   </div>
                   <Switch 
                     checked={settings.securitySettings.ipRestrictions}
-                    onCheckedChange={(value) => handleSettingChange('securitySettings', 'ipRestrictions', value)}
+                    onCheckedChange={(value: boolean) => handleSettingChange('securitySettings', 'ipRestrictions', value)}
                   />
                 </div>
 
@@ -265,7 +335,7 @@ export default function Settings() {
                   </div>
                   <Switch 
                     checked={settings.securitySettings.passwordPolicy.requireSpecialChars}
-                    onCheckedChange={(value) => handleSettingChange('securitySettings', 'passwordPolicy', {
+                    onCheckedChange={(value: boolean) => handleSettingChange('securitySettings', 'passwordPolicy', {
                       ...settings.securitySettings.passwordPolicy,
                       requireSpecialChars: value
                     })}
@@ -278,7 +348,7 @@ export default function Settings() {
                   </div>
                   <Switch 
                     checked={settings.securitySettings.passwordPolicy.requireNumbers}
-                    onCheckedChange={(value) => handleSettingChange('securitySettings', 'passwordPolicy', {
+                    onCheckedChange={(value: boolean) => handleSettingChange('securitySettings', 'passwordPolicy', {
                       ...settings.securitySettings.passwordPolicy,
                       requireNumbers: value
                     })}
@@ -291,7 +361,7 @@ export default function Settings() {
                   </div>
                   <Switch 
                     checked={settings.securitySettings.passwordPolicy.requireUppercase}
-                    onCheckedChange={(value) => handleSettingChange('securitySettings', 'passwordPolicy', {
+                    onCheckedChange={(value: boolean) => handleSettingChange('securitySettings', 'passwordPolicy', {
                       ...settings.securitySettings.passwordPolicy,
                       requireUppercase: value
                     })}
@@ -372,7 +442,7 @@ export default function Settings() {
                     </div>
                     <Switch 
                       checked={settings.notificationSettings.emailNotifications}
-                      onCheckedChange={(value) => handleSettingChange('notificationSettings', 'emailNotifications', value)}
+                      onCheckedChange={(value: boolean) => handleSettingChange('notificationSettings', 'emailNotifications', value)}
                     />
                   </div>
 
@@ -386,7 +456,7 @@ export default function Settings() {
                     </div>
                     <Switch 
                       checked={settings.notificationSettings.smsNotifications}
-                      onCheckedChange={(value) => handleSettingChange('notificationSettings', 'smsNotifications', value)}
+                      onCheckedChange={(value: boolean) => handleSettingChange('notificationSettings', 'smsNotifications', value)}
                     />
                   </div>
 
@@ -400,7 +470,7 @@ export default function Settings() {
                     </div>
                     <Switch 
                       checked={settings.notificationSettings.pushNotifications}
-                      onCheckedChange={(value) => handleSettingChange('notificationSettings', 'pushNotifications', value)}
+                      onCheckedChange={(value: boolean) => handleSettingChange('notificationSettings', 'pushNotifications', value)}
                     />
                   </div>
                 </div>
@@ -415,7 +485,7 @@ export default function Settings() {
                     </div>
                     <Switch 
                       checked={settings.notificationSettings.systemAlerts}
-                      onCheckedChange={(value) => handleSettingChange('notificationSettings', 'systemAlerts', value)}
+                      onCheckedChange={(value: boolean) => handleSettingChange('notificationSettings', 'systemAlerts', value)}
                     />
                   </div>
 
@@ -426,7 +496,7 @@ export default function Settings() {
                     </div>
                     <Switch 
                       checked={settings.notificationSettings.reportNotifications}
-                      onCheckedChange={(value) => handleSettingChange('notificationSettings', 'reportNotifications', value)}
+                      onCheckedChange={(value: boolean) => handleSettingChange('notificationSettings', 'reportNotifications', value)}
                     />
                   </div>
 
@@ -437,7 +507,7 @@ export default function Settings() {
                     </div>
                     <Switch 
                       checked={settings.notificationSettings.userActivityAlerts}
-                      onCheckedChange={(value) => handleSettingChange('notificationSettings', 'userActivityAlerts', value)}
+                      onCheckedChange={(value: boolean) => handleSettingChange('notificationSettings', 'userActivityAlerts', value)}
                     />
                   </div>
 
@@ -448,7 +518,7 @@ export default function Settings() {
                     </div>
                     <Switch 
                       checked={settings.notificationSettings.maintenanceAlerts}
-                      onCheckedChange={(value) => handleSettingChange('notificationSettings', 'maintenanceAlerts', value)}
+                      onCheckedChange={(value: boolean) => handleSettingChange('notificationSettings', 'maintenanceAlerts', value)}
                     />
                   </div>
                 </div>
