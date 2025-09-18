@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, OrganizationSwitcher } from "@clerk/nextjs";
 import { Menu, X, Recycle, Leaf } from "lucide-react";
 
 const Navbar = () => {
@@ -65,7 +65,13 @@ const Navbar = () => {
               </SignUpButton>
             </SignedOut>
             <SignedIn>
-              <UserButton 
+              <OrganizationSwitcher
+                afterCreateOrganizationUrl="/"
+                afterLeaveOrganizationUrl="/"
+                afterSelectOrganizationUrl="/"
+                afterSelectPersonalUrl="/"
+              />
+              <UserButton
                 appearance={{
                   elements: {
                     avatarBox: "w-10 h-10 rounded-lg border-2 border-green-200 hover:border-green-300 transition-colors",
@@ -117,6 +123,12 @@ const Navbar = () => {
                 </SignedOut>
                 <SignedIn>
                   <div className="px-3 py-2">
+                    <OrganizationSwitcher
+                      afterCreateOrganizationUrl="/"
+                      afterLeaveOrganizationUrl="/"
+                      afterSelectOrganizationUrl="/"
+                      afterSelectPersonalUrl="/"
+                    />
                     <UserButton />
                   </div>
                 </SignedIn>

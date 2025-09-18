@@ -1,11 +1,12 @@
 import { type Metadata } from 'next'
-import {
-  ClerkProvider,
-} from '@clerk/nextjs'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Navbar from './components/common/Navbar'
 import Footer from './components/common/Footer'
 import './globals.css'
+
+// Convex
+import { ConvexClientProvider } from '@/components/convex/convex-client-provider';
+
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -79,29 +80,29 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" className="scroll-smooth">
-        <head>
-          <link rel="icon" href="/favicon.ico" sizes="any" />
-          <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-          <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-          <link rel="manifest" href="/manifest.json" />
-          <meta name="theme-color" content="#10b981" />
-          <meta name="apple-mobile-web-app-capable" content="yes" />
-          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-          <meta name="apple-mobile-web-app-title" content="WasteNexus" />
-          <meta name="mobile-web-app-capable" content="yes" />
-          <meta name="msapplication-TileColor" content="#10b981" />
-          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        </head>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50 min-h-screen`}>
+    <html lang="en" className="scroll-smooth">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#10b981" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="WasteNexus" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="msapplication-TileColor" content="#10b981" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50 min-h-screen`}>
+        <ConvexClientProvider>
           <Navbar />
           <main className="relative">
             {children}
           </main>
           <Footer />
-        </body>
-      </html>
-    </ClerkProvider>
+        </ConvexClientProvider>
+      </body>
+    </html >
   )
 }
