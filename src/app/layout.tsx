@@ -5,7 +5,7 @@ import Footer from './components/common/Footer'
 import './globals.css'
 
 // Convex
-import { ConvexClientProvider } from '@/components/convex/convex-client-provider';
+import { ConvexClientProvider } from '@/components/convex-components/convex-client-provider';
 
 
 const geistSans = Geist({
