@@ -52,9 +52,25 @@ export async function getRewardTransactions(userId:number){
             date:Transactions.date
         }).from(Transactions).where(eq(Transactions.userId,userId)).orderBy(desc(Transactions.date)).limit(10).execute();
 
+        const formattedTransctions=transactions.map(t=>({
+            ...t,
+            date:t.date.toISOString().split('T')[0] //YYY-MM-DD
+        }))
+
+        return formattedTransctions;
         
     } catch (error) {
         console.error("Error fetching reward transactions",error);
-        return [];
+        return null;
+    }
+}
+
+export async function markNotificationAsRead(notificationId:number){
+    try {
+        await db.update(Notifications).set({isRead:true}).where(eq(Notifications.id,notificationId)).execute();
+
+    } catch (error) {
+        console.log('Error marking notification as read',error);
+        return;
     }
 }
