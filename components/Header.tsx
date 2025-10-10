@@ -12,7 +12,7 @@ import type { WEB3AUTH_NETWORK_TYPE } from '@web3auth/base';
 import { EthereumPrivateKeyProvider } from '@web3auth/ethereum-provider';
 import { Web3Auth } from '@web3auth/modal';
 import { createUser, getUnreadNotifications, getUserBalance, getUserByEmail, markNotificationAsRead } from '@/utils/db/action';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
+// import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 // Only use NEXT_PUBLIC_WEB3AUTH_CLIENT_ID for client-side code
 const finalClientId = process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID || '';
@@ -39,7 +39,7 @@ interface NotificationItem {
     message: string;
 }
 
-export default function Header({ onMenuClick }: HeaderProps) {
+export default function Header({ onMenuClick, totalEarnings }: HeaderProps) {
     // provider state is intentionally omitted; the SDK's provider is available from web3Auth when needed
     const [loggedIn, setLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -47,7 +47,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
     const [notifications, setNotifications] = useState<NotificationItem[]>([]);
     const [balance, setBalance] = useState(0);
     const [web3Auth, setWeb3Auth] = useState<Web3Auth | null>(null);
-    const isMobile = useMediaQuery('(max-width:768px)');
+    // media hook removed (not used) — keep function available if needed later
 
     // Initialize Web3Auth inside the component to ensure client-side execution
     useEffect(() => {
@@ -271,116 +271,108 @@ export default function Header({ onMenuClick }: HeaderProps) {
         await markNotificationAsRead(notificationId);
     }
 
-    const missingClient = !finalClientId;
-    const missingRpc = !process.env.NEXT_PUBLIC_RPC_URL;
+    // env warning flags removed (warnings rendered earlier were removed)
 
-    if (loading) {
-        return <div>Loading web3 auth ....</div>
-    }
+    if (loading) return <div className='py-6 text-center'>Loading web3 auth ....</div>
+
     return (
-        <>
+        <header className='bg-white border-b border-gray-200 sticky top-0 z-50 '>
+            <div className='max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8'>
+                <div className='h-16 flex items-center justify-between'>
+                    {/* Left: logo & menu */}
+                    <div className='flex items-center gap-3 flex-shrink-0'>
+                        <Button variant='ghost' size='icon' className='p-2' onClick={onMenuClick}>
+                            <Menu className='h-6 w-6 text-gray-700' />
+                        </Button>
+                        <Link href='/' className='flex items-center gap-2'>
+                            <Leaf className='h-8 w-8 text-green-500' />
+                            <span className='font-bold text-lg text-gray-900'>WasteNexus</span>
+                        </Link>
+                    </div>
 
-            <header className='bg-white border-b border-gray-200 sticky top-0 z-50'>
-            <div className='flex items-center justify-between px-4 py-2'>
-                <div className='flex items-center '>
-                    <Button variant='ghost' size='icon' className='mr-2 md:mr-4' onClick={onMenuClick}>
-                        <Menu className='h-6 w-6 text-gray-800' />
-
-                    </Button>
-                    <Link href='/' className='flex items-center' >
-                        <Leaf className='h-8 w-8 text-green-500 mr-2' />
-                        <span className='font-bold text-base md:text-lg text-gray-800'>WasteNexus</span>
-
-                    </Link>
-                </div>
-                {!isMobile && (
-                    <div className='flex-1 max-w-xl mx-4'>
-                        <div className='relative'>
-                            <input type="text"
-                                placeholder='search....'
-                                className='w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500'
-                            />
-                            <Search className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 ' />
-
+                    {/* Center: search (hidden on small screens) */}
+                    <div className='flex-1 flex justify-center px-4 min-w-0'>
+                        <div className='w-full max-w-xl min-w-0'>
+                            <div className='hidden sm:block'>
+                                <div className='relative'>
+                                    <input type='text' placeholder='Search...' className='w-full min-w-0 border border-gray-200 rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-500' />
+                                    <Search className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400' />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                )}
-                <div className='flex items-center'>
-                    {isMobile && (
-                        <Button variant='ghost' size='icon' className='mr-2'>
-                            <Search className='h-5 w-5' />
-                        </Button>
-                    )}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild >
-                            <Button variant='ghost' size='icon' className='mr-2 relative'>
-                                <Bell className='h-5 w-5 text-gray-800' />
-                                <Badge className='absolute -top-1 -right-1 rounded-full h-4 w-4 p-0 flex items-center justify-center text-xs'>
-                                    {notifications.length}
-                                </Badge>
+
+                    {/* Right: actions */}
+                    <div className='flex items-center gap-3 flex-shrink-0'>
+                        {/* Search icon for mobile */}
+                        <div className='sm:hidden'>
+                            <Button variant='ghost' size='icon' className='p-2'>
+                                <Search className='h-5 w-5 text-gray-700' />
                             </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align='end' className='w-64'>
-                            {notifications.length > 0 ? (
-                                notifications.map((notification: NotificationItem) => (
-                                    <DropdownMenuItem key={notification.id}
-                                        onClick={() => handleNotificationClick(notification.id)} className='hover:bg-gray-100'>
-                                        <div className='flex flex-col'>
-                                            <span className='font-medium'>{notification.type}</span>
-                                            <span className='text-sm text-gray-500'>
-                                                {notification.message}
-                                            </span>
-                                        </div>
-                                    </DropdownMenuItem>
-                                ))
-                            ) : (
-                                <DropdownMenuItem>
-                                    No new notifications
-                                </DropdownMenuItem>
-                            )}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <div className='mr-2 md:mr-4 flex items-center bg-gray-100 rounded-full px-2 md:px-3 py-1 '>
-                        <Coins className='h-4 w-4 md:h-5 md:w-5 mr-1 text-green-500' />
-                        <span className='font-semibold text-sm md:text-base text-gray-800'>
-                            {balance.toFixed(2)}
-                        </span>
-                    </div>
-                    {!loggedIn ? (
-                        <Button onClick={login}
-                            className='bg-green-600 hover:bg-green-700 text-white text-sm md:text-base'>
-                            Login
-                            <LogIn className='ml-1 md:ml-2 h-4 w-4 md:h-5 md:w-5' />
-                        </Button>
-                    ) : (
+                        </div>
+
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant='ghost' size='icon' className='items-center flex'>
-                                    <User className='h-5 w-5 mr-1' />
-                                    <ChevronDown className='h-4 w-4' />
-
+                                <Button variant='ghost' size='icon' className='relative p-2'>
+                                    <Bell className='h-5 w-5 text-gray-700' />
+                                    <Badge className='absolute -top-1 -right-1 rounded-full h-4 w-4 p-0 flex items-center justify-center text-xs bg-red-500 text-white'>
+                                        {notifications.length}
+                                    </Badge>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end'>
-                                <DropdownMenuItem onClick={getUserInfo}>
-                                    {userInfo ? userInfo.name : 'Profile'}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem >
-                                    <Link href='/settings'>Settings</Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem  onClick={logout}>
-                                    Sign Out
-                                </DropdownMenuItem>
+                            <DropdownMenuContent align='end' className='w-64'>
+                                {notifications.length > 0 ? (
+                                    notifications.map((notification: NotificationItem) => (
+                                        <DropdownMenuItem key={notification.id} onClick={() => handleNotificationClick(notification.id)} className='hover:bg-gray-100'>
+                                            <div className='flex flex-col'>
+                                                <span className='font-medium'>{notification.type}</span>
+                                                <span className='text-sm text-gray-500'>{notification.message}</span>
+                                            </div>
+                                        </DropdownMenuItem>
+                                    ))
+                                ) : (
+                                    <DropdownMenuItem>No new notifications</DropdownMenuItem>
+                                )}
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                    )
-                    }
+                            <div className='flex items-center space-x-3'>
+                                <div className='flex items-center bg-gray-100 rounded-full px-3 py-1'>
+                                    <Coins className='h-4 w-4 text-green-500 mr-2' />
+                                    <span className='font-semibold text-sm text-gray-800'>{balance.toFixed(2)}</span>
+                                </div>
+                                <div className='hidden sm:flex items-center bg-white border border-gray-100 rounded-full px-3 py-1 text-sm text-gray-700'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c1.657 0 3-1.343 3-3S13.657 2 12 2 9 3.343 9 5s1.343 3 3 3zM6 22v-2a4 4 0 014-4h4a4 4 0 014 4v2" />
+                                    </svg>
+                                    <span className='font-medium'>Earnings</span>
+                                    <span className='ml-2 font-bold text-green-600'>{Number(totalEarnings || 0).toFixed(2)}</span>
+                                </div>
+                            </div>
 
+                        {!loggedIn ? (
+                            <Button onClick={login} className='bg-green-600 hover:bg-green-700 text-white text-sm md:text-base flex items-center gap-2'>
+                                <span>Login</span>
+                                <LogIn className='h-4 w-4' />
+                            </Button>
+                        ) : (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant='ghost' size='icon' className='flex items-center gap-2 p-2'>
+                                        <User className='h-5 w-5 text-gray-700' />
+                                        <ChevronDown className='h-4 w-4 text-gray-700' />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align='end'>
+                                    <DropdownMenuItem onClick={getUserInfo}>{userInfo ? userInfo.name : 'Profile'}</DropdownMenuItem>
+                                    <DropdownMenuItem><Link href='/settings'>Settings</Link></DropdownMenuItem>
+                                    <DropdownMenuItem onClick={logout}>Sign Out</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        )}
+                    </div>
                 </div>
-
             </div>
         </header>
-        </>
     )
 }
