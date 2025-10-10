@@ -7,6 +7,18 @@ const nextConfig: NextConfig = {
     WEB3_AUTH_CLIENT_ID: process.env.WEB3_AUTH_CLIENT_ID,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   }
+  ,
+  async headers() {
+    return [
+      {
+        // Match all routes so popups can close properly
+        source: '/(.*)',
+        headers: [
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+        ],
+      },
+    ];
+  }
 };
 
 export default nextConfig;
