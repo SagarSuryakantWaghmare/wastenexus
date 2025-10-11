@@ -100,7 +100,7 @@ export default function ReportPage() {
     
     try {
       const genAI = new GoogleGenerativeAI(geminiApiKey!);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash"});
 
       const base64Data = await readFileAsBase64(file);
 
@@ -130,7 +130,9 @@ export default function ReportPage() {
       const text = response.text();
       
       try {
-        const parsedResult = JSON.parse(text);
+        // Remove markdown code block backticks and whitespace
+        const cleanedText = text.replace(/```json|```/g, '').trim();
+        const parsedResult = JSON.parse(cleanedText);
         if (parsedResult.wasteType && parsedResult.quantity && parsedResult.confidence) {
           setVerificationResult(parsedResult);
           setVerificationStatus('success');
@@ -206,10 +208,10 @@ export default function ReportPage() {
         }
         setUser(user);
         
-        const recentReports = await getRecentReports();
+        const recentReports = await getRecentReports() || [];
         const formattedReports = recentReports.map(report => ({
           ...report,
-          createdAt: report.createdAt.toISOString().split('T')[0]
+          createdAt: report.createdAt?.toISOString ? report.createdAt.toISOString().split('T')[0] : report.createdAt
         }));
         setReports(formattedReports);
       } else {
