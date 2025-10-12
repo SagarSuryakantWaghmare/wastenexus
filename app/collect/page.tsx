@@ -119,7 +119,7 @@ export default function CollectionPage() {
 
         try {
             const genAI = new GoogleGenerativeAI(geminiApiKey!)
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" })
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
 
             const base64Data = readFileAsBase64(verificationImage)
 
@@ -149,7 +149,9 @@ export default function CollectionPage() {
             const text = response.text()
 
             try {
-                const parsedResult = JSON.parse(text)
+                // Remove markdown code block backticks and whitespace
+                const cleanedText = text.replace(/```json|```/g, '').trim();
+                const parsedResult = JSON.parse(cleanedText)
                 setVerificationResult({
                     wasteTypeMatch: parsedResult.wasteTypeMatch,
                     quantityMatch: parsedResult.quantityMatch,
