@@ -1,12 +1,13 @@
 
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Inter } from 'next/font/google';
 import './globals.css';
 
 import { Toaster } from 'react-hot-toast';
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
+import { getAvailableRewards } from "@/utils/db/action";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,6 +18,26 @@ export default function RootLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [totalEarnings] = useState(0);
+  useEffect(()=>{
+    const fetchTotalEarnings=async()=>{
+      try {
+        const userEmail=localStorage.getItem('userEmail');
+        if(userEmail){
+          const user=await getUserByEmail(userEmail);
+            if(user){
+              const availableRewards=(await getAvailableRewards(
+                user.id))as any;
+              setTotalEarnings(availableRewards);
+
+            }
+          
+        }
+      } catch (error) {
+        console.log("Error in the fetching total earnings of user",error);
+      }
+    };
+    fetchTotalEarnings();
+  },[]);
 
   return (
     <html lang="en">
