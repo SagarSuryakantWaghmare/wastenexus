@@ -1,21 +1,23 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IUser extends Document {
-  clerkId: string;
   email: string;
   name: string;
   role: string;
   points: number;
+  password: string;
+  token?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const UserSchema: Schema = new Schema({
-  clerkId: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   role: { type: String, required: true, default: 'user' },
   points: { type: Number, default: 0 },
+  password: { type: String, required: true },
+  token: { type: String },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

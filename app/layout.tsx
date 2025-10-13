@@ -1,6 +1,6 @@
 import { type Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import { ClerkProvider } from '@clerk/nextjs';
+// Removed ClerkProvider for MongoDB/JWT only
 import Navbar from './components/common/Navbar'
 import Footer from './components/common/Footer'
 import './globals.css'
@@ -93,13 +93,13 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50 min-h-screen`}>
-        <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}>
+  {/* Removed ClerkProvider for MongoDB/JWT only */}
           <Navbar />
           <main className="relative">
             {children}
           </main>
           <Footer />
-        </ClerkProvider>
+  {/* Removed ClerkProvider for MongoDB/JWT only */}
       </body>
     </html >
   )

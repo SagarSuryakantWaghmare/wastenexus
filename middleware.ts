@@ -1,6 +1,9 @@
-import { clerkMiddleware } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
 
-export default clerkMiddleware();
+export default function middleware(req: Request) {
+  // No-op middleware, can add JWT logic here later
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
