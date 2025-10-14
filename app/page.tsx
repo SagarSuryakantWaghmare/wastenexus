@@ -1,40 +1,11 @@
 'use client'
-import { useState, useEffect } from 'react'
-import { ArrowRight, Leaf, Recycle, Users, Coins, MapPin, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowRight, Leaf, Recycle, Users, Coins, MapPin, TrendingUp, Award, Target } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Poppins } from 'next/font/google'
 import Link from 'next/link'
-// import ContractInteraction from '@/components/ContractInteraction'
-// import { getRecentReports, getAllRewards, getWasteCollectionTasks } from '@/utils/db/actions'
-const poppins = Poppins({ 
-  weight: ['300', '400', '600'],
-  subsets: ['latin'],
-  display: 'swap',
-})
-
-
-function AnimatedGlobal() {
-  return (
-    <div className="relative w-32 h-32 mx-auto mb-8">
-      <div className="absolute inset-0 rounded-full bg-green-500 opacity-20 animate-pulse">
-        <div className="absolute inset-2 rounded-full bg-green-400 opacity-40 animate-ping">
-          <div className="absolute inset-2 rounded-full bg-green-300 opacity-60 animate-spin">
-            <div className="absolute inset-2 rounded-full bg-green-200 opacity-80 animate-bounce">
-
-            </div>
-
-          </div>
-
-        </div>
-      </div>
-      <Leaf className="absolute inset-0 m-auto h-16 w-16 text-green-600 animate-pulse" />
-    </div>
-  )
-}
 
 export default function Home() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [impactData, setImpactData] = useState({
+  const [impactData] = useState({
     wasteCollected: 0,
     reportsSubmitted: 0,
     tokensEarned: 0,
@@ -81,45 +52,75 @@ export default function Home() {
   //   fetchImpactData();
   // }, []);
 
-  const login = () => {
-    setLoggedIn(true);
-  };
   return (
-    <div className="container mx-auto px-4 py-16">
-      <section className="text-center mb-20">
-        <AnimatedGlobal />
-        <h1 className="text-6xl font-bold mb-6 text-gray-800 tracking-tight">
-          Recycle And<span className="text-green-600">Waste Management </span>
-        </h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed mb-8">
-          Join our community in making waste managment more efficient and reward
-        </p>
-        <Button className="bg-green-600 hover:bg-green-700 text-white text-lg py-6 px-1">
-          Report Waste
-        </Button>
-
+    <div className="w-full">
+      {/* Hero Section with Background Image */}
+      <section 
+        className="relative w-full min-h-[600px] bg-cover bg-center bg-no-repeat mb-24"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=2070')",
+        }}
+      >
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
+        
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4 py-20 text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm mb-6 border border-white/20">
+            <Leaf className="h-10 w-10 text-white" />
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white tracking-tight leading-tight">
+            Smart Waste Management
+            <span className="block text-green-400 mt-2">Made Simple</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto leading-relaxed mb-10">
+            Join thousands making a real impact. Report waste, earn rewards, and contribute to a cleaner, sustainable future.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href="/reports">
+              <Button className="bg-green-600 hover:bg-green-700 text-white text-base px-8 py-6 rounded-lg shadow-lg">
+                <MapPin className="mr-2 h-5 w-5" />
+                Report Waste
+              </Button>
+            </Link>
+            <Link href="/collect">
+              <Button variant="outline" className="text-white border-white/30 bg-white/10 backdrop-blur-sm text-base px-8 py-6 rounded-lg hover:bg-white/20">
+                Learn More
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
       </section>
-      <section className="grid md:grid-cols-3 gap-10 mb-20">
+
+      <div className="container mx-auto px-4">
+
+        {/* Features Section */}
+        <section className="grid md:grid-cols-3 gap-8 mb-24">
         <FeatureCard
-          icon={Leaf}
-          title="Eco-Friendly"
-          description="Contribute to a cleaner environment by reporting and collecting waste."
+          icon={Target}
+          title="Report & Track"
+          description="Easily report waste locations with photos and track your environmental impact in real-time."
         />
         <FeatureCard
-          icon={Coins}
+          icon={Award}
           title="Earn Rewards"
-          description="Get tokens for your contributions to waste management efforts."
+          description="Get tokens and recognition for every contribution you make to waste management."
         />
         <FeatureCard
           icon={Users}
-          title="Community-Driven"
-          description="Be part of a growing community committed to sustainable practices."
+          title="Join Community"
+          description="Connect with like-minded individuals committed to sustainable practices."
         />
       </section>
 
-      <section className="bg-white p-10 rounded-3xl shadow-lg mb-20">
-        <h2 className="text-4xl font-bold mb-12 text-center text-gray-800">Our Impact</h2>
-        <div className="grid md:grid-cols-4 gap-6">
+        {/* Impact Stats Section */}
+        <section className="bg-gray-50 border border-gray-200 p-12 rounded-2xl mb-24">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Our Collective Impact</h2>
+          <p className="text-gray-600">Real-time data from our growing community</p>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <ImpactCard title="Waste Collected" value={`${impactData.wasteCollected} kg`} icon={Recycle} />
           <ImpactCard title="Reports Submitted" value={impactData.reportsSubmitted.toString()} icon={MapPin} />
           <ImpactCard title="Tokens Earned" value={impactData.tokensEarned.toString()} icon={Coins} />
@@ -127,7 +128,21 @@ export default function Home() {
         </div>
       </section>
 
-
+        {/* CTA Section */}
+        <section className="text-center bg-green-600 text-white p-12 rounded-2xl">
+        <TrendingUp className="h-12 w-12 mx-auto mb-6" />
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Make a Difference?</h2>
+        <p className="text-green-50 text-lg mb-8 max-w-2xl mx-auto">
+          Start your journey towards a cleaner environment today. Every action counts.
+        </p>
+        <Link href="/signup">
+          <Button className="bg-white text-green-600 hover:bg-green-50 text-base px-8 py-6 rounded-lg shadow-sm">
+            Get Started Now
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        </Link>
+        </section>
+      </div>
     </div>
   )
 }
@@ -136,24 +151,22 @@ function ImpactCard({ title, value, icon: Icon }: { title: string; value: string
   const formattedValue = typeof value === 'number' ? value.toLocaleString('en-US', { maximumFractionDigits: 1 }) : value;
 
   return (
-    <div className="p-6 rounded-xl bg-gray-50 border border-gray-100 transition-all duration-300 ease-in-out hover:shadow-md">
-      <Icon className="h-10 w-10 text-green-500 mb-4" />
-      <p className="text-3xl font-bold mb-2 text-gray-800">{formattedValue}</p>
-      <p className="text-sm text-gray-600">{title}</p>
+    <div className="text-center p-6">
+      <Icon className="h-8 w-8 text-green-600 mx-auto mb-3" />
+      <p className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">{formattedValue}</p>
+      <p className="text-sm text-gray-600 font-medium">{title}</p>
     </div>
   )
 }
 
 function FeatureCard({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
   return (
-    <div className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-300
-    ease-in-out flex flex-col items-center text-center">
-      <div className="bg-green-100 p-4 rounded-full mb-6">
-        <Icon className="h-8 w-8 text-green-600" />
-        <h3 className="text-xl font-semibold mb-4 text-gray-800">{title}</h3>
-        <p className="text-gray-600 leading-relaxed">{description}</p>
+    <div className="bg-white border border-gray-200 p-8 rounded-xl hover:border-green-200 hover:shadow-sm transition-all duration-300 ease-in-out">
+      <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-green-50 mb-5">
+        <Icon className="h-6 w-6 text-green-600" />
       </div>
-
+      <h3 className="text-xl font-semibold mb-3 text-gray-900">{title}</h3>
+      <p className="text-gray-600 leading-relaxed">{description}</p>
     </div>
   )
 }

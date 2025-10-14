@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 import { Button } from './ui/button';
-import { Menu, Coins, Leaf, Search, Bell, User, ChevronDown, LogIn } from 'lucide-react';
+import { Coins, Leaf, Bell, User, ChevronDown, LogIn } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from './ui/dropdown-menu';
 import { Badge } from './ui/badge';
 
@@ -24,8 +24,8 @@ console.log('Web3Auth selected network (client-side):', selectedNetwork);
 // Note: chainConfig is created inside the client-side init to ensure rpcTarget is an absolute URL
 // (the provider and Web3Auth SDK perform URL parsing and will fail for relative paths).
 interface HeaderProps {
-    onMenuClick: () => void;
-    totalEarnings: number;
+    onMenuClick?: () => void;
+    totalEarnings?: number;
 }
 
 interface UserInfo {
@@ -39,7 +39,7 @@ interface NotificationItem {
     message: string;
 }
 
-export default function Header({ onMenuClick, totalEarnings }: HeaderProps) {
+export default function Header({ totalEarnings = 0 }: HeaderProps) {
     // provider state is intentionally omitted; the SDK's provider is available from web3Auth when needed
     const [loggedIn, setLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -276,97 +276,107 @@ export default function Header({ onMenuClick, totalEarnings }: HeaderProps) {
     if (loading) return <div className='py-6 text-center'>Loading web3 auth ....</div>
 
     return (
-        <header className='bg-white border-b border-gray-200 sticky top-0 z-50 '>
+        <header className='bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm'>
             <div className='max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8'>
                 <div className='h-16 flex items-center justify-between'>
-                    {/* Left: logo & menu */}
-                    <div className='flex items-center gap-3 flex-shrink-0'>
-                        <Button variant='ghost' size='icon' className='p-2' onClick={onMenuClick}>
-                            <Menu className='h-6 w-6 text-gray-700' />
-                        </Button>
+                    {/* Left: logo */}
+                    <div className='flex items-center gap-8 flex-shrink-0'>
                         <Link href='/' className='flex items-center gap-2'>
-                            <Leaf className='h-8 w-8 text-green-500' />
-                            <span className='font-bold text-lg text-gray-900'>WasteNexus</span>
-                        </Link>
-                    </div>
-
-                    {/* Center: search (hidden on small screens) */}
-                    <div className='flex-1 flex justify-center px-4 min-w-0'>
-                        <div className='w-full max-w-xl min-w-0'>
-                            <div className='hidden sm:block'>
-                                <div className='relative'>
-                                    <input type='text' placeholder='Search...' className='w-full min-w-0 border border-gray-200 rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-500' />
-                                    <Search className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400' />
-                                </div>
+                            <div className='w-10 h-10 rounded-lg bg-green-600 flex items-center justify-center'>
+                                <Leaf className='h-6 w-6 text-white' />
                             </div>
-                        </div>
+                            <span className='font-bold text-xl text-gray-900'>WasteNexus</span>
+                        </Link>
+
+                        {/* Navigation Links - Desktop */}
+                        <nav className='hidden lg:flex items-center gap-1'>
+                            <Link href='/'>
+                                <Button variant='ghost' className='text-gray-700 hover:text-green-600 hover:bg-green-50 font-medium'>
+                                    Home
+                                </Button>
+                            </Link>
+                            <Link href='/reports'>
+                                <Button variant='ghost' className='text-gray-700 hover:text-green-600 hover:bg-green-50 font-medium'>
+                                    Report Waste
+                                </Button>
+                            </Link>
+                        </nav>
                     </div>
 
                     {/* Right: actions */}
                     <div className='flex items-center gap-3 flex-shrink-0'>
-                        {/* Search icon for mobile */}
-                        <div className='sm:hidden'>
-                            <Button variant='ghost' size='icon' className='p-2'>
-                                <Search className='h-5 w-5 text-gray-700' />
-                            </Button>
-                        </div>
-
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant='ghost' size='icon' className='relative p-2'>
                                     <Bell className='h-5 w-5 text-gray-700' />
-                                    <Badge className='absolute -top-1 -right-1 rounded-full h-4 w-4 p-0 flex items-center justify-center text-xs bg-red-500 text-white'>
-                                        {notifications.length}
-                                    </Badge>
+                                    {notifications.length > 0 && (
+                                        <Badge className='absolute -top-1 -right-1 rounded-full h-5 w-5 p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-white'>
+                                            {notifications.length}
+                                        </Badge>
+                                    )}
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align='end' className='w-64'>
-                                {notifications.length > 0 ? (
-                                    notifications.map((notification: NotificationItem) => (
-                                        <DropdownMenuItem key={notification.id} onClick={() => handleNotificationClick(notification.id)} className='hover:bg-gray-100'>
-                                            <div className='flex flex-col'>
-                                                <span className='font-medium'>{notification.type}</span>
-                                                <span className='text-sm text-gray-500'>{notification.message}</span>
-                                            </div>
-                                        </DropdownMenuItem>
-                                    ))
-                                ) : (
-                                    <DropdownMenuItem>No new notifications</DropdownMenuItem>
-                                )}
+                            <DropdownMenuContent align='end' className='w-80'>
+                                <div className='px-4 py-3 border-b border-gray-200'>
+                                    <h3 className='font-semibold text-gray-900'>Notifications</h3>
+                                </div>
+                                <div className='max-h-96 overflow-y-auto'>
+                                    {notifications.length > 0 ? (
+                                        notifications.map((notification: NotificationItem) => (
+                                            <DropdownMenuItem 
+                                                key={notification.id} 
+                                                onClick={() => handleNotificationClick(notification.id)} 
+                                                className='px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100'
+                                            >
+                                                <div className='flex flex-col gap-1'>
+                                                    <span className='font-medium text-gray-900 text-sm'>{notification.type}</span>
+                                                    <span className='text-sm text-gray-600'>{notification.message}</span>
+                                                </div>
+                                            </DropdownMenuItem>
+                                        ))
+                                    ) : (
+                                        <div className='px-4 py-8 text-center text-gray-500 text-sm'>
+                                            No new notifications
+                                        </div>
+                                    )}
+                                </div>
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                            <div className='flex items-center space-x-3'>
-                                <div className='flex items-center bg-gray-100 rounded-full px-3 py-1'>
-                                    <Coins className='h-4 w-4 text-green-500 mr-2' />
-                                    <span className='font-semibold text-sm text-gray-800'>{balance.toFixed(2)}</span>
-                                </div>
-                                <div className='hidden sm:flex items-center bg-white border border-gray-100 rounded-full px-3 py-1 text-sm text-gray-700'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c1.657 0 3-1.343 3-3S13.657 2 12 2 9 3.343 9 5s1.343 3 3 3zM6 22v-2a4 4 0 014-4h4a4 4 0 014 4v2" />
-                                    </svg>
-                                    <span className='font-medium'>Earnings</span>
-                                    <span className='ml-2 font-bold text-green-600'>{Number(totalEarnings || 0).toFixed(2)}</span>
-                                </div>
+                        <div className='hidden md:flex items-center gap-2'>
+                            <div className='flex items-center bg-green-50 border border-green-100 rounded-lg px-3 py-2'>
+                                <Coins className='h-4 w-4 text-green-600 mr-2' />
+                                <span className='font-semibold text-sm text-gray-900'>{balance.toFixed(2)}</span>
+                                <span className='text-xs text-gray-500 ml-1'>points</span>
                             </div>
+                        </div>
 
                         {!loggedIn ? (
-                            <Button onClick={login} className='bg-green-600 hover:bg-green-700 text-white text-sm md:text-base flex items-center gap-2'>
+                            <Button onClick={login} className='bg-green-600 hover:bg-green-700 text-white font-medium flex items-center gap-2'>
                                 <span>Login</span>
                                 <LogIn className='h-4 w-4' />
                             </Button>
                         ) : (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant='ghost' size='icon' className='flex items-center gap-2 p-2'>
-                                        <User className='h-5 w-5 text-gray-700' />
+                                    <Button variant='ghost' className='flex items-center gap-2 hover:bg-gray-50'>
+                                        <div className='w-8 h-8 rounded-full bg-green-100 flex items-center justify-center'>
+                                            <User className='h-4 w-4 text-green-600' />
+                                        </div>
                                         <ChevronDown className='h-4 w-4 text-gray-700' />
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align='end'>
-                                    <DropdownMenuItem onClick={getUserInfo}>{userInfo ? userInfo.name : 'Profile'}</DropdownMenuItem>
-                                    <DropdownMenuItem><Link href='/settings'>Settings</Link></DropdownMenuItem>
-                                    <DropdownMenuItem onClick={logout}>Sign Out</DropdownMenuItem>
+                                <DropdownMenuContent align='end' className='w-56'>
+                                    <div className='px-3 py-2 border-b border-gray-200'>
+                                        <p className='font-medium text-gray-900'>{userInfo?.name || 'User'}</p>
+                                        <p className='text-sm text-gray-500'>{userInfo?.email}</p>
+                                    </div>
+                                    <DropdownMenuItem className='cursor-pointer'>
+                                        <Link href='/settings' className='w-full'>Settings</Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={logout} className='cursor-pointer text-red-600'>
+                                        Sign Out
+                                    </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         )}

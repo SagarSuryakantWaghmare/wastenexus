@@ -222,71 +222,93 @@ export default function ReportPage() {
   }, [router]);
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-semibold mb-6 text-gray-800">Report waste</h1>
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      {/* Page Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Report Waste</h1>
+        <p className="text-gray-600">Help keep our environment clean by reporting waste locations</p>
+      </div>
       
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-lg mb-12">
-        <div className="mb-8">
-          <label htmlFor="waste-image" className="block text-lg font-medium text-gray-700 mb-2">
-            Upload Waste Image
+      {/* Report Form */}
+      <form onSubmit={handleSubmit} className="bg-white border border-gray-200 p-6 md:p-8 rounded-xl mb-12">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Submit New Report</h2>
+        
+        {/* Image Upload Section */}
+        <div className="mb-6">
+          <label htmlFor="waste-image" className="block text-sm font-medium text-gray-700 mb-3">
+            Waste Image *
           </label>
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-green-500 transition-colors duration-300">
-            <div className="space-y-1 text-center">
-              <Upload className="mx-auto h-12 w-12 text-gray-400" />
-              <div className="flex text-sm text-gray-600">
-                <label
-                  htmlFor="waste-image"
-                  className="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-green-500"
-                >
-                  <span>Upload a file</span>
-                  <input id="waste-image" name="waste-image" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" />
-                </label>
-                <p className="pl-1">or drag and drop</p>
-              </div>
-              <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-            </div>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-green-500 transition-colors duration-200 cursor-pointer">
+            <Upload className="mx-auto h-10 w-10 text-gray-400 mb-3" />
+            <label
+              htmlFor="waste-image"
+              className="cursor-pointer text-green-600 hover:text-green-700 font-medium"
+            >
+              Choose file
+            </label>
+            <span className="text-gray-500"> or drag and drop</span>
+            <input 
+              id="waste-image" 
+              name="waste-image" 
+              type="file" 
+              className="hidden" 
+              onChange={handleFileChange} 
+              accept="image/*" 
+            />
+            <p className="text-xs text-gray-500 mt-2">PNG, JPG, GIF up to 10MB</p>
           </div>
         </div>
         
+        {/* Image Preview */}
         {preview && (
-          <div className="mt-4 mb-8">
-            <img src={preview} alt="Waste preview" className="max-w-full h-auto rounded-xl shadow-md" />
+          <div className="mb-6 rounded-lg overflow-hidden border border-gray-200">
+            <img src={preview} alt="Waste preview" className="w-full h-auto max-h-96 object-cover" />
           </div>
         )}
         
+        {/* Verify Button */}
         <Button 
           type="button" 
           onClick={handleVerify} 
-          className="w-full mb-8 bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg rounded-xl transition-colors duration-300" 
+          className="w-full mb-6 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium" 
           disabled={!file || verificationStatus === 'verifying'}
         >
           {verificationStatus === 'verifying' ? (
             <>
-              <Loader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
-              Verifying...
+              <Loader className="animate-spin mr-2 h-5 w-5" />
+              Analyzing Image...
             </>
-          ) : 'Verify Waste'}
+          ) : (
+            <>
+              <CheckCircle className="mr-2 h-5 w-5" />
+              Verify Waste
+            </>
+          )}
         </Button>
 
+        {/* Verification Success */}
         {verificationStatus === 'success' && verificationResult && (
-          <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-8 rounded-r-xl">
-            <div className="flex items-center">
-              <CheckCircle className="h-6 w-6 text-green-400 mr-3" />
-              <div>
-                <h3 className="text-lg font-medium text-green-800">Verification Successful</h3>
-                <div className="mt-2 text-sm text-green-700">
-                  <p>Waste Type: {verificationResult.wasteType}</p>
-                  <p>Quantity: {verificationResult.quantity}</p>
-                  <p>Confidence: {(verificationResult.confidence * 100).toFixed(2)}%</p>
+          <div className="bg-green-50 border border-green-200 p-5 mb-6 rounded-lg">
+            <div className="flex items-start">
+              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-base font-semibold text-green-900 mb-2">Verification Successful</h3>
+                <div className="text-sm text-green-800 space-y-1">
+                  <p><span className="font-medium">Type:</span> {verificationResult.wasteType}</p>
+                  <p><span className="font-medium">Quantity:</span> {verificationResult.quantity}</p>
+                  <p><span className="font-medium">Confidence:</span> {(verificationResult.confidence * 100).toFixed(0)}%</p>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        {/* Form Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
+              Location *
+            </label>
             {isLoaded ? (
               <StandaloneSearchBox
                 onLoad={onLoad}
@@ -299,7 +321,7 @@ export default function ReportPage() {
                   value={newReport.location}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   placeholder="Enter waste location"
                 />
               </StandaloneSearchBox>
@@ -311,13 +333,15 @@ export default function ReportPage() {
                 value={newReport.location}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                 placeholder="Enter waste location"
               />
             )}
           </div>
           <div>
-            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">Waste Type</label>
+            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
+              Waste Type *
+            </label>
             <input
               type="text"
               id="type"
@@ -325,13 +349,15 @@ export default function ReportPage() {
               value={newReport.type}
               onChange={handleInputChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 bg-gray-100"
-              placeholder="Verified waste type"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-700"
+              placeholder="Auto-filled after verification"
               readOnly
             />
           </div>
-          <div>
-            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">Estimated Amount</label>
+          <div className="md:col-span-2">
+            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
+              Estimated Amount *
+            </label>
             <input
               type="text"
               id="amount"
@@ -339,52 +365,67 @@ export default function ReportPage() {
               value={newReport.amount}
               onChange={handleInputChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 bg-gray-100"
-              placeholder="Verified amount"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-700"
+              placeholder="Auto-filled after verification"
               readOnly
             />
           </div>
         </div>
+        
+        {/* Submit Button */}
         <Button 
           type="submit" 
-          className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-lg rounded-xl transition-colors duration-300 flex items-center justify-center"
-          disabled={isSubmitting}
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-medium"
+          disabled={isSubmitting || verificationStatus !== 'success'}
         >
           {isSubmitting ? (
             <>
-              <Loader className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
-              Submitting...
+              <Loader className="animate-spin mr-2 h-5 w-5" />
+              Submitting Report...
             </>
           ) : 'Submit Report'}
         </Button>
       </form>
 
-      <h2 className="text-3xl font-semibold mb-6 text-gray-800">Recent Reports</h2>
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-        <div className="max-h-96 overflow-y-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 sticky top-0">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {reports.map((report) => (
-                <tr key={report.id} className="hover:bg-gray-50 transition-colors duration-200">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <MapPin className="inline-block w-4 h-4 mr-2 text-green-500" />
-                    {report.location}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.wasteType}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.amount}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{report.createdAt}</td>
+      {/* Recent Reports Section */}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Reports</h2>
+        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Location</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {reports.length > 0 ? (
+                  reports.map((report) => (
+                    <tr key={report.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4 text-sm text-gray-700">
+                        <div className="flex items-center">
+                          <MapPin className="h-4 w-4 text-green-600 mr-2 flex-shrink-0" />
+                          <span className="truncate">{report.location}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{report.wasteType}</td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{report.amount}</td>
+                      <td className="px-6 py-4 text-sm text-gray-500">{report.createdAt}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
+                      No reports yet. Submit your first report above!
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

@@ -6,8 +6,7 @@ import './globals.css';
 
 import { Toaster } from 'react-hot-toast';
 import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
-import { getAvailableRewards } from "@/utils/db/action";
+import { getUserBalance, getUserByEmail } from "@/utils/db/action";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,8 +15,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [totalEarnings] = useState(0);
+  const [totalEarnings, setTotalEarnings] = useState(0);
+  
   useEffect(()=>{
     const fetchTotalEarnings=async()=>{
       try {
@@ -25,12 +24,9 @@ export default function RootLayout({
         if(userEmail){
           const user=await getUserByEmail(userEmail);
             if(user){
-              const availableRewards=(await getAvailableRewards(
-                user.id))as any;
-              setTotalEarnings(availableRewards);
-
+              const balance = await getUserBalance(user.id);
+              setTotalEarnings(balance);
             }
-          
         }
       } catch (error) {
         console.log("Error in the fetching total earnings of user",error);
@@ -41,19 +37,36 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} totalEarnings={totalEarnings} />
-        <div className="min-h-screen flex h-screen">
-          {/* header */}
-          <div className="flex flex-1">
-            <Sidebar open={sidebarOpen}/>
-            <main className="flex-1 p-4 lg:p-8 ml-0 lg:ml-64 transition-all duration-300">
-              {children}
-            </main>
-          </div>
-
-        </div>
-        <Toaster />
+      <body className={`${inter.className} bg-gray-50`}>
+        <Header onMenuClick={() => {}} totalEarnings={totalEarnings} />
+        <main className="w-full pt-16">
+          {children}
+        </main>
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#fff',
+              color: '#1f2937',
+              border: '1px solid #e5e7eb',
+              borderRadius: '0.5rem',
+              padding: '1rem',
+            },
+            success: {
+              iconTheme: {
+                primary: '#10b981',
+                secondary: '#fff',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#fff',
+              },
+            },
+          }}
+        />
       </body>
     </html>
   )
