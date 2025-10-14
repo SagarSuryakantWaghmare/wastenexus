@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useRef, ChangeEvent } from 'react';
-import { Upload, FileText, Calendar, User, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useState, useRef, ChangeEvent, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Upload, FileText, Calendar, User, AlertCircle, CheckCircle2, LogOut } from 'lucide-react';
 
 type UploadType = 'event' | 'recent';
 
@@ -20,7 +21,41 @@ export default function ChampionsPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [recentUploads, setRecentUploads] = useState<UploadedFile[]>([]);
+  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; role: string } | null>(null);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check authentication and get user info
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('/api/auth/me');
+        if (response.ok) {
+          const data = await response.json();
+          setCurrentUser(data.user);
+        } else {
+          router.push('/login');
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        router.push('/login');
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+    checkAuth();
+  }, [router]);
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+      router.refresh();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -75,10 +110,37 @@ export default function ChampionsPage() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Champions Portal</h1>
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Champions Portal</h1>
+            {currentUser && (
+              <p className="text-sm text-gray-600 mt-1">
+                Welcome, <span className="font-medium">{currentUser.name}</span> ({currentUser.role})
+              </p>
+            )}
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            Logout
+          </button>
+        </div>
         
         {/* Upload Section */}
         <div className="bg-white rounded-lg shadow p-6 mb-8">

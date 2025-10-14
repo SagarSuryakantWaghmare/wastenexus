@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { signin } from '@/lib/action';
+
+// Simple in-memory user store (replace with database in production)
+const USERS = [
+  { id: '1', email: 'admin@wastenexus.com', password: 'admin123', role: 'admin', name: 'Admin User' },
+  { id: '2', email: 'user@wastenexus.com', password: 'user123', role: 'user', name: 'Regular User' },
+];
 
 export async function POST(request: Request) {
   try {
@@ -12,30 +17,31 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await signin({ email, password });
+    // Find user (in production, use proper password hashing)
+    const user = USERS.find(u => u.email === email && u.password === password);
     
-    if (result.error) {
+    if (!user) {
       return NextResponse.json(
-        { error: result.error },
+        { error: 'Invalid email or password' },
         { status: 401 }
       );
     }
 
-    if (!result.user || !result.token) {
-      return NextResponse.json(
-        { error: 'Authentication failed' },
-        { status: 500 }
-      );
-    }
+    // Create user session data
+    const sessionData = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role
+    };
 
-    // Set HTTP-only cookie with the token
+    // Set HTTP-only cookie with user session
     const response = NextResponse.json({
       success: true,
-      user: result.user,
-      token: result.token
+      user: sessionData
     });
 
-    response.cookies.set('token', result.token, {
+    response.cookies.set('user_session', JSON.stringify(sessionData), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',

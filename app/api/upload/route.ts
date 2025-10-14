@@ -1,21 +1,13 @@
 import { NextResponse } from 'next/server';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { cookies } from 'next/headers';
 import { ensureDirectoryExists, isAllowedFileType, getFileExtension } from '@/lib/file-utils';
 
 // Define allowed file types for each upload type
 const ALLOWED_FILE_TYPES: Record<string, string[]> = {
-  event: ['pdf', 'docx', 'xlsx', 'jpg', 'jpeg', 'png'],
-  recent: ['pdf', 'docx', 'xlsx']
-};
-
-// Define required roles for each upload type
-const REQUIRED_ROLES: Record<string, string[]> = {
-  event: ['admin', 'event_manager'],
-  recent: ['admin', 'content_manager']
+  event: ['pdf', 'docx', 'doc', 'xlsx', 'xls', 'jpg', 'jpeg', 'png', 'gif'],
+  recent: ['pdf', 'docx', 'doc', 'xlsx', 'xls', 'jpg', 'jpeg', 'png']
 };
 
 type UploadType = 'event' | 'recent';
@@ -30,74 +22,101 @@ interface UploadedFile {
   path: string;
 }
 
+function generateId(): string {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2);
+}
+
 export async function POST(request: Request) {
   try {
-    // Verify user is authenticated
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    // Check if user is authenticated via cookie
+    const cookieStore = await cookies();
+    const userSession = cookieStore.get('user_session');
+    
+    if (!userSession?.value) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
+    const userData = JSON.parse(userSession.value);
     const formData = await request.formData();
-    const files = formData.getAll('files') as File[];
+    const files = formData.getAll('files') as unknown as File[];
     const uploadType = formData.get('type') as UploadType;
+
+    // Validate upload type
+    if (!['event', 'recent'].includes(uploadType)) {
+      return new NextResponse('Invalid upload type', { status: 400 });
+    }
 
     if (!files || files.length === 0) {
       return new NextResponse('No files uploaded', { status: 400 });
     }
 
-    if (!['event', 'recent'].includes(uploadType)) {
-      return new NextResponse('Invalid upload type', { status: 400 });
+    // Validate file types
+    const invalidFiles = files.filter(
+      file => !isAllowedFileType(file.name, ALLOWED_FILE_TYPES[uploadType])
+    );
+
+    if (invalidFiles.length > 0) {
+      return new NextResponse(
+        `Invalid file type. Allowed types: ${ALLOWED_FILE_TYPES[uploadType].join(', ')}`,
+        { status: 400 }
+      );
     }
 
     // Create uploads directory if it doesn't exist
     const uploadDir = join(process.cwd(), 'public', 'uploads', uploadType);
-    await mkdir(uploadDir, { recursive: true });
+    await ensureDirectoryExists(uploadDir);
 
     const uploadedFiles: UploadedFile[] = [];
+    const uploadErrors: string[] = [];
 
     // Process each file
     for (const file of files) {
-      const fileBuffer = await (file as unknown as Blob).arrayBuffer();
-      const buffer = Buffer.from(fileBuffer);
-      
-      // Generate unique filename
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${uuidv4()}.${fileExt}`;
-      const filePath = join(uploadDir, fileName);
-      const publicPath = `/uploads/${uploadType}/${fileName}`;
+      try {
+        const fileBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(fileBuffer);
+        
+        // Generate unique filename with original extension
+        const fileExt = getFileExtension(file.name);
+        if (!fileExt) {
+          uploadErrors.push(`File ${file.name} has no extension`);
+          continue;
+        }
+        
+        const fileName = `${generateId()}.${fileExt}`;
+        const filePath = join(uploadDir, fileName);
+        const publicPath = `/uploads/${uploadType}/${fileName}`;
 
-      // Save file to disk
-      await writeFile(filePath, buffer);
+        // Save file to disk
+        await writeFile(filePath, buffer);
 
-      // Add to uploaded files array
-      uploadedFiles.push({
-        id: uuidv4(),
-        name: file.name,
-        type: uploadType,
-        size: file.size,
-        uploadedAt: new Date(),
-        uploadedBy: session.user.email,
-        path: publicPath
-      });
+        // Add to uploaded files array
+        uploadedFiles.push({
+          id: generateId(),
+          name: file.name,
+          type: uploadType,
+          size: file.size,
+          uploadedAt: new Date(),
+          uploadedBy: userData.email || userData.username,
+          path: publicPath
+        });
+      } catch (error) {
+        console.error(`Error processing file ${file.name}:`, error);
+        uploadErrors.push(`Failed to process ${file.name}`);
+      }
     }
 
-    // TODO: Save file metadata to database (Prisma example)
-    // await prisma.file.createMany({
-    //   data: uploadedFiles.map(file => ({
-    //     id: file.id,
-    //     name: file.name,
-    //     type: file.type,
-    //     size: file.size,
-    //     path: file.path,
-    //     uploadedBy: file.uploadedBy,
-    //   })),
-    // });
+    if (uploadedFiles.length === 0 && uploadErrors.length > 0) {
+      return new NextResponse(
+        `Failed to upload files: ${uploadErrors.join(', ')}`,
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Files uploaded successfully',
-      uploadedFiles 
+      message: `${uploadedFiles.length} file(s) uploaded successfully`,
+      uploadedFiles,
+      errors: uploadErrors.length > 0 ? uploadErrors : undefined
     });
 
   } catch (error) {
@@ -108,25 +127,15 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    // Verify user is authenticated
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    // Check if user is authenticated
+    const cookieStore = await cookies();
+    const userSession = cookieStore.get('user_session');
+    
+    if (!userSession?.value) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    // TODO: Fetch files from database (Prisma example)
-    // const files = await prisma.file.findMany({
-    //   where: { 
-    //     OR: [
-    //       { type: 'event' },
-    //       { type: 'recent' }
-    //     ]
-    //   },
-    //   orderBy: { uploadedAt: 'desc' },
-    //   take: 50
-    // });
-
-    // For now, return empty array
+    // Return empty array for now (can be connected to database later)
     return NextResponse.json({ files: [] });
 
   } catch (error) {
