@@ -12,7 +12,7 @@ export interface WasteClassification {
 
 export async function classifyWaste(imageUrl: string): Promise<WasteClassification> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `Analyze this waste image and provide a JSON response with the following structure:
 {
@@ -67,7 +67,7 @@ async function fetchImageAsBase64(imageUrl: string): Promise<string> {
 
 export async function generateWasteInsights(reports: Array<{ type: string; weightKg: number }>): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const totalWeight = reports.reduce((sum, r) => sum + r.weightKg, 0);
     const typeBreakdown = reports.reduce((acc, r) => {
