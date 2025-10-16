@@ -6,9 +6,13 @@ export function useApi() {
   const { token } = useAuth();
 
   const apiCall = async (url: string, options: RequestInit = {}) => {
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
+    const headers: Record<string, string> = {};
+
+    // Only set Content-Type if body is not FormData
+    // (browser will set it automatically for FormData with boundary)
+    if (!(options.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     // Add existing headers
     if (options.headers) {

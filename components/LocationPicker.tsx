@@ -19,7 +19,6 @@ interface LocationPickerProps {
     address?: string;
   };
 }
-
 const containerStyle = {
   width: '100%',
   height: '300px',
@@ -57,7 +56,6 @@ export function LocationPicker({ onLocationSelect, initialLocation }: LocationPi
       try {
         const geocoder = new google.maps.Geocoder();
         const result = await geocoder.geocode({ location: { lat, lng } });
-        
         if (result.results[0]) {
           const addressText = result.results[0].formatted_address;
           setAddress(addressText);
@@ -74,41 +72,6 @@ export function LocationPicker({ onLocationSelect, initialLocation }: LocationPi
     [onLocationSelect]
   );
 
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          
-          setMarkerPosition({ lat, lng });
-
-          // Get address for current location
-          try {
-            const geocoder = new google.maps.Geocoder();
-            const result = await geocoder.geocode({ location: { lat, lng } });
-            
-            if (result.results[0]) {
-              const addressText = result.results[0].formatted_address;
-              setAddress(addressText);
-              onLocationSelect({
-                latitude: lat,
-                longitude: lng,
-                address: addressText,
-              });
-            }
-          } catch (error) {
-            console.error('Geocoding error:', error);
-          }
-        },
-        (error) => {
-          console.error('Geolocation error:', error);
-          alert('Unable to get your location. Please click on the map to select a location.');
-        }
-      );
-    }
-  };
-
   if (!isLoaded) {
     return (
       <div className="w-full h-[300px] bg-gray-100 rounded-lg flex items-center justify-center">
@@ -121,16 +84,7 @@ export function LocationPicker({ onLocationSelect, initialLocation }: LocationPi
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <Label>Location</Label>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={getCurrentLocation}
-          className="text-green-600 border-green-300 hover:bg-green-50"
-        >
-          <MapPin className="h-4 w-4 mr-2" />
-          Use Current Location
-        </Button>
+        {/* Removed getCurrentLocation button for autocomplete-only picker */}
       </div>
 
       <GoogleMap
@@ -149,7 +103,6 @@ export function LocationPicker({ onLocationSelect, initialLocation }: LocationPi
         readOnly
         className="bg-gray-50"
       />
-      
       <p className="text-xs text-gray-500">
         Click on the map to select a location or use your current location
       </p>

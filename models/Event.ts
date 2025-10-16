@@ -6,11 +6,15 @@ export interface IEvent {
   title: string;
   description: string;
   location: string;
+  locationName?: string;
+  locationAddress?: string;
+  wasteFocus?: string;
   coordinates?: {
     latitude: number;
     longitude: number;
   };
   date: Date;
+  images?: string[];
   participants: mongoose.Types.ObjectId[];
   status: 'upcoming' | 'ongoing' | 'completed';
   createdAt: Date;
@@ -40,6 +44,18 @@ const EventSchema = new Schema<IEvent>(
       required: [true, 'Event location is required'],
       trim: true,
     },
+    locationName: {
+      type: String,
+      trim: true,
+    },
+    locationAddress: {
+      type: String,
+      trim: true,
+    },
+    wasteFocus: {
+      type: String,
+      trim: true,
+    },
     coordinates: {
       latitude: Number,
       longitude: Number,
@@ -48,6 +64,11 @@ const EventSchema = new Schema<IEvent>(
       type: Date,
       required: [true, 'Event date is required'],
     },
+    images: [
+      {
+        type: String,
+      },
+    ],
     participants: [
       {
         type: Schema.Types.ObjectId,

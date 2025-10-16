@@ -25,13 +25,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
-    const { title, description, location, coordinates, date } = body;
+    const form = await request.formData();
+    const title = form.get('title') as string;
+    const description = form.get('description') as string;
+    const wasteFocus = form.get('wasteFocus') as string;
+    const locationName = form.get('locationName') as string;
+    const locationAddress = form.get('locationAddress') as string;
+    const date = form.get('date') as string;
+    
+    // Handle multiple images
+    const images: string[] = [];
+    for (const entry of form.entries()) {
+      const [key, value] = entry;
+      if (key === 'image' && value instanceof File) {
+        // Save file to disk or cloud storage here (for now, just use filename)
+        images.push(value.name);
+      }
+    }
 
     // Validation
-    if (!title || !description || !location || !date) {
+    if (!title || !description || !date) {
       return NextResponse.json(
-        { error: 'All fields are required' },
+        { error: 'Title, description, and date are required' },
+        { status: 400 }
+      );
+    }
+
+    if (description.length < 50) {
+      return NextResponse.json(
+        { error: 'Description must be at least 50 characters' },
         { status: 400 }
       );
     }
@@ -49,9 +71,13 @@ export async function POST(request: NextRequest) {
       championId: decoded.userId,
       title,
       description,
-      location,
-      coordinates,
+      location: locationAddress || '',
+      locationName: locationName || '',
+      locationAddress: locationAddress || '',
+      wasteFocus: wasteFocus || 'Waste Collection',
       date: eventDate,
+      images,
+      participants: [],
       status: 'upcoming',
     });
 
@@ -60,12 +86,19 @@ export async function POST(request: NextRequest) {
         message: 'Event created successfully',
         event: {
           id: event._id,
+          championId: event.championId,
           title: event.title,
           description: event.description,
           location: event.location,
-          coordinates: event.coordinates,
-          date: event.date,
+          locationName: event.locationName,
+          locationAddress: event.locationAddress,
+          wasteFocus: event.wasteFocus,
+          eventDate: event.date,
+          imageUrl: (event.images && event.images.length > 0) ? event.images[0] : '',
+          images: event.images,
+          participantCount: event.participants?.length || 0,
           status: event.status,
+          createdAt: event.createdAt,
         },
       },
       { status: 201 }
