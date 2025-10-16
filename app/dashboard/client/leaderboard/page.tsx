@@ -5,9 +5,8 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navbar } from "@/components/Navbar";
-// Removed unused Card imports
 import { Badge } from "@/components/ui/badge";
-import { Trophy } from "lucide-react";
+import { Trophy, Search, Zap, Crown } from "lucide-react";
 
 export default function LeaderboardPage() {
   const router = useRouter();
@@ -50,75 +49,156 @@ export default function LeaderboardPage() {
 
   if (isLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-green-800 to-emerald-900">
         <div className="text-center">
           <span className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-green-400 border-t-transparent"></span>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-green-300 font-medium">Loading leaderboard...</p>
         </div>
       </div>
     );
   }
   if (!user) return null;
 
-  // Filter leaderboard by search
   const filteredLeaderboard = leaderboard.filter((entry) =>
     entry.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const getUserRank = () => {
+    return leaderboard.findIndex((entry) => entry.id === user.id) + 1;
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex flex-col">
       <Navbar />
-      <main className="flex-1 flex flex-col items-center w-full px-2 sm:px-4 py-8">
-        <section className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl p-4 sm:p-8 border border-green-100 mt-4">
-          <h1 className="text-4xl font-extrabold text-green-700 mb-1 text-center tracking-tight">Leaderboard</h1>
-          <p className="text-gray-500 text-center mb-6 text-lg">See the top contributors in your community!</p>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
-            <div className="flex items-center gap-2">
-              <Trophy className="h-7 w-7 text-yellow-500" />
-              <span className="font-bold text-green-700 text-xl">Top Contributors</span>
+      
+      <main className="flex-1 flex flex-col items-center w-full px-2 sm:px-4 py-12">
+        <section className="w-full max-w-5xl">
+          {/* Header Section */}
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="p-3 bg-yellow-100 rounded-full">
+                <Trophy className="h-8 w-8 text-yellow-600" />
+              </div>
+              <h1 className="text-5xl font-extrabold text-gray-900 tracking-tight">Leaderboard</h1>
             </div>
-            <div className="flex-1 flex justify-end">
+            <p className="text-gray-600 text-lg font-medium">See the top environmental champions in your community!</p>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+            <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-6 text-white shadow-lg">
+              <div className="flex items-center gap-3 mb-2">
+                <Crown className="h-6 w-6" />
+                <p className="text-sm font-medium opacity-90">Your Rank</p>
+              </div>
+              <p className="text-3xl font-bold">#{getUserRank()}</p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-white shadow-lg">
+              <div className="flex items-center gap-3 mb-2">
+                <Zap className="h-6 w-6" />
+                <p className="text-sm font-medium opacity-90">Your Points</p>
+              </div>
+              <p className="text-3xl font-bold">{user.totalPoints || 0}</p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-6 text-white shadow-lg">
+              <div className="flex items-center gap-3 mb-2">
+                <Trophy className="h-6 w-6" />
+                <p className="text-sm font-medium opacity-90">Total Contributors</p>
+              </div>
+              <p className="text-3xl font-bold">{leaderboard.length}</p>
+            </div>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mb-8">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
                 type="text"
                 placeholder="Search by name..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="max-w-xs border-green-200 focus:ring-green-200 rounded-lg shadow-sm"
+                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-500/10 rounded-xl shadow-sm transition-all"
               />
             </div>
           </div>
-          <div className="bg-green-50/60 rounded-2xl p-2 sm:p-4">
+
+          {/* Leaderboard Table */}
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
             {filteredLeaderboard.length === 0 ? (
-              <div className="text-center text-gray-400 py-8 text-lg">No contributors found.</div>
+              <div className="text-center text-gray-500 py-16 text-lg font-medium">
+                No contributors found matching your search.
+              </div>
             ) : (
-              <div className="space-y-3">
+              <div className="divide-y divide-gray-100">
+                {/* Header */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 grid grid-cols-12 gap-4 items-center font-semibold text-gray-700 text-sm">
+                  <div className="col-span-1 text-center">Rank</div>
+                  <div className="col-span-6">Name</div>
+                  <div className="col-span-3 text-right">Points</div>
+                  <div className="col-span-2 text-right">Status</div>
+                </div>
+
+                {/* Rows */}
                 {filteredLeaderboard.map((entry, index) => (
                   <div
                     key={entry.id}
-                    className={`flex flex-col sm:flex-row items-center gap-3 p-4 rounded-2xl border-2 transition-colors shadow-sm ${
-                      entry.id === user.id
-                        ? "bg-green-100 border-green-400"
-                        : "bg-white border-green-100 hover:border-green-200"
+                    className={`px-6 py-4 grid grid-cols-12 gap-4 items-center transition-all duration-200 hover:bg-gray-50 ${
+                      entry.id === user.id ? "bg-green-50/50" : ""
                     }`}
                   >
-                    <div className="flex-shrink-0 w-full sm:w-10 text-center">
+                    {/* Rank */}
+                    <div className="col-span-1 text-center">
                       {index < 3 ? (
                         <span className="text-3xl">
                           {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
                         </span>
                       ) : (
-                        <span className="font-semibold text-gray-600 text-lg">#{entry.rank}</span>
+                        <span className="font-bold text-lg text-gray-600">#{entry.rank}</span>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0 w-full">
-                      <p className="font-semibold text-gray-900 truncate text-lg sm:text-xl">{entry.name}</p>
-                      <p className="text-sm text-green-700 font-medium">{entry.totalPoints} points</p>
+
+                    {/* Name */}
+                    <div className="col-span-6 min-w-0">
+                      <p className="font-semibold text-gray-900 truncate text-base">
+                        {entry.name}
+                      </p>
                     </div>
-                    {entry.id === user.id && <Badge className="bg-green-600 text-white px-4 py-1 text-base">You</Badge>}
+
+                    {/* Points */}
+                    <div className="col-span-3 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Zap className="h-4 w-4 text-yellow-500" />
+                        <span className="font-bold text-lg text-gray-900">
+                          {entry.totalPoints.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Status Badge */}
+                    <div className="col-span-2 text-right">
+                      {entry.id === user.id && (
+                        <Badge className="bg-green-600 hover:bg-green-700 text-white font-semibold px-3 py-1 text-xs">
+                          You
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Motivational Message */}
+          <div className="mt-10 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-lg">
+            <p className="text-gray-700 font-medium">
+              🌱 Keep making an impact! Every waste report brings you closer to the top. 
+              {getUserRank() <= 3 && " You're in the top 3 - amazing work!"}
+              {getUserRank() > 3 && getUserRank() <= 10 && " You're in the top 10 - keep it up!"}
+              {getUserRank() > 10 && " Keep contributing to climb the ranks!"}
+            </p>
           </div>
         </section>
       </main>

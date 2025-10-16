@@ -29,7 +29,7 @@ function AddressAutocompleteInput({ value, onSelect }: { value: string; onSelect
 
     return (
         <div className="relative">
-            <Input
+            <input
                 id="addressInput"
                 value={query}
                 onChange={e => {
@@ -37,24 +37,24 @@ function AddressAutocompleteInput({ value, onSelect }: { value: string; onSelect
                     fetchSuggestions(e.target.value);
                 }}
                 placeholder="Type address..."
-                className="border-green-200"
+                className="w-full border-2 border-gray-300 bg-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-base"
                 autoComplete="off"
             />
-            {loading && <div className="text-xs text-gray-400">Loading suggestions...</div>}
+            {loading && <div className="text-xs text-gray-400 mt-2">Loading suggestions...</div>}
             {suggestions.length > 0 && (
-                <ul className="absolute z-10 bg-white border border-green-100 rounded shadow mt-1 max-h-48 overflow-y-auto w-full">
+                <ul className="absolute z-10 bg-white border-2 border-gray-200 rounded-lg shadow-lg mt-2 max-h-56 overflow-y-auto w-full">
                     {suggestions.map(suggestion => (
                         <li
                             key={suggestion.place_id}
-                            className="px-3 py-2 cursor-pointer hover:bg-green-50"
+                            className="px-4 py-3 cursor-pointer hover:bg-green-50 transition-colors border-b border-gray-100 last:border-b-0"
                             onClick={() => {
                                 setQuery(suggestion.description);
                                 setSuggestions([]);
                                 onSelect(suggestion.description);
                             }}
                         >
-                            <span className="font-semibold">{suggestion.structured_formatting.main_text}</span>
-                            <span className="text-xs text-gray-500 ml-2">{suggestion.structured_formatting.secondary_text}</span>
+                            <p className="font-semibold text-gray-900 text-sm">{suggestion.structured_formatting.main_text}</p>
+                            <p className="text-xs text-gray-500 mt-0.5">{suggestion.structured_formatting.secondary_text}</p>
                         </li>
                     ))}
                 </ul>
@@ -78,7 +78,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Loader2, Plus, Calendar } from 'lucide-react';
+import { Loader2, Plus, Calendar, MapPin, FileText } from 'lucide-react';
 import { LocationPicker } from '@/components/LocationPicker';
 import { toast } from 'sonner';
 
@@ -111,7 +111,6 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validation
         if (!formData.title || !formData.description || !formData.wasteFocus || !location.address || !formData.eventDate) {
             toast.error('Please fill in all required fields');
             return;
@@ -142,11 +141,10 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
             await apiCall('/api/events', {
                 method: 'POST',
                 body: form,
-                headers: {}, // Let browser set Content-Type for FormData
+                headers: {},
             });
 
             toast.success('Event created successfully!');
-            // Reset form
             setFormData({
                 title: '',
                 description: '',
@@ -165,37 +163,44 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
     };
 
     return (
-        <Card className="border-green-200 shadow-xl">
-            <CardHeader>
-                <CardTitle className="text-green-700 flex items-center gap-2">
-                    <Calendar className="h-5 w-5" />
-                    Create New Event
-                </CardTitle>
-                <CardDescription>
+        <Card className="border-0 shadow-lg bg-white">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-100 rounded-t-lg pb-6">
+                <div className="flex items-center gap-3 mb-2">
+                    <div className="p-2 bg-green-600/10 rounded-lg">
+                        <Calendar className="h-5 w-5 text-green-600" />
+                    </div>
+                    <CardTitle className="text-2xl text-green-700">Create New Event</CardTitle>
+                </div>
+                <CardDescription className="text-gray-600 text-base">
                     Organize a waste management event for your community
                 </CardDescription>
             </CardHeader>
-            <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {/* Left column: all text inputs */}
+
+            <CardContent className="pt-8">
+                <form onSubmit={handleSubmit} className="space-y-8">
+                    
+                    {/* Section 1: Event Title */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                            <span className="flex items-center justify-center w-6 h-6 bg-green-100 text-green-700 rounded-full text-sm font-bold">1</span>
+                            Event Basics
+                        </h3>
                         <div className="space-y-4">
-                            {/* Event Title */}
                             <div className="space-y-2">
-                                <Label htmlFor="title">Event Title *</Label>
+                                <Label htmlFor="title" className="text-gray-700 font-semibold">Event Title *</Label>
                                 <Input
                                     id="title"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                                     placeholder="e.g., Community Park Cleanup Day"
-                                    className="border-green-200"
+                                    className="border-2 border-gray-300 focus:border-transparent"
                                     required
                                 />
                             </div>
-                            {/* Description */}
+
                             <div className="space-y-2">
-                                <Label htmlFor="description">
-                                    Description * <span className="text-xs text-gray-500">(Min. 50 characters)</span>
+                                <Label htmlFor="description" className="text-gray-700 font-semibold">
+                                    Description * <span className="text-xs text-gray-500 font-normal">(Min. 50 characters)</span>
                                 </Label>
                                 <Textarea
                                     id="description"
@@ -203,36 +208,51 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Describe the event in detail... Include goals, what to bring, etc."
                                     rows={5}
-                                    className="border-green-200"
+                                    className="border-2 border-gray-300 focus:border-transparent resize-none"
                                     required
                                 />
-                                <p className="text-xs text-gray-500">
-                                    {formData.description.length} / 50 characters minimum
-                                </p>
-                            </div>
-                            {/* Address Autocomplete Input for Event Location */}
-                            <div className="space-y-6 ">
-                                <Label htmlFor="eventAddress">Event Address *</Label>
-                                <div className="mb-10">
-                                    <Input
-                                        id="eventAddress"
-                                        value={location.address}
-                                        onChange={e => setLocation({ ...location, address: e.target.value })}
-                                        placeholder="Enter event address..."
-                                        className="border-green-200"
-                                        required
-                                    />
+                                <div className="flex justify-between items-center">
+                                    <p className="text-xs text-gray-500">
+                                        {formData.description.length} / 50 characters minimum
+                                    </p>
+                                    {formData.description.length >= 50 && (
+                                        <span className="text-xs text-green-600 font-semibold">✓ Valid</span>
+                                    )}
                                 </div>
                             </div>
-                            {/* Waste Focus and Date/Time side by side */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 space-y-2 md:space-y-0 mt-4">
+                        </div>
+                    </div>
+
+                    {/* Section 2: Location & Details */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                            <span className="flex items-center justify-center w-6 h-6 bg-green-100 text-green-700 rounded-full text-sm font-bold">2</span>
+                            Location & Details
+                        </h3>
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="eventAddress" className="text-gray-700 font-semibold flex items-center gap-2">
+                                    <MapPin className="h-4 w-4 text-green-600" />
+                                    Event Address *
+                                </Label>
+                                <Input
+                                    id="eventAddress"
+                                    value={location.address}
+                                    onChange={e => setLocation({ ...location, address: e.target.value })}
+                                    placeholder="Enter event address..."
+                                    className="border-2 border-gray-300 focus:border-transparent"
+                                    required
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <Label htmlFor="wasteFocus">Waste Focus *</Label>
+                                    <Label htmlFor="wasteFocus" className="text-gray-700 font-semibold">Waste Focus *</Label>
                                     <Select
                                         value={formData.wasteFocus}
                                         onValueChange={(value) => setFormData({ ...formData, wasteFocus: value })}
                                     >
-                                        <SelectTrigger className="border-green-200">
+                                        <SelectTrigger className="border-2 border-gray-300 focus:border-transparent">
                                             <SelectValue placeholder="Select waste focus" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -244,35 +264,45 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                                         </SelectContent>
                                     </Select>
                                 </div>
+
                                 <div className="space-y-2">
-                                    <Label htmlFor="eventDate">Date & Time *</Label>
+                                    <Label htmlFor="eventDate" className="text-gray-700 font-semibold flex items-center gap-2">
+                                        <Calendar className="h-4 w-4 text-green-600" />
+                                        Date & Time *
+                                    </Label>
                                     <Input
                                         id="eventDate"
                                         type="datetime-local"
                                         value={formData.eventDate}
                                         onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
-                                        className="border-green-200"
+                                        className="border-2 border-gray-300 focus:border-transparent"
                                         required
                                     />
                                 </div>
                             </div>
                         </div>
-                        {/* Right column: image upload */}
-                        <div className="space-y-2 flex flex-col justify-between h-full">
-                            <Label htmlFor="eventImage">Event Image *</Label>
-                            <FileUpload
-                                onChange={(files) => setImageFile(files[0] || null)}
-                            />
+                    </div>
+
+                    {/* Section 3: Event Image */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                            <span className="flex items-center justify-center w-6 h-6 bg-green-100 text-green-700 rounded-full text-sm font-bold">3</span>
+                            Event Image
+                        </h3>
+                        <div className="space-y-3">
+                            <Label htmlFor="eventImage" className="text-gray-700 font-semibold">Event Image *</Label>
+                            <FileUpload onChange={(files) => setImageFile(files[0] || null)} />
                             {imageFile && (
-                                <div className="mt-2 text-xs text-green-700">Selected: {imageFile.name}</div>
+                                <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                    <span className="text-green-700 font-semibold text-sm">✓ Selected:</span>
+                                    <span className="text-green-600 text-sm">{imageFile.name}</span>
+                                </div>
                             )}
                         </div>
                     </div>
 
-
-
-                    {/* Submit Button */}
-                    <div className="flex gap-4 pt-4">
+                    {/* Action Buttons */}
+                    <div className="flex gap-4 pt-6 border-t border-gray-200">
                         <Button
                             type="button"
                             variant="outline"
@@ -286,23 +316,23 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                                 setLocation({ name: '', address: '' });
                                 setImageFile(null);
                             }}
-                            className="flex-1 border-green-200"
+                            className="flex-1 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-2.5 rounded-lg transition-all"
                         >
                             Clear Form
                         </Button>
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-1 bg-green-600 hover:bg-green-700"
+                            className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2"
                         >
                             {isSubmitting ? (
                                 <>
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    <Loader2 className="h-4 w-4 animate-spin" />
                                     Creating...
                                 </>
                             ) : (
                                 <>
-                                    <Plus className="h-4 w-4 mr-2" />
+                                    <Plus className="h-4 w-4" />
                                     Create Event
                                 </>
                             )}

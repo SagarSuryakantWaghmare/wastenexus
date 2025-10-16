@@ -1,4 +1,3 @@
-
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -17,7 +16,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LocationPicker } from '@/components/LocationPicker';
-import { Upload, Loader2, CheckCircle2, Camera } from 'lucide-react';
+import { Upload, Loader2, CheckCircle2, Camera, MapPin, Zap } from 'lucide-react';
 import Image from 'next/image';
 
 interface WasteReportFormProps {
@@ -58,7 +57,6 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
     { value: 'paper', label: 'Paper', points: '10 pts/kg' },
   ];
 
-
   const handleImageUpload = async () => {
     if (!imageFile) return;
 
@@ -85,7 +83,6 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
       setImageUrl(data.imageUrl);
       setAiClassification(data.classification);
 
-      // Auto-fill waste type from AI
       if (data.classification.type) {
         setType(data.classification.type);
       }
@@ -119,7 +116,6 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
         }),
       });
 
-      // Reset form
       setType('');
       setWeightKg('');
       setImageFile(null);
@@ -129,7 +125,6 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
 
       toast.success('Waste report submitted successfully!');
       onSuccess();
-      // Redirect to home after short delay for toast
       setTimeout(() => {
         router.push('/');
       }, 1200);
@@ -141,72 +136,101 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
   };
 
   return (
-    <Card className="border-green-200">
-      <CardHeader>
-        <CardTitle className="text-green-700">Submit Waste Report</CardTitle>
-        <CardDescription>
-          Upload an image for AI-powered waste classification
+    <Card className="border-0 shadow-lg bg-white">
+      <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-100 rounded-t-lg pb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-2 bg-green-600/10 rounded-lg">
+            <Camera className="h-5 w-5 text-green-600" />
+          </div>
+          <CardTitle className="text-2xl text-green-700">Submit Waste Report</CardTitle>
+        </div>
+        <CardDescription className="text-gray-600 text-base">
+          Upload an image for AI-powered waste classification and track your impact
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Section 1: Upload & Result */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Upload left, result right */}
-            <div className="flex flex-col gap-3 justify-center min-h-[180px]">
-              <Label>Waste Image (Optional)</Label>
-              <FileUpload
-                onChange={(files) => {
-                  const file = files[0];
-                  if (file) {
-                    setImageFile(file);
 
-                    setAiClassification(null);
-                    setImageUrl('');
-                  }
-                }}
-              />
-              <Button
-                type="button"
-                onClick={handleImageUpload}
-                disabled={!imageFile || isUploading}
-                className="bg-green-600 hover:bg-green-700 mt-2 w-full"
-              >
-                {isUploading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Analyzing...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload & Classify
-                  </>
-                )}
-              </Button>
-            </div>
-            <div className="flex flex-col justify-center min-h-[180px]">
-              <div className="transition-all duration-300 h-full flex items-stretch">
+      <CardContent className="pt-8">
+        <form onSubmit={handleSubmit} className="space-y-10">
+          
+          {/* Section 1: Upload & AI Classification Result */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <span className="flex items-center justify-center w-6 h-6 bg-green-100 text-green-700 rounded-full text-sm font-bold">1</span>
+              Waste Classification
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Upload Section */}
+              <div className="flex flex-col gap-4">
+                <div>
+                  <Label className="text-gray-700 font-semibold mb-3 block">Waste Image (Optional)</Label>
+                  <FileUpload
+                    onChange={(files) => {
+                      const file = files[0];
+                      if (file) {
+                        setImageFile(file);
+                        setAiClassification(null);
+                        setImageUrl('');
+                      }
+                    }}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  onClick={handleImageUpload}
+                  disabled={!imageFile || isUploading}
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-lg transition-all duration-200 w-full"
+                >
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload & Classify
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Classification Result */}
+              <div className="transition-all duration-300">
                 {aiClassification ? (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 space-y-2 h-full flex flex-col justify-center w-full">
-                    <div className="flex items-center gap-2 text-green-700 font-semibold">
-                      <CheckCircle2 className="h-5 w-5" />
-                      AI Classification Complete
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-5 space-y-3 h-full flex flex-col justify-center">
+                    <div className="flex items-center gap-2 text-green-700 font-semibold text-base">
+                      <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
+                      Classification Complete
                     </div>
-                    <div className="text-sm space-y-1">
-                      <p><strong>Type:</strong> {aiClassification.type}</p>
-                      <p><strong>Confidence:</strong> {(aiClassification.confidence * 100).toFixed(0)}%</p>
-                      <p><strong>Description:</strong> {aiClassification.description}</p>
-                      <p><strong>Recyclable:</strong> {aiClassification.recyclable ? 'Yes' : 'No'}</p>
+                    <div className="space-y-2.5 text-sm">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-700 font-medium">Type:</span>
+                        <span className="text-green-700 font-semibold">{aiClassification.type}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-700 font-medium">Confidence:</span>
+                        <span className="text-green-700 font-semibold">{(aiClassification.confidence * 100).toFixed(0)}%</span>
+                      </div>
+                      <div className="border-t border-green-200 pt-2.5 mt-2.5">
+                        <p className="text-gray-700 font-medium mb-1">Description:</p>
+                        <p className="text-gray-600">{aiClassification.description}</p>
+                      </div>
+                      <div className="flex items-center gap-2 pt-1">
+                        <span className="text-gray-700 font-medium">Recyclable:</span>
+                        <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${aiClassification.recyclable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                          {aiClassification.recyclable ? 'Yes ♻️' : 'No'}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-center h-full w-full border border-dashed border-green-200 rounded-lg bg-green-50 overflow-hidden relative my-2">
+                  <div className="flex items-center justify-center h-full border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 overflow-hidden relative p-8">
                     <Image
                       src="/gif/report.gif"
-                      alt="Result preview background"
+                      alt="Classification preview"
                       fill
-                      className="object-cover rounded-2xl"
+                      className="object-cover rounded-lg"
                     />
                   </div>
                 )}
@@ -214,68 +238,88 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
             </div>
           </div>
 
-          {/* Section 2: Map/Location */}
-          <div className="w-full flex flex-col gap-4 items-center justify-center">
-            <div className="w-full max-w-full">
+          {/* Section 2: Location */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <span className="flex items-center justify-center w-6 h-6 bg-green-100 text-green-700 rounded-full text-sm font-bold">2</span>
+              Pickup Location
+            </h3>
+            <div className="flex flex-col gap-4">
               <LocationPicker
                 onLocationSelect={setLocation}
                 initialLocation={location || undefined}
               />
-            </div>
-            <div className="w-full mt-2 text-center">
-              <span className="block text-gray-700 font-semibold">
-                {location?.address ? location.address : '[Select location on map]'}
-              </span>
-            </div>
-          </div>
-
-          {/* Section 3: Information fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-2">
-              <Label htmlFor="type">Waste Type *</Label>
-              <Select value={type} onValueChange={setType}>
-                <SelectTrigger className="border-green-200 bg-white shadow-sm px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-200 transition-all">
-                  <SelectValue placeholder="Select waste type" />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg shadow-lg border-green-100">
-                  {wasteTypes.map((wt) => (
-                    <SelectItem key={wt.value} value={wt.value} className="rounded flex items-center px-3 py-2 hover:bg-green-50 focus:bg-green-100">
-                      <div className="flex justify-between items-center w-full">
-                        <span>{wt.label}</span>
-                        <span className="text-xs text-green-600 ml-2">{wt.points}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="weight">Weight (kg) *</Label>
-              <input
-                id="weight"
-                type="number"
-                step="0.1"
-                min="0.1"
-                value={weightKg}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWeightKg(e.target.value)}
-                placeholder="Enter weight in kg"
-                className="border-green-200 bg-white shadow-sm px-4 py-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-green-200 transition-all text-base"
-                required
-              />
+              <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <MapPin className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                <span className="text-sm font-medium text-blue-700">
+                  {location?.address ? location.address : 'Select location on map to continue'}
+                </span>
+              </div>
             </div>
           </div>
 
+          {/* Section 3: Waste Details */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <span className="flex items-center justify-center w-6 h-6 bg-green-100 text-green-700 rounded-full text-sm font-bold">3</span>
+              Waste Details
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {/* Waste Type */}
+              <div className="space-y-2">
+                <Label htmlFor="type" className="text-gray-700 font-semibold">Waste Type *</Label>
+                <Select value={type} onValueChange={setType}>
+                  <SelectTrigger className="border-gray-300 bg-white shadow-sm px-4 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all h-auto text-base">
+                    <SelectValue placeholder="Select waste type" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg shadow-lg border-gray-200">
+                    {wasteTypes.map((wt) => (
+                      <SelectItem key={wt.value} value={wt.value} className="rounded flex items-center px-3 py-2 cursor-pointer">
+                        <div className="flex items-center justify-between gap-4">
+                          <span className="font-medium">{wt.label}</span>
+                          <span className="text-xs text-green-600 font-semibold bg-green-50 px-2 py-1 rounded flex items-center gap-1">
+                            <Zap className="h-3 w-3" />
+                            {wt.points}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Weight */}
+              <div className="space-y-2">
+                <Label htmlFor="weight" className="text-gray-700 font-semibold">Weight (kg) *</Label>
+                <input
+                  id="weight"
+                  type="number"
+                  step="0.1"
+                  min="0.1"
+                  value={weightKg}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWeightKg(e.target.value)}
+                  placeholder="Enter weight in kg"
+                  className="border border-gray-300 bg-white shadow-sm px-4 py-2.5 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-base"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {error}
+            <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg font-medium">
+              ⚠️ {error}
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full sm:w-auto px-8 py-3 bg-green-600 hover:bg-green-700"
+              className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
             >
               {isSubmitting ? (
                 <>
@@ -292,12 +336,11 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
             <Button
               type="button"
               variant="outline"
-              className="w-full sm:w-auto px-8 py-3 border-green-200 text-green-700 hover:bg-green-50"
+              className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg transition-all duration-200"
               onClick={() => {
                 setType('');
                 setWeightKg('');
                 setImageFile(null);
-
                 setImageUrl('');
                 setAiClassification(null);
                 setLocation(null);
