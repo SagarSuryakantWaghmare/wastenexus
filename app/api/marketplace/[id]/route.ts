@@ -32,7 +32,7 @@ export async function GET(
     if (token) {
       const decoded = verifyToken(token);
       // Ensure item is not an array
-      const singleItem = Array.isArray(item) ? item[0] : item;
+      var singleItem = Array.isArray(item) ? item[0] : item;
       if (decoded && singleItem && decoded.userId === singleItem.seller?._id?.toString()) {
         isSeller = true;
       }
