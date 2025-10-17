@@ -18,7 +18,10 @@ export async function GET(
       .populate('seller', 'name email')
       .lean();
 
-    if (!item) {
+    // Ensure item is not an array
+    const singleItem = Array.isArray(item) ? item[0] : item;
+
+    if (!singleItem) {
       return NextResponse.json(
         { error: 'Item not found' },
         { status: 404 }
@@ -28,8 +31,6 @@ export async function GET(
     // Only show approved items to non-sellers
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
     let isSeller = false;
-    // Ensure item is not an array
-    const singleItem = Array.isArray(item) ? item[0] : item;
     if (token) {
       const decoded = verifyToken(token);
       if (decoded && singleItem && decoded.userId === singleItem.seller?._id?.toString()) {
