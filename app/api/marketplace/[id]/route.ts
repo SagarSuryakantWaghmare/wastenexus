@@ -28,11 +28,10 @@ export async function GET(
     // Only show approved items to non-sellers
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
     let isSeller = false;
-    
+    // Ensure item is not an array
+    const singleItem = Array.isArray(item) ? item[0] : item;
     if (token) {
       const decoded = verifyToken(token);
-      // Ensure item is not an array
-      var singleItem = Array.isArray(item) ? item[0] : item;
       if (decoded && singleItem && decoded.userId === singleItem.seller?._id?.toString()) {
         isSeller = true;
       }
