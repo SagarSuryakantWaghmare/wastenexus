@@ -16,7 +16,7 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <Leaf className="h-8 w-8 text-green-600" />
+            <Leaf className="h-8 w-8 text-green-600 text-2xl gap-3" />
             <Link href="/" className="text-2xl font-extrabold tracking-tight text-green-700 hover:text-green-800 transition-colors duration-200">
               Waste Nexus
             </Link>

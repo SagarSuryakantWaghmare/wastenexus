@@ -5,7 +5,7 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  role: 'client' | 'champion';
+  role: 'client' | 'champion' | 'admin';
   totalPoints: number;
   createdAt: Date;
   updatedAt: Date;
@@ -32,7 +32,7 @@ const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['client', 'champion'],
+      enum: ['client', 'champion', 'admin'],
       required: [true, 'Please specify a role'],
       default: 'client',
     },

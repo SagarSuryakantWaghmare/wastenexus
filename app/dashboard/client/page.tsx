@@ -80,6 +80,13 @@ export default function ClientDashboard() {
               <CalendarDays className="h-10 w-10" />
               New Event
             </button>
+            <button
+              className="flex flex-col items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-lg px-8 py-8 font-semibold text-xl transition focus:outline-none focus:ring-2 focus:ring-blue-300"
+              onClick={() => router.push('/marketplace')}
+            >
+              <Users2 className="h-10 w-10" />
+              Marketplace
+            </button>
           </div>
         </section>
       </main>
