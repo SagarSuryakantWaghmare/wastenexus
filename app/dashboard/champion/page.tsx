@@ -10,7 +10,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, XCircle, Loader2, Calendar, Users } from 'lucide-react';
 import { formatDateTime, calculatePoints } from '@/lib/helpers';
-import { ChampionEventCreator } from '@/components/champion/ChampionEventCreator';
 import { ChampionEventList } from '@/components/champion/ChampionEventList';
 import { toast } from 'sonner';
 

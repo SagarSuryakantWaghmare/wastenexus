@@ -122,7 +122,7 @@ export default function ProblemMissionSection() {
             Every action counts. Join thousands making a difference today.
           </p>
           <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">
-            Together, we're turning waste into impact
+            Together, we&apos;re turning waste into impact
           </p>
         </div>
       </div>

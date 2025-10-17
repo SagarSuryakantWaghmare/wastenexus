@@ -19,7 +19,7 @@ export default function SignUpPage() {
         name: "",
         email: "",
         password: "",
-        role: "client" as "client" | "champion",
+        role: "client" as "client" | "champion" | "worker",
     });
 
     const [error, setError] = useState("");
@@ -29,8 +29,10 @@ export default function SignUpPage() {
         if (!isLoading && user) {
             if (user.role === "client") {
                 router.push("/dashboard/client");
-            } else {
+            } else if (user.role === "champion") {
                 router.push("/dashboard/champion");
+            } else if (user.role === "worker") {
+                router.push("/dashboard/worker");
             }
         }
     }, [user, isLoading, router]);
@@ -137,11 +139,12 @@ export default function SignUpPage() {
                                 <select
                                     id="role"
                                     value={formData.role}
-                                    onChange={(e) => setFormData({ ...formData, role: e.target.value as "client" | "champion" })}
+                                    onChange={(e) => setFormData({ ...formData, role: e.target.value as "client" | "champion" | "worker" })}
                                     className="w-full bg-white/10 border border-white/30 text-white rounded-md px-3 py-2.5"
                                 >
                                     <option value="client" className="bg-gray-900 text-white">Client - Report waste & earn rewards</option>
                                     <option value="champion" className="bg-gray-900 text-white">Champion - Verify reports & create events</option>
+                                    <option value="worker" className="bg-gray-900 text-white">Worker - Collect waste & manage routes</option>
                                 </select>
                             </div>
 

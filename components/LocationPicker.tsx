@@ -4,8 +4,6 @@ import { useState, useCallback } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Button } from './ui/button';
-import { MapPin } from 'lucide-react';
 
 interface LocationPickerProps {
   onLocationSelect: (location: {

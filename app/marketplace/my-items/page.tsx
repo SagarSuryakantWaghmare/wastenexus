@@ -4,10 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Plus, Loader2, Eye, Heart, Edit, Trash2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Plus, Loader2, Eye, Heart, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import ItemGrid from '@/components/Marketplace/ItemGrid';
 
@@ -43,6 +42,7 @@ export default function MyItemsPage() {
     } else if (user) {
       fetchMyItems();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isLoading, router]);
 
   const fetchMyItems = async () => {
@@ -67,51 +67,53 @@ export default function MyItemsPage() {
     }
   };
 
-  const handleDelete = async (itemId: string) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+  // Future functionality - Delete item
+  // const handleDelete = async (itemId: string) => {
+  //   if (!confirm('Are you sure you want to delete this item?')) return;
 
-    try {
-      const response = await fetch(`/api/marketplace/${itemId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+  //   try {
+  //     const response = await fetch(`/api/marketplace/${itemId}`, {
+  //       method: 'DELETE',
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //     });
 
-      if (response.ok) {
-        fetchMyItems(); // Refresh the list
-      } else {
-        alert('Failed to delete item');
-      }
-    } catch (error) {
-      console.error('Error deleting item:', error);
-      alert('Failed to delete item');
-    }
-  };
+  //     if (response.ok) {
+  //       fetchMyItems(); // Refresh the list
+  //     } else {
+  //       alert('Failed to delete item');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error deleting item:', error);
+  //     alert('Failed to delete item');
+  //   }
+  // };
 
-  const handleMarkAsSold = async (itemId: string) => {
-    try {
-      const response = await fetch(`/api/marketplace/${itemId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: 'sold' }),
-      });
+  // Future functionality - Mark as sold
+  // const handleMarkAsSold = async (itemId: string) => {
+  //   try {
+  //     const response = await fetch(`/api/marketplace/${itemId}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify({ status: 'sold' }),
+  //     });
 
-      if (response.ok) {
-        fetchMyItems(); // Refresh the list
-      } else {
-        alert('Failed to mark item as sold');
-      }
-    } catch (error) {
-      console.error('Error updating item:', error);
-      alert('Failed to mark item as sold');
-    }
-  };
+  //     if (response.ok) {
+  //       fetchMyItems(); // Refresh the list
+  //     } else {
+  //       alert('Failed to mark item as sold');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error updating item:', error);
+  //     alert('Failed to mark item as sold');
+  //   }
+  // };
 
-  const filteredItems = items.filter((item: any) => {
+  const filteredItems = items.filter((item: { status: string }) => {
     if (activeTab === 'all') return true;
     return item.status === activeTab;
   });

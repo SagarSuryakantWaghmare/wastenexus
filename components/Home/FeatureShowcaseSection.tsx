@@ -84,7 +84,7 @@ export default function FeatureShowcaseSection() {
                 <CardTitle className="text-2xl text-white">Top Performers</CardTitle>
               </div>
               <CardDescription className="text-gray-400">
-                This week's waste diversion champions
+                This week&apos;s waste diversion champions
               </CardDescription>
             </CardHeader>
 

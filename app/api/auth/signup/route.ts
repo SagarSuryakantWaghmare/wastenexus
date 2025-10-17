@@ -18,9 +18,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!['client', 'champion'].includes(role)) {
+    if (!['client', 'champion', 'worker'].includes(role)) {
       return NextResponse.json(
-        { error: 'Invalid role. Must be client or champion' },
+        { error: 'Invalid role. Must be client, champion, or worker' },
         { status: 400 }
       );
     }

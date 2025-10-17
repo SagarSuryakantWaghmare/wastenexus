@@ -5,7 +5,7 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  role: 'client' | 'champion' | 'admin';
+  role: 'client' | 'champion' | 'admin' | 'worker';
   totalPoints: number;
   createdAt: Date;
   updatedAt: Date;
@@ -32,7 +32,7 @@ const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['client', 'champion', 'admin'],
+      enum: ['client', 'champion', 'admin', 'worker'],
       required: [true, 'Please specify a role'],
       default: 'client',
     },
@@ -48,6 +48,11 @@ const UserSchema = new Schema<IUser>(
 );
 
 // Prevent model recompilation in development
-const User = models.User || model<IUser>('User', UserSchema);
+// Delete the model if it exists to ensure schema updates are applied
+if (models.User) {
+  delete models.User;
+}
+
+const User = model<IUser>('User', UserSchema);
 
 export default User;

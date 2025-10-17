@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
+import dbConnect from '@/lib/mongodb';
 import { verifyToken } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {

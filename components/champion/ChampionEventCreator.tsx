@@ -1,10 +1,11 @@
 "use client";
-// AddressAutocompleteInput component using Google Places API
+// AddressAutocompleteInput component using Google Places API (for future use)
 import { useState as useInputState } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function AddressAutocompleteInput({ value, onSelect }: { value: string; onSelect: (address: string) => void }) {
     const [query, setQuery] = useInputState(value || '');
-    const [suggestions, setSuggestions] = useInputState<any[]>([]);
+    const [suggestions, setSuggestions] = useInputState<Array<{ description: string; place_id: string }>>([]);
     const [loading, setLoading] = useInputState(false);
     const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -20,7 +21,7 @@ function AddressAutocompleteInput({ value, onSelect }: { value: string; onSelect
             );
             const data = await res.json();
             setSuggestions(data.predictions || []);
-        } catch (err) {
+        } catch {
             setSuggestions([]);
         } finally {
             setLoading(false);
@@ -78,8 +79,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Loader2, Plus, Calendar, MapPin, FileText } from 'lucide-react';
-import { LocationPicker } from '@/components/LocationPicker';
+import { Loader2, Plus, Calendar, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface ChampionEventCreatorProps {

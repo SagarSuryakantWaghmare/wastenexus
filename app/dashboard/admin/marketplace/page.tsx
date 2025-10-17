@@ -76,14 +76,17 @@ export default function AdminMarketplaceDashboard() {
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
   const [pendingItems, setPendingItems] = useState<MarketplaceItem[]>([]);
+  const [allItems, setAllItems] = useState<MarketplaceItem[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [selectedItem, setSelectedItem] = useState<MarketplaceItem | null>(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [action, setAction] = useState<'approve' | 'reject' | null>(null);
   const [rejectionReason, setRejectionReason] = useState('');
   const [processing, setProcessing] = useState(false);
   const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [activeTab, setActiveTab] = useState('pending');
+  const [itemsFilter, setItemsFilter] = useState('all');
 
   useEffect(() => {
     fetchData();
@@ -93,8 +96,11 @@ export default function AdminMarketplaceDashboard() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [pendingRes, statsRes] = await Promise.all([
+      const [pendingRes, allItemsRes, statsRes] = await Promise.all([
         fetch('/api/admin/marketplace/pending', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        }),
+        fetch('/api/admin/marketplace', {
           headers: { 'Authorization': `Bearer ${token}` },
         }),
         fetch('/api/admin/marketplace/stats', {
@@ -105,6 +111,18 @@ export default function AdminMarketplaceDashboard() {
       if (pendingRes.ok) {
         const pendingData = await pendingRes.json();
         setPendingItems(pendingData.items);
+      }
+
+      if (allItemsRes.ok) {
+        const allItemsData = await allItemsRes.json();
+        setAllItems(allItemsData.items || []);
+        if (allItemsData.stats) {
+          setStats({
+            overview: allItemsData.stats,
+            categoryBreakdown: allItemsData.categoryBreakdown,
+            recentItems: [],
+          });
+        }
       }
 
       if (statsRes.ok) {
@@ -165,6 +183,16 @@ export default function AdminMarketplaceDashboard() {
     setAction(verifyAction);
     setShowDialog(true);
   };
+
+  const openDetailsDialog = (item: MarketplaceItem) => {
+    setSelectedItem(item);
+    setShowDetailsDialog(true);
+  };
+
+  const filteredAllItems = allItems.filter((item) => {
+    if (itemsFilter === 'all') return true;
+    return item.status === itemsFilter;
+  });
 
   if (loading) {
     return (
@@ -278,6 +306,9 @@ export default function AdminMarketplaceDashboard() {
             <TabsTrigger value="pending">
               Pending Review ({stats?.overview.pendingItems || 0})
             </TabsTrigger>
+            <TabsTrigger value="allItems">
+              All Items ({stats?.overview.totalItems || 0})
+            </TabsTrigger>
             <TabsTrigger value="stats">Statistics & Insights</TabsTrigger>
           </TabsList>
 
@@ -299,8 +330,8 @@ export default function AdminMarketplaceDashboard() {
                       {/* Image Section */}
                       <div className="md:w-1/3 bg-gray-100 relative h-64 md:h-auto">
                         <Image
-                          src={item.images[0] || '/placeholder-image.jpg'}
-                          alt={item.title}
+                          src={(item.images && item.images[0]) || '/placeholder-image.jpg'}
+                          alt={item.title || 'Item'}
                           fill
                           className="object-cover"
                         />
@@ -322,7 +353,7 @@ export default function AdminMarketplaceDashboard() {
                             <div className="text-right ml-4">
                               <div className="flex items-center text-2xl font-bold text-green-600">
                                 <IndianRupee className="w-5 h-5" />
-                                {item.price.toLocaleString('en-IN')}
+                                {item.price ? item.price.toLocaleString('en-IN') : '0'}
                               </div>
                             </div>
                           </div>
@@ -345,19 +376,21 @@ export default function AdminMarketplaceDashboard() {
                           <div className="bg-gray-50 p-4 rounded-lg">
                             <p className="text-sm font-semibold text-gray-900 mb-2">Seller Information</p>
                             <div className="space-y-1 text-sm">
-                              <p><span className="font-medium">Name:</span> {item.sellerName}</p>
-                              <p><span className="font-medium">Email:</span> {item.seller.email}</p>
-                              <p><span className="font-medium">Contact:</span> {item.sellerContact}</p>
+                              <p><span className="font-medium">Name:</span> {item.sellerName || 'Unknown'}</p>
+                              <p><span className="font-medium">Email:</span> {item.seller?.email || 'N/A'}</p>
+                              <p><span className="font-medium">Contact:</span> {item.sellerContact || 'N/A'}</p>
                             </div>
                           </div>
 
                           {/* Location */}
-                          <div className="flex items-start gap-2">
-                            <MapPin className="w-4 h-4 text-gray-600 mt-0.5" />
-                            <p className="text-sm text-gray-700">
-                              {item.location.address}, {item.location.city}, {item.location.state}
-                            </p>
-                          </div>
+                          {item.location && (
+                            <div className="flex items-start gap-2">
+                              <MapPin className="w-4 h-4 text-gray-600 mt-0.5" />
+                              <p className="text-sm text-gray-700">
+                                {item.location.address || 'N/A'}, {item.location.city || ''}, {item.location.state || ''}
+                              </p>
+                            </div>
+                          )}
 
                           {/* Action Buttons */}
                           <div className="flex gap-3 pt-4">
@@ -380,6 +413,149 @@ export default function AdminMarketplaceDashboard() {
                         </CardContent>
                       </div>
                     </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* All Items Tab */}
+          <TabsContent value="allItems">
+            <Card className="mb-6">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Filter by Status</CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant={itemsFilter === 'all' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setItemsFilter('all')}
+                    >
+                      All
+                    </Button>
+                    <Button
+                      variant={itemsFilter === 'pending' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setItemsFilter('pending')}
+                    >
+                      Pending
+                    </Button>
+                    <Button
+                      variant={itemsFilter === 'approved' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setItemsFilter('approved')}
+                    >
+                      Approved
+                    </Button>
+                    <Button
+                      variant={itemsFilter === 'rejected' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setItemsFilter('rejected')}
+                    >
+                      Rejected
+                    </Button>
+                    <Button
+                      variant={itemsFilter === 'sold' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setItemsFilter('sold')}
+                    >
+                      Sold
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {filteredAllItems.length === 0 ? (
+              <Card>
+                <CardContent className="py-16 text-center">
+                  <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No Items Found</h3>
+                  <p className="text-gray-600">No marketplace items match your filter.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredAllItems.map((item) => (
+                  <Card key={item._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    {/* Image */}
+                    <div className="relative h-48 bg-gray-100">
+                      <Image
+                        src={(item.images && item.images[0]) || '/placeholder-image.jpg'}
+                        alt={item.title || 'Item'}
+                        fill
+                        className="object-cover"
+                      />
+                      <Badge
+                        className={`absolute top-4 left-4 ${
+                          item.status === 'pending'
+                            ? 'bg-yellow-500'
+                            : item.status === 'approved'
+                            ? 'bg-green-500'
+                            : item.status === 'rejected'
+                            ? 'bg-red-500'
+                            : 'bg-purple-500'
+                        }`}
+                      >
+                        {item.status}
+                      </Badge>
+                      {item.images && item.images.length > 1 && (
+                        <Badge className="absolute top-4 right-4 bg-black/70">
+                          +{item.images.length - 1}
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <CardHeader>
+                      <CardTitle className="text-lg line-clamp-1">{item.title || 'Untitled'}</CardTitle>
+                      <CardDescription className="line-clamp-2">
+                        {item.description || 'No description'}
+                      </CardDescription>
+                    </CardHeader>
+
+                    <CardContent>
+                      <div className="space-y-3">
+                        {/* Price */}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">Price</span>
+                          <div className="flex items-center text-xl font-bold text-green-600">
+                            <IndianRupee className="w-4 h-4" />
+                            {item.price ? item.price.toLocaleString('en-IN') : '0'}
+                          </div>
+                        </div>
+
+                        {/* Details */}
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div>
+                            <span className="text-gray-600">Category</span>
+                            <p className="font-medium">{item.category || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Condition</span>
+                            <p className="font-medium">{item.condition || 'N/A'}</p>
+                          </div>
+                        </div>
+
+                        {/* Seller & Views */}
+                        <div className="flex items-center justify-between text-sm pt-2 border-t">
+                          <span className="text-gray-600">{item.sellerName || 'Unknown'}</span>
+                          <div className="flex items-center gap-1 text-gray-600">
+                            <Eye className="w-4 h-4" />
+                            {item.views || 0}
+                          </div>
+                        </div>
+
+                        {/* View Details Button */}
+                        <Button
+                          onClick={() => openDetailsDialog(item)}
+                          variant="outline"
+                          className="w-full"
+                        >
+                          View Details
+                        </Button>
+                      </div>
+                    </CardContent>
                   </Card>
                 ))}
               </div>
@@ -440,7 +616,7 @@ export default function AdminMarketplaceDashboard() {
                         >
                           {item.status}
                         </Badge>
-                        <p className="font-semibold">₹{item.price.toLocaleString()}</p>
+                        <p className="font-semibold">₹{item.price ? item.price.toLocaleString() : '0'}</p>
                       </div>
                     </div>
                   ))}
@@ -533,6 +709,173 @@ export default function AdminMarketplaceDashboard() {
                     {action === 'approve' ? 'Approve Item' : 'Reject Item'}
                   </>
                 )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Item Details Dialog */}
+        <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Item Details</DialogTitle>
+            </DialogHeader>
+
+            {selectedItem && (
+              <div className="space-y-6">
+                {/* Images Gallery */}
+                {selectedItem.images && selectedItem.images.length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-lg">Images</h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      {selectedItem.images.map((img, index) => (
+                        <div key={index} className="relative h-64 bg-gray-100 rounded-lg overflow-hidden">
+                          <Image
+                            src={img}
+                            alt={`${selectedItem.title || 'Item'} - Image ${index + 1}`}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Item Information */}
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">Title</h3>
+                    <p>{selectedItem.title}</p>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">Description</h3>
+                    <p className="text-gray-700">{selectedItem.description}</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                      <h4 className="font-semibold mb-1">Price</h4>
+                      <div className="flex items-center text-green-600 font-bold">
+                        <IndianRupee className="w-4 h-4" />
+                        {selectedItem.price ? selectedItem.price.toLocaleString('en-IN') : '0'}
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Category</h4>
+                      <Badge variant="outline">{selectedItem.category}</Badge>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Condition</h4>
+                      <Badge variant="outline">{selectedItem.condition}</Badge>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Status</h4>
+                      <Badge
+                        className={
+                          selectedItem.status === 'pending'
+                            ? 'bg-yellow-500'
+                            : selectedItem.status === 'approved'
+                            ? 'bg-green-500'
+                            : selectedItem.status === 'rejected'
+                            ? 'bg-red-500'
+                            : 'bg-purple-500'
+                        }
+                      >
+                        {selectedItem.status}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Seller Information */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-lg mb-3">Seller Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className="text-gray-600">Name:</span>
+                      <p className="font-medium">{selectedItem.sellerName || 'Unknown'}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Email:</span>
+                      <p className="font-medium">{selectedItem.seller?.email || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Contact:</span>
+                      <p className="font-medium">{selectedItem.sellerContact || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-600">Views:</span>
+                      <div className="flex items-center gap-1 font-medium">
+                        <Eye className="w-4 h-4" />
+                        {selectedItem.views || 0}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Location */}
+                {selectedItem.location && (
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">Location</h3>
+                    <div className="flex items-start gap-2">
+                      <MapPin className="w-5 h-5 text-gray-600 mt-0.5" />
+                      <p className="text-gray-700">
+                        {selectedItem.location.address || 'N/A'}, {selectedItem.location.city || ''}, {selectedItem.location.state || ''}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Rejection Reason (if applicable) */}
+                {selectedItem.status === 'rejected' && selectedItem.rejectionReason && (
+                  <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
+                    <h3 className="font-semibold text-lg text-red-900 mb-2">Rejection Reason</h3>
+                    <p className="text-red-800">{selectedItem.rejectionReason}</p>
+                  </div>
+                )}
+
+                {/* Metadata */}
+                <div className="text-sm text-gray-600 border-t pt-4">
+                  <p>Listed on: {new Date(selectedItem.createdAt).toLocaleString()}</p>
+                </div>
+
+                {/* Actions for pending items */}
+                {selectedItem.status === 'pending' && (
+                  <div className="flex gap-3 pt-4 border-t">
+                    <Button
+                      onClick={() => {
+                        setShowDetailsDialog(false);
+                        openVerifyDialog(selectedItem, 'approve');
+                      }}
+                      className="flex-1 bg-green-600 hover:bg-green-700"
+                    >
+                      <CheckCircle className="w-4 h-4 mr-2" />
+                      Approve Item
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setShowDetailsDialog(false);
+                        openVerifyDialog(selectedItem, 'reject');
+                      }}
+                      variant="destructive"
+                      className="flex-1"
+                    >
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Reject Item
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setShowDetailsDialog(false)}
+              >
+                Close
               </Button>
             </DialogFooter>
           </DialogContent>

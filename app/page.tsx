@@ -3,8 +3,6 @@
 import { Suspense } from "react";
 import { Navbar } from "@/components/Navbar";
 import HeroSection from "@/components/Home/HeroSection";
-import { FeaturesSection } from "@/components/Home/FeaturesSection";
-import { TestimonialsSection } from "@/components/Home/TestimonialsSection";
 import { Footer } from "@/components/Footer";
 import { AppLoader } from "@/components/AppLoader";
 import ProblemMissionSection from "@/components/Home/ProblemMissionSection";

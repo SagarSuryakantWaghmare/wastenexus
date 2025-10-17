@@ -13,9 +13,6 @@ import {
   BarChart3,
   FileText,
   Award,
-  MapPin,
-  Bell,
-  Settings,
   Menu,
   Home,
   LogOut,
@@ -63,24 +60,6 @@ const adminRoutes = [
     icon: Award,
     href: '/dashboard/admin/events',
     color: 'text-pink-500',
-  },
-  {
-    label: 'Locations',
-    icon: MapPin,
-    href: '/dashboard/admin/locations',
-    color: 'text-indigo-500',
-  },
-  {
-    label: 'Notifications',
-    icon: Bell,
-    href: '/dashboard/admin/notifications',
-    color: 'text-yellow-500',
-  },
-  {
-    label: 'Settings',
-    icon: Settings,
-    href: '/dashboard/admin/settings',
-    color: 'text-gray-500',
   },
 ];
 

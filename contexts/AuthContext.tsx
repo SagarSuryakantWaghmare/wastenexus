@@ -6,7 +6,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  role: 'client' | 'champion' | 'admin';
+  role: 'client' | 'champion' | 'admin' | 'worker';
   totalPoints: number;
 }
 
@@ -14,7 +14,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string, role: 'client' | 'champion' | 'admin') => Promise<void>;
+  signup: (name: string, email: string, password: string, role: 'client' | 'champion' | 'admin' | 'worker') => Promise<void>;
   logout: () => void;
   isLoading: boolean;
 }
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('user', JSON.stringify(data.user));
   };
 
-  const signup = async (name: string, email: string, password: string, role: 'client' | 'champion' | 'admin') => {
+  const signup = async (name: string, email: string, password: string, role: 'client' | 'champion' | 'admin' | 'worker') => {
     const response = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navbar } from "@/components/Navbar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Search, Clock, Users, ArrowRight } from "lucide-react";
@@ -210,7 +210,7 @@ export default function NewEventPage() {
             <div>
               <h3 className="font-bold text-gray-900 mb-2">Attending an Event?</h3>
               <p className="text-gray-700 text-sm leading-relaxed">
-                Add upcoming events to your calendar so you don't miss them. Each event contribution helps reduce waste and earn points towards rewards!
+                Add upcoming events to your calendar so you don&apos;t miss them. Each event contribution helps reduce waste and earn points towards rewards!
               </p>
             </div>
           </div>

@@ -6,12 +6,9 @@ import { Button } from '@/components/ui/button';
 import { 
   ShoppingBag, 
   Users, 
-  BarChart3, 
-  Settings,
+  BarChart3,
   FileText,
-  Award,
-  MapPin,
-  Bell
+  Award
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -63,33 +60,6 @@ export default function AdminDashboard() {
       color: 'from-pink-500 to-pink-600',
       bgColor: 'bg-pink-50',
       stats: 'Upcoming events',
-    },
-    {
-      title: 'Location Tracking',
-      description: 'Monitor waste collection locations',
-      icon: MapPin,
-      href: '/dashboard/admin/locations',
-      color: 'from-indigo-500 to-indigo-600',
-      bgColor: 'bg-indigo-50',
-      stats: 'Active locations',
-    },
-    {
-      title: 'Notifications',
-      description: 'Manage system notifications and alerts',
-      icon: Bell,
-      href: '/dashboard/admin/notifications',
-      color: 'from-yellow-500 to-yellow-600',
-      bgColor: 'bg-yellow-50',
-      stats: 'Unread',
-    },
-    {
-      title: 'System Settings',
-      description: 'Configure platform settings and preferences',
-      icon: Settings,
-      href: '/dashboard/admin/settings',
-      color: 'from-gray-500 to-gray-600',
-      bgColor: 'bg-gray-50',
-      stats: 'Options',
     },
   ];
 

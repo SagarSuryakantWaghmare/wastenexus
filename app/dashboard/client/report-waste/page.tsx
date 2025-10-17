@@ -5,10 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { WasteReportForm } from "@/components/WasteReportForm";
 import { Navbar } from "@/components/Navbar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { MapPin } from "lucide-react";
-import { formatDate } from "@/lib/helpers";
 
 export default function ReportWastePage() {
   const router = useRouter();
@@ -28,7 +24,6 @@ export default function ReportWastePage() {
     if (user) {
       fetchReports();
     }
-    // eslint-disable-next-line
   }, [user]);
 
   const fetchReports = async () => {
@@ -36,7 +31,7 @@ export default function ReportWastePage() {
       const res = await fetch("/api/reports");
       const data = await res.json();
       setReports(data.reports);
-    } catch (error) {
+    } catch {
       setReports([]);
     } finally {
       setLoading(false);

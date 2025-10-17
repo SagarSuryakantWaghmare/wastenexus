@@ -17,6 +17,10 @@ export interface IReport {
     latitude: number;
     longitude: number;
     address: string;
+    coordinates?: {
+      lat: number;
+      lng: number;
+    };
   };
   date: Date;
   createdAt: Date;
@@ -70,6 +74,10 @@ const ReportSchema = new Schema<IReport>(
       latitude: Number,
       longitude: Number,
       address: String,
+      coordinates: {
+        lat: Number,
+        lng: Number,
+      },
     },
   },
   {
