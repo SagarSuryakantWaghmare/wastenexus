@@ -31,7 +31,9 @@ export async function GET(
     
     if (token) {
       const decoded = verifyToken(token);
-      if (decoded && decoded.userId === item.seller._id.toString()) {
+      // Ensure item is not an array
+      const singleItem = Array.isArray(item) ? item[0] : item;
+      if (decoded && singleItem && decoded.userId === singleItem.seller?._id?.toString()) {
         isSeller = true;
       }
     }
