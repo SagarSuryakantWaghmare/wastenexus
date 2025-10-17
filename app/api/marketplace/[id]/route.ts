@@ -6,12 +6,15 @@ import { verifyToken } from '@/lib/auth';
 // GET /api/marketplace/[id] - Get single item details
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
 
-    const item = await MarketplaceItem.findById(params.id)
+    // Await params in Next.js 15
+    const { id } = await params;
+
+    const item = await MarketplaceItem.findById(id)
       .populate('seller', 'name email')
       .lean();
 
@@ -74,10 +77,13 @@ export async function GET(
 // PUT /api/marketplace/[id] - Update item
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
+
+    // Await params in Next.js 15
+    const { id } = await params;
 
     // Get token from header
     const token = request.headers.get('authorization')?.replace('Bearer ', '');

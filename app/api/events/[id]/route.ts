@@ -6,10 +6,13 @@ import { verifyToken } from '@/lib/auth';
 // PUT /api/events/[id] - Update an event (Champion only, must own the event)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
+
+    // Await params in Next.js 15
+    const { id } = await params;
 
     // Get token from header
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
@@ -29,7 +32,7 @@ export async function PUT(
       );
     }
 
-    const eventId = params.id;
+    const eventId = id;
     const body = await request.json();
 
     // Find event and verify ownership
@@ -109,10 +112,13 @@ export async function PUT(
 // DELETE /api/events/[id] - Delete an event (Champion only, must own the event)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
+
+    // Await params in Next.js 15
+    const { id } = await params;
 
     // Get token from header
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
@@ -132,7 +138,7 @@ export async function DELETE(
       );
     }
 
-    const eventId = params.id;
+    const eventId = id;
 
     // Find event and verify ownership
     const event = await Event.findById(eventId);
