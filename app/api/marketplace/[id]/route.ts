@@ -38,7 +38,7 @@ export async function GET(
       }
     }
 
-    if (item.status !== 'approved' && !isSeller) {
+    if (singleItem.status !== 'approved' && !isSeller) {
       return NextResponse.json(
         { error: 'Item not available' },
         { status: 404 }
@@ -46,17 +46,17 @@ export async function GET(
     }
 
     // Increment view count (only for approved items and non-sellers)
-    if (item.status === 'approved' && !isSeller) {
+    if (singleItem.status === 'approved' && !isSeller) {
       await MarketplaceItem.findByIdAndUpdate(id, {
         $inc: { views: 1 },
       });
-      item.views = (item.views || 0) + 1;
+      singleItem.views = (singleItem.views || 0) + 1;
     }
 
     // Get similar items
     const similarItems = await MarketplaceItem.find({
       _id: { $ne: id },
-      category: item.category,
+      category: singleItem.category,
       status: 'approved',
     })
       .limit(4)
@@ -64,7 +64,7 @@ export async function GET(
       .lean();
 
     return NextResponse.json({
-      item,
+      item: singleItem,
       similarItems,
     });
   } catch (error) {
