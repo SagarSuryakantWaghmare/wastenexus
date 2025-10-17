@@ -52,8 +52,8 @@ export async function POST(
     const isFavorited = item.favorites.includes(userId as never);
 
     if (isFavorited) {
-      // Remove from favorites
-      item.favorites = item.favorites.filter((favId: unknown) => favId.toString() !== userId);
+  // Remove from favorites
+  item.favorites = item.favorites.filter((favId: string) => favId.toString() !== userId);
     } else {
       // Add to favorites
       item.favorites.push(userId as never);
