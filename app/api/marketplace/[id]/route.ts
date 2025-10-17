@@ -45,7 +45,7 @@ export async function GET(
 
     // Increment view count (only for approved items and non-sellers)
     if (item.status === 'approved' && !isSeller) {
-      await MarketplaceItem.findByIdAndUpdate(params.id, {
+      await MarketplaceItem.findByIdAndUpdate(id, {
         $inc: { views: 1 },
       });
       item.views = (item.views || 0) + 1;
@@ -53,7 +53,7 @@ export async function GET(
 
     // Get similar items
     const similarItems = await MarketplaceItem.find({
-      _id: { $ne: params.id },
+      _id: { $ne: id },
       category: item.category,
       status: 'approved',
     })
@@ -103,7 +103,7 @@ export async function PUT(
       );
     }
 
-    const item = await MarketplaceItem.findById(params.id);
+    const item = await MarketplaceItem.findById(id);
     if (!item) {
       return NextResponse.json(
         { error: 'Item not found' },
@@ -176,10 +176,13 @@ export async function PUT(
 // DELETE /api/marketplace/[id] - Delete item
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
+
+    // Await params in Next.js 15
+    const { id } = await params;
 
     // Get token from header
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
@@ -199,7 +202,7 @@ export async function DELETE(
       );
     }
 
-    const item = await MarketplaceItem.findById(params.id);
+    const item = await MarketplaceItem.findById(id);
     if (!item) {
       return NextResponse.json(
         { error: 'Item not found' },
@@ -215,7 +218,7 @@ export async function DELETE(
       );
     }
 
-    await MarketplaceItem.findByIdAndDelete(params.id);
+    await MarketplaceItem.findByIdAndDelete(id);
 
     return NextResponse.json({
       message: 'Item deleted successfully',

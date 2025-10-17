@@ -6,10 +6,13 @@ import { verifyToken } from '@/lib/auth';
 // POST /api/marketplace/[id]/favorite - Toggle favorite
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     await dbConnect();
+
+    // Await params in Next.js 15
+    const { id } = await params;
 
     // Get token from header
     const token = request.headers.get('authorization')?.replace('Bearer ', '');
@@ -29,7 +32,7 @@ export async function POST(
       );
     }
 
-    const item = await MarketplaceItem.findById(params.id);
+    const item = await MarketplaceItem.findById(id);
     if (!item) {
       return NextResponse.json(
         { error: 'Item not found' },
@@ -50,7 +53,7 @@ export async function POST(
 
     if (isFavorited) {
       // Remove from favorites
-      item.favorites = item.favorites.filter((id) => id.toString() !== userId);
+      item.favorites = item.favorites.filter((favId: unknown) => favId.toString() !== userId);
     } else {
       // Add to favorites
       item.favorites.push(userId as never);
