@@ -193,14 +193,14 @@ export default function EventsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50 dark:from-gray-900 dark:to-pink-950 p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-            <Award className="w-10 h-10 text-pink-600" />
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+            <Award className="w-10 h-10 text-pink-600 dark:text-pink-400" />
             Events Management
           </h1>
-          <p className="text-gray-600 mt-2">Manage cleanup events and community activities</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">Manage cleanup events and community activities</p>
         </div>
 
         {/* Stats Cards */}

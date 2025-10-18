@@ -35,14 +35,14 @@ export default function HowItWorksSection() {
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white dark:bg-gray-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             How It Works: Your Path to Impact
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Three simple steps to make a real difference. Report your waste, get verified, and earn rewards.
           </p>
         </div>
@@ -55,7 +55,7 @@ export default function HowItWorksSection() {
             return (
               <div key={step.number} className="flex flex-col items-stretch">
                 {/* Step Card */}
-                <Card className={`${step.bgColor} border-0 shadow-sm hover:shadow-md transition-shadow duration-300 flex-1 flex flex-col h-full`}>
+                <Card key={step.number} className={`${step.bgColor} dark:bg-gray-800 border-0 dark:border dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1`}>
                   {/* Step Badge */}
                   <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center">
                     <span className="text-sm font-bold text-gray-900">
@@ -70,16 +70,12 @@ export default function HowItWorksSection() {
                     </div>
 
                     {/* Title */}
-                    <CardTitle className="text-xl sm:text-2xl text-gray-900 mb-2">
-                      {step.headline}
-                    </CardTitle>
+                    <CardTitle className="text-xl font-bold text-gray-900 dark:text-gray-100">{step.headline}</CardTitle>
                   </CardHeader>
 
                   {/* Description */}
                   <CardContent className="flex-1">
-                    <CardDescription className="text-base text-gray-700 leading-relaxed">
-                      {step.description}
-                    </CardDescription>
+                    <CardDescription className="text-gray-600 dark:text-gray-400">{step.description}</CardDescription>
                   </CardContent>
                 </Card>
 

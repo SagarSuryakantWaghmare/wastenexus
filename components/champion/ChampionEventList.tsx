@@ -173,7 +173,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
         <CardContent className="flex flex-col items-center justify-center py-12 text-center">
           <Calendar className="h-16 w-16 text-gray-300 mb-4" />
           <h3 className="text-lg font-semibold text-gray-700 mb-2">No Events Yet</h3>
-          <p className="text-gray-500">Create your first event to get started!</p>
+          <p className="text-gray-700 dark:text-gray-300">Create your first event to get started!</p>
         </CardContent>
       </Card>
     );
@@ -183,8 +183,8 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {events.map((event) => (
-          <Card key={event.id} className="border-green-100 hover:shadow-xl transition-shadow">
-            <CardHeader className="pb-3">
+          <Card key={event.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all duration-300">
+            <CardHeader className="pb-4">
               {event.imageUrl && (event.imageUrl.startsWith('http://') || event.imageUrl.startsWith('https://') || event.imageUrl.startsWith('/')) && (
                 <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden">
                   <Image
@@ -196,13 +196,13 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
                 </div>
               )}
               <div className="flex items-start justify-between gap-2">
-                <CardTitle className="text-lg text-green-800 line-clamp-2">{event.title}</CardTitle>
+                <CardTitle className="text-xl text-gray-900 dark:text-gray-100 line-clamp-2">{event.title}</CardTitle>
                 <Badge
                   variant={event.status === 'upcoming' ? 'default' : 'secondary'}
                   className={
                     event.status === 'upcoming'
-                      ? 'bg-blue-100 text-blue-700 border-blue-300'
-                      : 'bg-gray-100 text-gray-700'
+                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
                   }
                 >
                   {event.status}
@@ -210,7 +210,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              <CardDescription className="line-clamp-3">{event.description}</CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-400">{event.description}</CardDescription>
               
               <div className="space-y-2 text-sm">
                 <div className="flex items-start gap-2 text-gray-600">
@@ -221,7 +221,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
                   <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-green-600" />
                   <div>
                     <p className="font-medium">{event.locationName}</p>
-                    <p className="text-xs text-gray-500">{event.locationAddress}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{event.locationAddress}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
@@ -261,7 +261,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
 
       {/* Edit Dialog */}
       <Dialog open={editingEvent !== null} onOpenChange={(open) => !open && setEditingEvent(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Event</DialogTitle>
             <DialogDescription>Update the event details</DialogDescription>

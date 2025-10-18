@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApi } from '@/hooks/useApi';
 import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -112,20 +113,20 @@ export default function ChampionDashboard() {
 
   if (isLoading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-green-50">
-        <Loader2 className="h-12 w-12 animate-spin text-green-600" />
+      <div className="flex min-h-screen items-center justify-center bg-green-50 dark:bg-gray-900 transition-colors duration-300">
+        <Loader2 className="h-12 w-12 animate-spin text-green-600 dark:text-green-400" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-green-700 mb-2">Champion Dashboard</h1>
-          <p className="text-gray-600 text-lg">Manage reports and organize community events</p>
+          <h1 className="text-4xl font-bold text-green-700 dark:text-green-400 mb-2">Champion Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">Manage reports and organize community events</p>
         </div>
 
         {/* Stats Cards */}
@@ -266,6 +267,7 @@ export default function ChampionDashboard() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

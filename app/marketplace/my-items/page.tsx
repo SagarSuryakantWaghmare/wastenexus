@@ -23,7 +23,7 @@ interface Stats {
 export default function MyItemsPage() {
   const router = useRouter();
   const { user, token, isLoading } = useAuth();
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<import('@/lib/marketplace').NormalizedMarketplaceItem[]>([]);
   const [stats, setStats] = useState<Stats>({
     total: 0,
     pending: 0,
@@ -57,7 +57,10 @@ export default function MyItemsPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setItems(data.items);
+        const normalizedItems = Array.isArray(data.items) ? data.items : [];
+        // Import normalize lazily to avoid circular imports in some environments
+        const { normalizeMarketplaceList } = await import('@/lib/marketplace');
+        setItems(normalizeMarketplaceList(normalizedItems));
         setStats(data.stats);
       }
     } catch (error) {
@@ -120,8 +123,8 @@ export default function MyItemsPage() {
 
   if (isLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <Loader2 className="w-8 h-8 animate-spin text-green-600 dark:text-green-400" />
       </div>
     );
   }
@@ -129,23 +132,23 @@ export default function MyItemsPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
           <Link href="/marketplace">
-            <Button variant="ghost" className="mb-4">
+            <Button variant="ghost" className="mb-4 dark:text-gray-100 dark:hover:bg-gray-800">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Marketplace
             </Button>
           </Link>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">My Items</h1>
-              <p className="text-gray-600 mt-1">Manage your marketplace listings</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">My Items</h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your marketplace listings</p>
             </div>
             <Link href="/marketplace/add">
-              <Button className="bg-green-600 hover:bg-green-700">
+              <Button className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600">
                 <Plus className="w-4 h-4 mr-2" />
                 Add New Item
               </Button>
@@ -155,72 +158,97 @@ export default function MyItemsPage() {
 
         {/* Statistics */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
-          <Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
-              <div className="text-xs text-gray-600">Total Items</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.total}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">Total Items</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-              <div className="text-xs text-gray-600">Pending</div>
+              <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-300">{stats.pending}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">Pending</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
-              <div className="text-xs text-gray-600">Approved</div>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-300">{stats.approved}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">Approved</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-red-600">{stats.rejected}</div>
-              <div className="text-xs text-gray-600">Rejected</div>
+              <div className="text-2xl font-bold text-red-600 dark:text-red-300">{stats.rejected}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">Rejected</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
             <CardContent className="p-4">
-              <div className="text-2xl font-bold text-gray-600">{stats.sold}</div>
-              <div className="text-xs text-gray-600">Sold</div>
+              <div className="text-2xl font-bold text-gray-600 dark:text-gray-100">{stats.sold}</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">Sold</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center gap-1">
-                <Eye className="w-4 h-4 text-blue-600" />
-                <div className="text-2xl font-bold text-blue-600">{stats.totalViews}</div>
+                <Eye className="w-4 h-4 text-blue-600 dark:text-blue-300" />
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-300">{stats.totalViews}</div>
               </div>
-              <div className="text-xs text-gray-600">Total Views</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">Total Views</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="dark:bg-gray-800 dark:border-gray-700">
             <CardContent className="p-4">
               <div className="flex items-center gap-1">
-                <Heart className="w-4 h-4 text-red-600" />
-                <div className="text-2xl font-bold text-red-600">{stats.totalFavorites}</div>
+                <Heart className="w-4 h-4 text-red-600 dark:text-red-300" />
+                <div className="text-2xl font-bold text-red-600 dark:text-red-300">{stats.totalFavorites}</div>
               </div>
-              <div className="text-xs text-gray-600">Favorites</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400">Favorites</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Tabs for filtering */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6">
-            <TabsTrigger value="all">All ({stats.total})</TabsTrigger>
-            <TabsTrigger value="pending">Pending ({stats.pending})</TabsTrigger>
-            <TabsTrigger value="approved">Approved ({stats.approved})</TabsTrigger>
-            <TabsTrigger value="rejected">Rejected ({stats.rejected})</TabsTrigger>
-            <TabsTrigger value="sold">Sold ({stats.sold})</TabsTrigger>
+          <TabsList className="mb-6 inline-flex items-center gap-2 rounded-md p-1 bg-white dark:bg-transparent border border-gray-200 dark:border-gray-700">
+            <TabsTrigger
+              value="all"
+              className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+            >
+              All ({stats.total})
+            </TabsTrigger>
+            <TabsTrigger
+              value="pending"
+              className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+            >
+              Pending ({stats.pending})
+            </TabsTrigger>
+            <TabsTrigger
+              value="approved"
+              className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+            >
+              Approved ({stats.approved})
+            </TabsTrigger>
+            <TabsTrigger
+              value="rejected"
+              className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+            >
+              Rejected ({stats.rejected})
+            </TabsTrigger>
+            <TabsTrigger
+              value="sold"
+              className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+            >
+              Sold ({stats.sold})
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value={activeTab}>
             {filteredItems.length === 0 ? (
-              <Card>
+              <Card className="dark:bg-gray-800 dark:border-gray-700">
                 <CardContent className="py-16 text-center">
-                  <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">No items found in this category</p>
+                  <AlertCircle className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+                  <p className="text-gray-600 dark:text-gray-400">No items found in this category</p>
                 </CardContent>
               </Card>
             ) : (

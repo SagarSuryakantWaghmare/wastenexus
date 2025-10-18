@@ -61,57 +61,57 @@ export default function ChampionValueSection() {
   ];
 
   return (
-    <section className="py-20 bg-gray-800">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Shield className="w-8 h-8 text-green-400" />
-            <h2 className="text-4xl sm:text-5xl font-bold text-white">
+            <Shield className="w-8 h-8 text-green-600 dark:text-green-400" />
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-gray-100">
               Amplify Your Mission: The Champion Advantage
             </h2>
           </div>
-          <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
             Waste Nexus empowers environmental Champions and NGOs with tools to scale their impact, streamline operations, and connect with passionate communities ready to make a difference.
           </p>
         </div>
 
         {/* Accordion - Benefits */}
-        <Accordion type="single" collapsible defaultValue="management" className="w-full space-y-4 mb-10">
+        <Accordion type="single" collapsible defaultValue="management" className="w-full space-y-4 mb-10 max-w-5xl mx-auto">
           {benefits.map((benefit) => {
             const IconComponent = benefit.icon;
             return (
               <AccordionItem
                 key={benefit.id}
                 value={benefit.id}
-                className="bg-gray-700 border-gray-600 rounded-lg px-6 py-2 hover:bg-gray-650 transition-colors duration-200"
+                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-300"
               >
                 <AccordionTrigger className="hover:no-underline py-4">
-                  <div className="flex items-start gap-4 text-left">
-                    <div className="p-2 bg-green-400/20 rounded-lg flex-shrink-0 mt-1">
-                      <IconComponent className="w-5 h-5 text-green-400" />
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg flex-shrink-0 mt-1">
+                      <IconComponent className="w-5 h-5 text-green-600 dark:text-green-400" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-white">{benefit.title}</h3>
-                      <p className="text-sm text-gray-400 font-medium mt-1">{benefit.trigger}</p>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{benefit.title}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mt-1">{benefit.trigger}</p>
                     </div>
                   </div>
                 </AccordionTrigger>
 
                 <AccordionContent className="pt-0 pb-6 px-12">
-                  <p className="text-gray-300 mb-6 leading-relaxed">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
                     {benefit.content}
                   </p>
 
                   {/* Highlights List */}
                   <div className="space-y-3">
-                    <p className="text-sm font-semibold text-gray-200 uppercase tracking-wide mb-4">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 uppercase tracking-wide mb-4">
                       Key Features:
                     </p>
                     {benefit.highlights.map((highlight, idx) => (
                       <div key={idx} className="flex items-start gap-3">
-                        <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-300">{highlight}</span>
+                        <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                        <p className="text-gray-600 dark:text-gray-400">{highlight}</p>
                       </div>
                     ))}
                   </div>
@@ -122,47 +122,47 @@ export default function ChampionValueSection() {
         </Accordion>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-12 p-6 bg-gray-700/50 rounded-lg border border-gray-600">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-12 p-8 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm max-w-5xl mx-auto transition-colors duration-300">
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Zap className="w-5 h-5 text-yellow-400" />
-              <p className="text-3xl font-bold text-white">500+</p>
+              <Zap className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">500+</p>
             </div>
-            <p className="text-gray-300 text-sm">Active Champions</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Active Champions</p>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5 text-green-400" />
-              <p className="text-3xl font-bold text-white">50K+</p>
+              <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">250K kg</p>
             </div>
-            <p className="text-gray-300 text-sm">Tons Diverted</p>
+            <p className="text-gray-600 text-sm dark:text-gray-400">Tons Diverted</p>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Users className="w-5 h-5 text-blue-400" />
-              <p className="text-3xl font-bold text-white">100K+</p>
+              <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">100K+</p>
             </div>
-            <p className="text-gray-300 text-sm">Community Members</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">Community Members</p>
           </div>
         </div>
 
         {/* CTA Section */}
-        <div className="text-center space-y-6">
-          <div className="bg-green-50/10 border border-green-400/30 rounded-lg p-8">
-            <h3 className="text-2xl font-bold text-white mb-3">
+        <div className="text-center space-y-6 max-w-5xl mx-auto">
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-8 transition-colors duration-300">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
               Ready to Scale Your Impact?
             </h3>
-            <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+            <p className="text-gray-700 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
               Join hundreds of environmental organizations transforming waste management with Waste Nexus. Get started today and empower your community.
             </p>
-            <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors duration-300 flex items-center gap-2 mx-auto">
+            <Button className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-semibold px-8 py-3 rounded-lg transition-colors duration-300 flex items-center gap-2 mx-auto">
               <Shield className="w-5 h-5" />
               Become a Certified Champion
             </Button>
           </div>
 
-          <p className="text-gray-400 text-sm">
-            Have questions? <span className="text-green-400 font-semibold cursor-pointer hover:text-green-300">Contact our partnership team</span>
+          <p className="text-gray-600 dark:text-gray-400 text-sm">
+            Have questions? <span className="text-green-600 dark:text-green-400 font-semibold cursor-pointer hover:text-green-700 dark:hover:text-green-500">Contact our partnership team</span>
           </p>
         </div>
       </div>

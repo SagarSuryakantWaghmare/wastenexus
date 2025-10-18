@@ -29,7 +29,7 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
   return (
     <div className="space-y-4">
       {/* Main Image */}
-      <div className="relative aspect-square w-full bg-gray-100 rounded-lg overflow-hidden">
+      <div className="relative aspect-square w-full bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden transition-colors duration-300">
         <Image
           src={images[currentIndex] || '/placeholder-image.jpg'}
           alt={`${alt} - Image ${currentIndex + 1}`}
@@ -44,7 +44,7 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
             <Button
               variant="secondary"
               size="icon"
-              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white"
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white dark:bg-gray-700/40 dark:hover:bg-gray-700/60 text-gray-900 dark:text-gray-100"
               onClick={goToPrevious}
             >
               <ChevronLeft className="w-5 h-5" />
@@ -52,7 +52,7 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
             <Button
               variant="secondary"
               size="icon"
-              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white"
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white dark:bg-gray-700/40 dark:hover:bg-gray-700/60 text-gray-900 dark:text-gray-100"
               onClick={goToNext}
             >
               <ChevronRight className="w-5 h-5" />
@@ -61,7 +61,7 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
         )}
 
         {/* Image Counter */}
-        <div className="absolute bottom-2 right-2 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+        <div className="absolute bottom-2 right-2 bg-gray-900/60 text-white px-3 py-1 rounded-full text-sm">
           {currentIndex + 1} / {images.length}
         </div>
       </div>
@@ -74,15 +74,19 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
               key={index}
               onClick={() => goToImage(index)}
               className={`relative aspect-square rounded-md overflow-hidden border-2 transition-all ${
-                index === currentIndex ? 'border-green-500 ring-2 ring-green-200' : 'border-gray-200 hover:border-gray-300'
+                index === currentIndex 
+                  ? 'border-green-500 ring-2 ring-green-200 dark:ring-green-900/40 dark:border-green-700' 
+                  : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
               }`}
             >
-              <Image
-                src={image || '/placeholder-image.jpg'}
-                alt={`Thumbnail ${index + 1}`}
-                fill
-                className="object-cover"
-              />
+              <div className="w-full h-full bg-gray-100 dark:bg-gray-700">
+                <Image
+                  src={image || '/placeholder-image.jpg'}
+                  alt={`Thumbnail ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
             </button>
           ))}
         </div>
@@ -90,7 +94,7 @@ export default function ImageGallery({ images, alt }: ImageGalleryProps) {
 
       {/* Fullscreen Modal */}
       {isFullscreen && (
-        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-gray-900/90 z-50 flex items-center justify-center p-4">
           <Button
             variant="ghost"
             size="icon"

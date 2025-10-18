@@ -13,7 +13,7 @@ import ChampionValueSection from "@/components/Home/ChampionValueSection";
 export default function Home() {
   return (
     <Suspense fallback={<AppLoader />}>
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 flex flex-col">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col transition-colors duration-300">
         <Navbar />
         <main className="flex-1">
           <HeroSection />

@@ -19,7 +19,7 @@ export default function SignUpPage() {
         name: "",
         email: "",
         password: "",
-        role: "client" as "client" | "champion" | "worker",
+        role: "client" as "client" | "champion" | "worker" | "admin",
     });
 
     const [error, setError] = useState("");
@@ -27,12 +27,22 @@ export default function SignUpPage() {
 
     useEffect(() => {
         if (!isLoading && user) {
-            if (user.role === "client") {
-                router.push("/dashboard/client");
-            } else if (user.role === "champion") {
-                router.push("/dashboard/champion");
-            } else if (user.role === "worker") {
-                router.push("/dashboard/worker");
+            // Redirect based on user role
+            switch (user.role) {
+                case "client":
+                    router.push("/dashboard/client");
+                    break;
+                case "worker":
+                    router.push("/dashboard/worker");
+                    break;
+                case "admin":
+                    router.push("/dashboard/admin");
+                    break;
+                case "champion":
+                    router.push("/dashboard/champion");
+                    break;
+                default:
+                    router.push("/dashboard/client");
             }
         }
     }, [user, isLoading, router]);
@@ -139,12 +149,13 @@ export default function SignUpPage() {
                                 <select
                                     id="role"
                                     value={formData.role}
-                                    onChange={(e) => setFormData({ ...formData, role: e.target.value as "client" | "champion" | "worker" })}
+                                    onChange={(e) => setFormData({ ...formData, role: e.target.value as "client" | "champion" | "worker" | "admin" })}
                                     className="w-full bg-white/10 border border-white/30 text-white rounded-md px-3 py-2.5"
                                 >
                                     <option value="client" className="bg-gray-900 text-white">Client - Report waste & earn rewards</option>
-                                    <option value="champion" className="bg-gray-900 text-white">Champion - Verify reports & create events</option>
                                     <option value="worker" className="bg-gray-900 text-white">Worker - Collect waste & manage routes</option>
+                                    <option value="champion" className="bg-gray-900 text-white">Champion - Verify reports & create events</option>
+                                    <option value="admin" className="bg-gray-900 text-white">Admin - Manage platform</option>
                                 </select>
                             </div>
 

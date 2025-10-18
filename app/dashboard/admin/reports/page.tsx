@@ -135,14 +135,14 @@ export default function WasteReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50 dark:from-gray-900 dark:to-orange-950 p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-            <FileText className="w-10 h-10 text-orange-600" />
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+            <FileText className="w-10 h-10 text-orange-600 dark:text-orange-400" />
             Waste Reports Management
           </h1>
-          <p className="text-gray-600 mt-2">Monitor and manage waste collection reports</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">Monitor and manage waste collection reports</p>
         </div>
 
         {/* Stats Cards */}

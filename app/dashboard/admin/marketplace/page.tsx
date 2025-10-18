@@ -21,6 +21,7 @@ import {
   IndianRupee,
   AlertTriangle
 } from 'lucide-react';
+import { normalizeMarketplaceList } from '@/lib/marketplace';
 import Image from 'next/image';
 
 interface MarketplaceItem {
@@ -110,12 +111,12 @@ export default function AdminMarketplaceDashboard() {
 
       if (pendingRes.ok) {
         const pendingData = await pendingRes.json();
-        setPendingItems(pendingData.items);
+        setPendingItems(normalizeMarketplaceList(pendingData.items || []));
       }
 
       if (allItemsRes.ok) {
         const allItemsData = await allItemsRes.json();
-        setAllItems(allItemsData.items || []);
+        setAllItems(normalizeMarketplaceList(allItemsData.items || []));
         if (allItemsData.stats) {
           setStats({
             overview: allItemsData.stats,
@@ -203,7 +204,7 @@ export default function AdminMarketplaceDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50 dark:from-gray-900 dark:to-green-950 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -302,15 +303,26 @@ export default function AdminMarketplaceDashboard() {
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6">
-            <TabsTrigger value="pending">
-              Pending Review ({stats?.overview.pendingItems || 0})
-            </TabsTrigger>
-            <TabsTrigger value="allItems">
-              All Items ({stats?.overview.totalItems || 0})
-            </TabsTrigger>
-            <TabsTrigger value="stats">Statistics & Insights</TabsTrigger>
-          </TabsList>
+          <TabsList className="mb-6 inline-flex items-center gap-2 rounded-md p-1 bg-white dark:bg-transparent border border-gray-200 dark:border-gray-700">
+              <TabsTrigger
+                value="pending"
+                className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+              >
+                Pending Review ({stats?.overview.pendingItems || 0})
+              </TabsTrigger>
+              <TabsTrigger
+                value="allItems"
+                className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+              >
+                All Items ({stats?.overview.totalItems || 0})
+              </TabsTrigger>
+              <TabsTrigger
+                value="stats"
+                className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+              >
+                Statistics & Insights
+              </TabsTrigger>
+            </TabsList>
 
           {/* Pending Items Tab */}
           <TabsContent value="pending">
@@ -430,6 +442,7 @@ export default function AdminMarketplaceDashboard() {
                       variant={itemsFilter === 'all' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setItemsFilter('all')}
+                      className={itemsFilter === 'all' ? 'dark:bg-gray-700 dark:text-gray-100' : 'dark:border-gray-600 dark:text-gray-100'}
                     >
                       All
                     </Button>
@@ -437,6 +450,7 @@ export default function AdminMarketplaceDashboard() {
                       variant={itemsFilter === 'pending' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setItemsFilter('pending')}
+                      className={itemsFilter === 'pending' ? 'dark:bg-gray-700 dark:text-gray-100' : 'dark:border-gray-600 dark:text-gray-100'}
                     >
                       Pending
                     </Button>
@@ -444,6 +458,7 @@ export default function AdminMarketplaceDashboard() {
                       variant={itemsFilter === 'approved' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setItemsFilter('approved')}
+                      className={itemsFilter === 'approved' ? 'dark:bg-gray-700 dark:text-gray-100' : 'dark:border-gray-600 dark:text-gray-100'}
                     >
                       Approved
                     </Button>
@@ -451,6 +466,7 @@ export default function AdminMarketplaceDashboard() {
                       variant={itemsFilter === 'rejected' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setItemsFilter('rejected')}
+                      className={itemsFilter === 'rejected' ? 'dark:bg-gray-700 dark:text-gray-100' : 'dark:border-gray-600 dark:text-gray-100'}
                     >
                       Rejected
                     </Button>
@@ -458,6 +474,7 @@ export default function AdminMarketplaceDashboard() {
                       variant={itemsFilter === 'sold' ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setItemsFilter('sold')}
+                      className={itemsFilter === 'sold' ? 'dark:bg-gray-700 dark:text-gray-100' : 'dark:border-gray-600 dark:text-gray-100'}
                     >
                       Sold
                     </Button>

@@ -113,14 +113,14 @@ export default function LocationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 dark:from-gray-900 dark:to-indigo-950 p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-            <MapPin className="w-10 h-10 text-indigo-600" />
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+            <MapPin className="w-10 h-10 text-indigo-600 dark:text-indigo-400" />
             Waste Report Locations
           </h1>
-          <p className="text-gray-600 mt-2">Track waste collection points across all locations</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">Track waste collection points across all locations</p>
         </div>
 
         {/* Stats Cards */}

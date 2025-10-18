@@ -170,15 +170,15 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
     };
 
     return (
-        <Card className="border-0 shadow-lg bg-white">
-            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-100 rounded-t-lg pb-6">
+        <Card className="border-0 shadow-lg bg-white dark:bg-gray-800 transition-colors duration-300">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-b border-green-100 dark:border-gray-700 rounded-t-lg pb-6">
                 <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-green-600/10 rounded-lg">
-                        <Calendar className="h-5 w-5 text-green-600" />
+                    <div className="p-2 bg-green-600/10 dark:bg-green-600/20 rounded-lg">
+                        <Calendar className="h-5 w-5 text-green-600 dark:text-green-400" />
                     </div>
-                    <CardTitle className="text-2xl text-green-700">Create New Event</CardTitle>
+                    <CardTitle className="text-2xl text-green-700 dark:text-green-400">Create New Event</CardTitle>
                 </div>
-                <CardDescription className="text-gray-600 text-base">
+                <CardDescription className="text-gray-600 dark:text-gray-400 text-base">
                     Organize a waste management event for your community
                 </CardDescription>
             </CardHeader>
@@ -189,12 +189,12 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                     {/* Section 1: Event Title */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                            <span className="flex items-center justify-center w-6 h-6 bg-green-100 text-green-700 rounded-full text-sm font-bold">1</span>
+                            <span className="flex items-center justify-center w-6 h-6 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-bold">1</span>
                             Event Basics
                         </h3>
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="title" className="text-gray-700 font-semibold">Event Title *</Label>
+                                <Label htmlFor="title" className="text-gray-700 dark:text-gray-300 font-semibold">Event Title *</Label>
                                 <Input
                                     id="title"
                                     value={formData.title}
@@ -206,8 +206,8 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description" className="text-gray-700 font-semibold">
-                                    Description * <span className="text-xs text-gray-500 font-normal">(Min. 50 characters)</span>
+                                <Label htmlFor="description" className="text-gray-700 dark:text-gray-300 font-semibold">
+                                    Description * <span className="text-xs text-gray-500 dark:text-gray-400 font-normal">(Min. 50 characters)</span>
                                 </Label>
                                 <Textarea
                                     id="description"
@@ -215,15 +215,15 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="Describe the event in detail... Include goals, what to bring, etc."
                                     rows={5}
-                                    className="border-2 border-gray-300 focus:border-transparent resize-none"
+                                    className="border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:border-transparent resize-none"
                                     required
                                 />
                                 <div className="flex justify-between items-center">
-                                    <p className="text-xs text-gray-500">
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
                                         {formData.description.length} / 50 characters minimum
                                     </p>
                                     {formData.description.length >= 50 && (
-                                        <span className="text-xs text-green-600 font-semibold">✓ Valid</span>
+                                        <span className="text-xs text-green-600 dark:text-green-400 font-semibold">✓ Valid</span>
                                     )}
                                 </div>
                             </div>
@@ -233,13 +233,13 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                     {/* Section 2: Location & Details */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                            <span className="flex items-center justify-center w-6 h-6 bg-green-100 text-green-700 rounded-full text-sm font-bold">2</span>
+                            <span className="flex items-center justify-center w-6 h-6 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-bold">2</span>
                             Location & Details
                         </h3>
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="eventAddress" className="text-gray-700 font-semibold flex items-center gap-2">
-                                    <MapPin className="h-4 w-4 text-green-600" />
+                                <Label htmlFor="eventAddress" className="text-gray-700 dark:text-gray-300 font-semibold flex items-center gap-2">
+                                    <MapPin className="h-4 w-4 text-green-600 dark:text-green-400" />
                                     Event Address *
                                 </Label>
                                 <Input
@@ -254,12 +254,12 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <Label htmlFor="wasteFocus" className="text-gray-700 font-semibold">Waste Focus *</Label>
+                                    <Label htmlFor="wasteFocus" className="text-gray-700 dark:text-gray-300 font-semibold">Waste Focus *</Label>
                                     <Select
                                         value={formData.wasteFocus}
                                         onValueChange={(value) => setFormData({ ...formData, wasteFocus: value })}
                                     >
-                                        <SelectTrigger className="border-2 border-gray-300 focus:border-transparent">
+                                        <SelectTrigger className="border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:border-transparent">
                                             <SelectValue placeholder="Select waste focus" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -273,7 +273,7 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="eventDate" className="text-gray-700 font-semibold flex items-center gap-2">
+                                    <Label htmlFor="eventDate" className="text-gray-700 dark:text-gray-300 font-semibold flex items-center gap-2">
                                         <Calendar className="h-4 w-4 text-green-600" />
                                         Date & Time *
                                     </Label>
@@ -293,23 +293,23 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                     {/* Section 3: Event Image */}
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                            <span className="flex items-center justify-center w-6 h-6 bg-green-100 text-green-700 rounded-full text-sm font-bold">3</span>
+                            <span className="flex items-center justify-center w-6 h-6 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-bold">3</span>
                             Event Image
                         </h3>
                         <div className="space-y-3">
-                            <Label htmlFor="eventImage" className="text-gray-700 font-semibold">Event Image *</Label>
+                            <Label htmlFor="eventImage" className="text-gray-700 dark:text-gray-300 font-semibold">Event Image *</Label>
                             <FileUpload onChange={(files) => setImageFile(files[0] || null)} />
                             {imageFile && (
-                                <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                                    <span className="text-green-700 font-semibold text-sm">✓ Selected:</span>
-                                    <span className="text-green-600 text-sm">{imageFile.name}</span>
+                                <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
+                                    <span className="text-green-700 dark:text-green-400 font-semibold text-sm">✓ Selected:</span>
+                                    <span className="text-green-600 dark:text-green-400 text-sm">{imageFile.name}</span>
                                 </div>
                             )}
                         </div>
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-4 pt-6 border-t border-gray-200">
+                    <div className="flex gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                         <Button
                             type="button"
                             variant="outline"
@@ -323,7 +323,7 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                                 setLocation({ name: '', address: '' });
                                 setImageFile(null);
                             }}
-                            className="flex-1 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold py-2.5 rounded-lg transition-all"
+                            className="flex-1 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold py-2.5 rounded-lg transition-all"
                         >
                             Clear Form
                         </Button>

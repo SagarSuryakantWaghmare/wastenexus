@@ -13,6 +13,9 @@ export interface IMarketplaceItem extends Document {
   sellerContact: string;
   status: 'pending' | 'approved' | 'rejected' | 'sold';
   rejectionReason?: string;
+  buyer?: Schema.Types.ObjectId;
+  buyerName?: string;
+  buyerContact?: string;
   location: {
     address: string;
     city: string;
@@ -94,6 +97,16 @@ const MarketplaceItemSchema = new Schema<IMarketplaceItem>(
       default: 'pending',
     },
     rejectionReason: {
+      type: String,
+    },
+    buyer: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    buyerName: {
+      type: String,
+    },
+    buyerContact: {
       type: String,
     },
     location: {

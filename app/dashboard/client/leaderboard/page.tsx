@@ -49,10 +49,10 @@ export default function LeaderboardPage() {
 
   if (isLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-green-800 to-emerald-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-green-800 to-emerald-900 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
         <div className="text-center">
-          <span className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-green-400 border-t-transparent"></span>
-          <p className="mt-4 text-green-300 font-medium">Loading leaderboard...</p>
+          <span className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-green-400 dark:border-green-500 border-t-transparent"></span>
+          <p className="mt-4 text-green-300 dark:text-green-400 font-medium">Loading leaderboard...</p>
         </div>
       </div>
     );
@@ -68,7 +68,7 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col transition-colors duration-300">
       <Navbar />
       
       <main className="flex-1 flex flex-col items-center w-full px-2 sm:px-4 py-12">
@@ -76,12 +76,12 @@ export default function LeaderboardPage() {
           {/* Header Section */}
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="p-3 bg-yellow-100 rounded-full">
-                <Trophy className="h-8 w-8 text-yellow-600" />
+              <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
+                <Trophy className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
               </div>
-              <h1 className="text-5xl font-extrabold text-gray-900 tracking-tight">Leaderboard</h1>
+              <h1 className="text-5xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">Leaderboard</h1>
             </div>
-            <p className="text-gray-600 text-lg font-medium">See the top environmental champions in your community!</p>
+            <p className="text-gray-600 dark:text-gray-400 text-lg font-medium">See the top environmental champions in your community!</p>
           </div>
 
           {/* Stats Cards */}
@@ -126,15 +126,15 @@ export default function LeaderboardPage() {
           </div>
 
           {/* Leaderboard Table */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden transition-colors duration-300">
             {filteredLeaderboard.length === 0 ? (
-              <div className="text-center text-gray-500 py-16 text-lg font-medium">
+              <div className="text-center text-gray-500 dark:text-gray-400 py-16 text-lg font-medium">
                 No contributors found matching your search.
               </div>
             ) : (
-              <div className="divide-y divide-gray-100">
+              <div className="divide-y divide-gray-100 dark:divide-gray-700">
                 {/* Header */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 grid grid-cols-12 gap-4 items-center font-semibold text-gray-700 text-sm">
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-700 px-6 py-4 grid grid-cols-12 gap-4 items-center font-semibold text-gray-700 dark:text-gray-300 text-sm">
                   <div className="col-span-1 text-center">Rank</div>
                   <div className="col-span-6">Name</div>
                   <div className="col-span-3 text-right">Points</div>
@@ -145,8 +145,8 @@ export default function LeaderboardPage() {
                 {filteredLeaderboard.map((entry, index) => (
                   <div
                     key={entry.id}
-                    className={`px-6 py-4 grid grid-cols-12 gap-4 items-center transition-all duration-200 hover:bg-gray-50 ${
-                      entry.id === user.id ? "bg-green-50/50" : ""
+                    className={`px-6 py-4 grid grid-cols-12 gap-4 items-center transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                      entry.id === user.id ? "bg-green-50/50 dark:bg-green-900/20" : ""
                     }`}
                   >
                     {/* Rank */}
@@ -156,13 +156,13 @@ export default function LeaderboardPage() {
                           {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
                         </span>
                       ) : (
-                        <span className="font-bold text-lg text-gray-600">#{entry.rank}</span>
+                        <span className="font-bold text-lg text-gray-600 dark:text-gray-400">#{entry.rank}</span>
                       )}
                     </div>
 
                     {/* Name */}
                     <div className="col-span-6 min-w-0">
-                      <p className="font-semibold text-gray-900 truncate text-base">
+                      <p className="font-semibold text-gray-900 dark:text-gray-100 truncate text-base">
                         {entry.name}
                       </p>
                     </div>
@@ -170,8 +170,8 @@ export default function LeaderboardPage() {
                     {/* Points */}
                     <div className="col-span-3 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <Zap className="h-4 w-4 text-yellow-500" />
-                        <span className="font-bold text-lg text-gray-900">
+                        <Zap className="h-4 w-4 text-yellow-500 dark:text-yellow-400" />
+                        <span className="font-bold text-lg text-gray-900 dark:text-gray-100">
                           {entry.totalPoints.toLocaleString()}
                         </span>
                       </div>
@@ -192,8 +192,8 @@ export default function LeaderboardPage() {
           </div>
 
           {/* Motivational Message */}
-          <div className="mt-10 p-6 bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-lg">
-            <p className="text-gray-700 font-medium">
+          <div className="mt-10 p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-l-4 border-green-500 dark:border-green-400 rounded-lg transition-colors duration-300">
+            <p className="text-gray-700 dark:text-gray-300 font-medium">
               🌱 Keep making an impact! Every waste report brings you closer to the top. 
               {getUserRank() <= 3 && " You're in the top 3 - amazing work!"}
               {getUserRank() > 3 && getUserRank() <= 10 && " You're in the top 10 - keep it up!"}

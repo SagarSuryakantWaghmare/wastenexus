@@ -171,8 +171,8 @@ export default function AddItemPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-600" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <Loader2 className="w-8 h-8 animate-spin text-green-600 dark:text-green-400" />
       </div>
     );
   }
@@ -181,16 +181,16 @@ export default function AddItemPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <Card className="max-w-md w-full">
           <CardContent className="pt-6">
             <div className="text-center">
-              <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Item Submitted!</h2>
-              <p className="text-gray-600 mb-4">
+              <CheckCircle className="w-16 h-16 text-green-600 dark:text-green-400 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Item Submitted!</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
                 Your item has been submitted for admin approval. You&apos;ll be notified once it&apos;s reviewed.
               </p>
-              <p className="text-sm text-gray-500">Redirecting to your items...</p>
+              <p className="text-sm text-gray-500 dark:text-gray-500">Redirecting to your items...</p>
             </div>
           </CardContent>
         </Card>
@@ -199,24 +199,24 @@ export default function AddItemPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 transition-colors duration-300">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-6">
           <Link href="/marketplace">
-            <Button variant="ghost" className="mb-4">
+            <Button variant="ghost" className="mb-4 dark:text-gray-100 dark:hover:bg-gray-800">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Marketplace
             </Button>
           </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Sell an Item</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Sell an Item</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
             List your second-hand items for sale. All items require admin approval before going live.
           </p>
         </div>
 
         {/* Form */}
-        <Card>
+        <Card className="dark:bg-gray-800 dark:border-gray-700">
           <CardHeader>
             <CardTitle>Item Details</CardTitle>
             <CardDescription>Fill in the information about your item</CardDescription>
@@ -233,6 +233,7 @@ export default function AddItemPage() {
                   placeholder="e.g., iPhone 13 Pro 128GB"
                   required
                   maxLength={100}
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 />
               </div>
 
@@ -247,8 +248,9 @@ export default function AddItemPage() {
                   rows={4}
                   required
                   maxLength={1000}
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 w-full"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {formData.description.length}/1000 characters
                 </p>
               </div>
@@ -258,12 +260,16 @@ export default function AddItemPage() {
                 <div>
                   <Label htmlFor="category">Category *</Label>
                   <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                       {CATEGORIES.map((cat) => (
-                        <SelectItem key={cat} value={cat}>
+                        <SelectItem
+                          key={cat}
+                          value={cat}
+                          className="data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+                        >
                           {cat}
                         </SelectItem>
                       ))}
@@ -274,12 +280,16 @@ export default function AddItemPage() {
                 <div>
                   <Label htmlFor="condition">Condition *</Label>
                   <Select value={formData.condition} onValueChange={(value) => setFormData({ ...formData, condition: value })}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                       {CONDITIONS.map((cond) => (
-                        <SelectItem key={cond} value={cond}>
+                        <SelectItem
+                          key={cond}
+                          value={cond}
+                          className="data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+                        >
                           {cond}
                         </SelectItem>
                       ))}
@@ -300,6 +310,7 @@ export default function AddItemPage() {
                   required
                   min="0"
                   step="1"
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 />
                 <div className="flex items-center mt-2">
                   <input
@@ -307,7 +318,7 @@ export default function AddItemPage() {
                     id="negotiable"
                     checked={formData.isNegotiable}
                     onChange={(e) => setFormData({ ...formData, isNegotiable: e.target.checked })}
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                    className="w-4 h-4 text-green-600 border-gray-300 dark:border-gray-600 rounded focus:ring-green-500"
                   />
                   <Label htmlFor="negotiable" className="ml-2 text-sm font-normal">
                     Price is negotiable
@@ -325,6 +336,7 @@ export default function AddItemPage() {
                   onChange={(e) => setFormData({ ...formData, sellerContact: e.target.value })}
                   placeholder="e.g., +91 9876543210"
                   required
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 />
               </div>
 
@@ -336,6 +348,7 @@ export default function AddItemPage() {
                   value={formData.location.address}
                   onChange={(e) => setFormData({ ...formData, location: { ...formData.location, address: e.target.value } })}
                   required
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 />
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Input
@@ -343,17 +356,20 @@ export default function AddItemPage() {
                     value={formData.location.city}
                     onChange={(e) => setFormData({ ...formData, location: { ...formData.location, city: e.target.value } })}
                     required
+                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                   />
                   <Input
                     placeholder="State"
                     value={formData.location.state}
                     onChange={(e) => setFormData({ ...formData, location: { ...formData.location, state: e.target.value } })}
                     required
+                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                   />
                   <Input
                     placeholder="Pincode"
                     value={formData.location.pincode}
                     onChange={(e) => setFormData({ ...formData, location: { ...formData.location, pincode: e.target.value } })}
+                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                   />
                 </div>
               </div>
@@ -366,6 +382,7 @@ export default function AddItemPage() {
                   value={formData.tags}
                   onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                   placeholder="e.g., used, warranty, original box (comma separated)"
+                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 />
               </div>
 
@@ -375,14 +392,14 @@ export default function AddItemPage() {
                 <div className="mt-2">
                   <label
                     htmlFor="image-upload"
-                    className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
+                    className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-600">
+                      <Upload className="w-8 h-8 text-gray-400 dark:text-gray-300 mb-2" />
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
                         {uploading ? 'Uploading...' : 'Click to upload images'}
                       </p>
-                      <p className="text-xs text-gray-500">PNG, JPG up to 5MB each</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPG up to 5MB each</p>
                     </div>
                     <input
                       id="image-upload"
@@ -423,7 +440,7 @@ export default function AddItemPage() {
 
               {/* Error Message */}
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-sm">
+                <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-3 text-sm dark:bg-red-900/20 dark:border-red-700 dark:text-red-300">
                   {error}
                 </div>
               )}
@@ -434,14 +451,14 @@ export default function AddItemPage() {
                   type="button"
                   variant="outline"
                   onClick={() => router.back()}
-                  className="flex-1"
+                  className="flex-1 dark:border-gray-600 dark:text-gray-100"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={submitting || uploading || images.length === 0}
-                  className="flex-1 bg-green-600 hover:bg-green-700"
+                  className="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600"
                 >
                   {submitting ? (
                     <>

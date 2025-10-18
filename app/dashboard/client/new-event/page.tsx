@@ -51,10 +51,10 @@ export default function NewEventPage() {
 
   if (isLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-green-800 to-emerald-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-green-800 to-emerald-900 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
         <div className="text-center">
-          <span className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-green-400 border-t-transparent"></span>
-          <p className="mt-4 text-green-300 font-medium">Loading events...</p>
+          <span className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-green-400 dark:border-green-500 border-t-transparent"></span>
+          <p className="mt-4 text-green-300 dark:text-green-400 font-medium">Loading events...</p>
         </div>
       </div>
     );
@@ -82,19 +82,19 @@ export default function NewEventPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
       <Navbar />
       
       <main className="mx-auto max-w-6xl px-4 py-12">
         {/* Header Section */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="p-3 bg-blue-100 rounded-full">
-              <Calendar className="h-8 w-8 text-blue-600" />
+            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+              <Calendar className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             </div>
-            <h1 className="text-5xl font-extrabold text-gray-900 tracking-tight">Upcoming Events</h1>
+            <h1 className="text-5xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">Upcoming Events</h1>
           </div>
-          <p className="text-gray-600 text-lg font-medium max-w-2xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-400 text-lg font-medium max-w-2xl mx-auto">
             Join waste management campaigns in your community and make a collective impact!
           </p>
         </div>
@@ -116,33 +116,33 @@ export default function NewEventPage() {
         {/* Events Grid */}
         <div className="grid grid-cols-1 gap-6">
           {filteredEvents.length === 0 ? (
-            <Card className="border-0 shadow-lg bg-white">
+            <Card className="border-0 shadow-lg bg-white dark:bg-gray-800 transition-colors duration-300">
               <CardContent className="py-16 text-center">
-                <Calendar className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 text-lg font-medium">No events found</p>
-                <p className="text-gray-400 text-sm mt-2">Try adjusting your search or check back later for upcoming campaigns</p>
+                <Calendar className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">No events found</p>
+                <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">Try adjusting your search or check back later for upcoming campaigns</p>
               </CardContent>
             </Card>
           ) : (
             filteredEvents.map((event, index) => (
-              <Card key={event.id} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white overflow-hidden group">
+              <Card key={event.id} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white dark:bg-gray-800 overflow-hidden group">
                 <CardContent className="p-0">
                   <div className="flex flex-col md:flex-row gap-6 p-6">
                     
                     {/* Event Number Badge */}
                     <div className="hidden md:flex items-start">
-                      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-lg flex-shrink-0">
+                      <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white font-bold text-lg flex-shrink-0">
                         {index + 1}
                       </div>
                     </div>
 
                     {/* Event Content */}
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-bold text-xl text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                      <h4 className="font-bold text-xl text-gray-900 dark:text-gray-100 mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {event.title}
                       </h4>
                       
-                      <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                      <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-4">
                         {event.description}
                       </p>
 
@@ -204,12 +204,12 @@ export default function NewEventPage() {
         </div>
 
         {/* Info Banner */}
-        <div className="mt-12 p-6 bg-gradient-to-r from-blue-50 to-green-50 border-l-4 border-blue-500 rounded-lg">
+        <div className="mt-12 p-6 bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 border-l-4 border-blue-500 dark:border-blue-400 rounded-lg transition-colors duration-300">
           <div className="flex items-start gap-4">
-            <Clock className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
+            <Clock className="h-6 w-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
             <div>
-              <h3 className="font-bold text-gray-900 mb-2">Attending an Event?</h3>
-              <p className="text-gray-700 text-sm leading-relaxed">
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-2">Attending an Event?</h3>
+              <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
                 Add upcoming events to your calendar so you don&apos;t miss them. Each event contribution helps reduce waste and earn points towards rewards!
               </p>
             </div>

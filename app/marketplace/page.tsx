@@ -6,13 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Plus, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import ItemGrid from '@/components/Marketplace/ItemGrid';
+import { normalizeMarketplaceList, type NormalizedMarketplaceItem } from '@/lib/marketplace';
 import ItemFilters, { FilterValues } from '@/components/Marketplace/ItemFilters';
 import SearchBar from '@/components/Marketplace/SearchBar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 
 export default function MarketplacePage() {
   const { user, token } = useAuth();
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<NormalizedMarketplaceItem[]>([] as NormalizedMarketplaceItem[]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [favoritedItems, setFavoritedItems] = useState<string[]>([]);
@@ -56,7 +57,7 @@ export default function MarketplacePage() {
       const data = await response.json();
 
       if (response.ok) {
-        setItems(data.items);
+        setItems(normalizeMarketplaceList(data.items || []));
         setPagination(data.pagination);
       }
     } catch (error) {
@@ -106,14 +107,14 @@ export default function MarketplacePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Marketplace</h1>
-              <p className="text-gray-600 mt-1">Buy and sell second-hand items sustainably</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Marketplace</h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">Buy and sell second-hand items sustainably</p>
             </div>
             {user && (
               <div className="flex gap-3">
@@ -157,7 +158,10 @@ export default function MarketplacePage() {
           <div className="lg:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" className="w-full">
+                <Button
+                  variant="outline"
+                  className="w-full dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
                   <SlidersHorizontal className="w-4 h-4 mr-2" />
                   Filters
                 </Button>
@@ -181,12 +185,12 @@ export default function MarketplacePage() {
           <div className="flex-1">
             {loading ? (
               <div className="text-center py-16">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-                <p className="mt-4 text-gray-600">Loading items...</p>
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 dark:border-green-400"></div>
+                <p className="mt-4 text-gray-600 dark:text-gray-400">Loading items...</p>
               </div>
             ) : (
               <>
-                <div className="mb-4 text-sm text-gray-600">
+                <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
                   {pagination.total} items found
                 </div>
                 <ItemGrid

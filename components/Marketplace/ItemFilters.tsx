@@ -64,11 +64,16 @@ export default function ItemFilters({ filters, onFilterChange, onReset }: ItemFi
   };
 
   return (
-    <Card>
+    <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg">Filters</CardTitle>
-          <Button variant="ghost" size="sm" onClick={onReset}>
+          <CardTitle className="text-lg text-gray-900 dark:text-gray-100">Filters</CardTitle>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onReset}
+            className="text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
             <X className="w-4 h-4 mr-1" />
             Reset
           </Button>
@@ -78,14 +83,18 @@ export default function ItemFilters({ filters, onFilterChange, onReset }: ItemFi
       <CardContent className="space-y-6">
         {/* Category */}
         <div>
-          <Label className="mb-2 block">Category</Label>
+          <Label className="mb-2 block text-gray-700 dark:text-gray-300">Category</Label>
           <Select value={filters.category} onValueChange={(value) => updateFilter('category', value)}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
               {CATEGORIES.map((category) => (
-                <SelectItem key={category} value={category === 'All Categories' ? 'all' : category}>
+                <SelectItem
+                  key={category}
+                  value={category === 'All Categories' ? 'all' : category}
+                  className="data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+                >
                   {category}
                 </SelectItem>
               ))}
@@ -95,14 +104,18 @@ export default function ItemFilters({ filters, onFilterChange, onReset }: ItemFi
 
         {/* Condition */}
         <div>
-          <Label className="mb-2 block">Condition</Label>
+          <Label className="mb-2 block text-gray-700 dark:text-gray-300">Condition</Label>
           <Select value={filters.condition} onValueChange={(value) => updateFilter('condition', value)}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
               {CONDITIONS.map((condition) => (
-                <SelectItem key={condition} value={condition === 'All Conditions' ? 'all' : condition}>
+                <SelectItem
+                  key={condition}
+                  value={condition === 'All Conditions' ? 'all' : condition}
+                  className="data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+                >
                   {condition}
                 </SelectItem>
               ))}
@@ -112,7 +125,7 @@ export default function ItemFilters({ filters, onFilterChange, onReset }: ItemFi
 
         {/* Price Range */}
         <div>
-          <Label className="mb-2 block">
+          <Label className="mb-2 block text-gray-700 dark:text-gray-300">
             Price Range: ₹{filters.minPrice.toLocaleString()} - ₹{filters.maxPrice.toLocaleString()}
           </Label>
           <Slider
@@ -127,26 +140,31 @@ export default function ItemFilters({ filters, onFilterChange, onReset }: ItemFi
 
         {/* City */}
         <div>
-          <Label htmlFor="city" className="mb-2 block">City</Label>
+          <Label htmlFor="city" className="mb-2 block text-gray-700 dark:text-gray-300">City</Label>
           <Input
             id="city"
             type="text"
             value={filters.city}
             onChange={(e) => updateFilter('city', e.target.value)}
             placeholder="Enter city name"
+            className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
           />
         </div>
 
         {/* Sort */}
         <div>
-          <Label className="mb-2 block">Sort By</Label>
+          <Label className="mb-2 block text-gray-700 dark:text-gray-300">Sort By</Label>
           <Select value={filters.sort} onValueChange={(value) => updateFilter('sort', value)}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
               {SORT_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem
+                  key={option.value}
+                  value={option.value}
+                  className="data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+                >
                   {option.label}
                 </SelectItem>
               ))}

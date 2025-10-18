@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Script to add admin users to the database
  * Run with: node scripts/add-admins.js

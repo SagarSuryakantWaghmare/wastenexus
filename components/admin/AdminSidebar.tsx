@@ -18,6 +18,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  Briefcase,
 } from 'lucide-react';
 
 interface AdminSidebarProps {
@@ -61,6 +62,12 @@ const adminRoutes = [
     href: '/dashboard/admin/events',
     color: 'text-pink-500',
   },
+  {
+    label: 'Jobs Management',
+    icon: Briefcase,
+    href: '/dashboard/admin/jobs',
+    color: 'text-teal-500',
+  },
 ];
 
 export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
@@ -72,25 +79,25 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
       {/* Desktop Sidebar */}
       <div
         className={cn(
-          'hidden md:flex flex-col fixed inset-y-0 z-50 bg-gradient-to-b from-gray-900 to-gray-800 text-white transition-all duration-300',
+          'hidden md:flex flex-col fixed inset-y-0 z-50 bg-gradient-to-b from-gray-900 to-gray-800 dark:from-gray-950 dark:to-gray-900 text-white transition-all duration-300',
           collapsed ? 'w-20' : 'w-64'
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+        <div className="flex items-center justify-between p-6 border-b border-gray-700 dark:border-gray-800">
           {!collapsed && (
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
                 WasteNexus
               </h1>
-              <p className="text-xs text-gray-400 mt-1">Admin Panel</p>
+              <p className="text-xs text-gray-400 mt-1 dark:text-gray-300">Admin Panel</p>
             </div>
           )}
           <Button
             onClick={() => setCollapsed(!collapsed)}
             variant="ghost"
             size="icon"
-            className="text-gray-400 hover:text-white hover:bg-gray-700"
+            className="text-gray-400 hover:text-white hover:bg-gray-700 dark:hover:bg-gray-800"
           >
             {collapsed ? (
               <ChevronRight className="w-5 h-5" />
@@ -102,7 +109,7 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
 
         {/* User Info */}
         {!collapsed && (
-          <div className="p-4 border-b border-gray-700">
+          <div className="p-4 border-b border-gray-700 dark:border-gray-800">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center font-bold text-white">
                 {userName.charAt(0).toUpperCase()}
@@ -124,8 +131,8 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
                   className={cn(
                     'flex items-center gap-3 px-3 py-3 rounded-lg cursor-pointer transition-all',
                     pathname === route.href
-                      ? 'bg-white/10 text-white shadow-lg'
-                      : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                      ? 'bg-white/10 dark:bg-white/5 text-white shadow-lg'
+                      : 'text-gray-400 hover:bg-white/5 dark:hover:bg-white/3 hover:text-white'
                   )}
                 >
                   <route.icon className={cn('w-5 h-5', route.color)} />
@@ -142,7 +149,7 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
         </ScrollArea>
 
         {/* Footer */}
-        <div className="p-3 border-t border-gray-700">
+        <div className="p-3 border-t border-gray-700 dark:border-gray-800">
           <Link href="/auth/signin">
             <div className="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-400 hover:bg-red-500/10 hover:text-red-400 cursor-pointer transition-all">
               <LogOut className="w-5 h-5" />
@@ -158,14 +165,14 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden fixed top-4 left-4 z-40 bg-gray-900 text-white hover:bg-gray-800"
+            className="md:hidden fixed top-4 left-4 z-40 bg-gray-900 dark:bg-gray-950 text-white hover:bg-gray-800 dark:hover:bg-gray-900"
           >
             <Menu className="w-6 h-6" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0 bg-gradient-to-b from-gray-900 to-gray-800 text-white border-gray-700">
+        <SheetContent side="left" className="w-64 p-0 bg-gradient-to-b from-gray-900 to-gray-800 dark:from-gray-950 dark:to-gray-900 text-white border-gray-700 dark:border-gray-800">
           {/* Mobile Header */}
-          <div className="p-6 border-b border-gray-700">
+          <div className="p-6 border-b border-gray-700 dark:border-gray-800">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
               WasteNexus
             </h1>
@@ -194,8 +201,8 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
                     className={cn(
                       'flex items-center gap-3 px-3 py-3 rounded-lg cursor-pointer transition-all',
                       pathname === route.href
-                        ? 'bg-white/10 text-white shadow-lg'
-                        : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                        ? 'bg-white/10 dark:bg-white/5 text-white shadow-lg'
+                        : 'text-gray-400 hover:bg-white/5 dark:hover:bg-white/3 hover:text-white'
                     )}
                   >
                     <route.icon className={cn('w-5 h-5', route.color)} />
@@ -210,9 +217,9 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
           </ScrollArea>
 
           {/* Mobile Footer */}
-          <div className="absolute bottom-0 w-full p-3 border-t border-gray-700">
+          <div className="absolute bottom-0 w-full p-3 border-t border-gray-700 dark:border-gray-800">
             <Link href="/auth/signin">
-              <div className="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-400 hover:bg-red-500/10 hover:text-red-400 cursor-pointer transition-all">
+              <div className="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-400 hover:bg-red-500/10 dark:hover:bg-red-500/20 hover:text-red-400 cursor-pointer transition-all">
                 <LogOut className="w-5 h-5" />
                 <span className="text-sm font-medium">Logout</span>
               </div>

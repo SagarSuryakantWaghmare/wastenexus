@@ -22,10 +22,22 @@ export default function SignInPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      if (user.role === "client") {
-        router.push("/dashboard/client");
-      } else {
-        router.push("/dashboard/champion");
+      // Redirect based on user role
+      switch (user.role) {
+        case "client":
+          router.push("/dashboard/client");
+          break;
+        case "worker":
+          router.push("/dashboard/worker");
+          break;
+        case "admin":
+          router.push("/dashboard/admin");
+          break;
+        case "champion":
+          router.push("/dashboard/champion");
+          break;
+        default:
+          router.push("/dashboard/client");
       }
     }
   }, [user, isLoading, router]);
@@ -45,7 +57,7 @@ export default function SignInPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black/50">
+      <div className="flex min-h-screen items-center justify-center bg-gray-900/50">
         <div className="text-center">
           <Leaf className="h-12 w-12 animate-pulse text-green-400 mx-auto" />
           <p className="mt-2 text-green-300">Loading...</p>
@@ -83,7 +95,7 @@ export default function SignInPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="bg-black/70 border border-green-300 text-white placeholder:text-white/60 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-black/80"
+                  className="bg-gray-900/70 border border-green-300 text-white placeholder:text-white/60 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/80"
                 />
               </div>
               <div className="relative">
@@ -96,7 +108,7 @@ export default function SignInPage() {
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
                   minLength={6}
-                  className="bg-black/70 border border-green-300 text-white placeholder:text-white/60 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-black/80 pr-10 h-12"
+                  className="bg-gray-900/70 border border-green-300 text-white placeholder:text-white/60 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/80 pr-10 h-12"
                 />
                 <button
                   type="button"

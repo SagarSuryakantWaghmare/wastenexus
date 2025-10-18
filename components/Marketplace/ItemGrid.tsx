@@ -34,7 +34,7 @@ export default function ItemGrid({
   if (items.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-gray-500 text-lg">{emptyMessage}</p>
+        <p className="text-gray-500 dark:text-gray-400 text-lg">{emptyMessage}</p>
       </div>
     );
   }

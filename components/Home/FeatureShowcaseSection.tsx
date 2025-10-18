@@ -61,14 +61,14 @@ export default function FeatureShowcaseSection() {
   ];
 
   return (
-    <section className="py-20 bg-gray-900">
+    <section className="py-20 bg-white dark:bg-gray-900 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Ignite Your Impact: Compete & Get Rewarded
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+            Compete & Get Rewarded
           </h2>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Join a thriving community where every action matters. Climb the leaderboard, unlock achievements, and earn exclusive rewards.
           </p>
         </div>
@@ -77,13 +77,13 @@ export default function FeatureShowcaseSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start">
           
           {/* Leaderboard Preview */}
-          <Card className="bg-gray-800 border-gray-700 shadow-lg">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3 mb-2">
-                <Trophy className="w-6 h-6 text-yellow-500" />
-                <CardTitle className="text-2xl text-white">Top Performers</CardTitle>
+                <Trophy className="w-5 h-5 text-yellow-500 dark:text-yellow-400" />
+                <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">Top Performers</CardTitle>
               </div>
-              <CardDescription className="text-gray-400">
+              <CardDescription className="text-gray-600 dark:text-gray-400">
                 This week&apos;s waste diversion champions
               </CardDescription>
             </CardHeader>
@@ -94,30 +94,30 @@ export default function FeatureShowcaseSection() {
                 {leaderboardData.map((user) => (
                   <div
                     key={user.rank}
-                    className="flex items-center justify-between p-4 bg-gray-700/50 rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
                   >
                     {/* Rank & Name */}
                     <div className="flex items-center gap-4 flex-1">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center flex-shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-yellow-500 dark:bg-yellow-600 flex items-center justify-center flex-shrink-0">
                         <span className="text-white font-bold text-sm">#{user.rank}</span>
                       </div>
                       <div>
-                        <p className="text-white font-medium">{user.name}</p>
-                        <p className="text-sm text-gray-400">{user.kg} kg diverted</p>
+                        <p className="text-gray-900 dark:text-gray-100 font-medium">{user.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.kg} kg diverted</p>
                       </div>
                     </div>
 
                     {/* Points */}
                     <div className="flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-yellow-500" />
-                      <span className="text-lg font-bold text-yellow-400">{user.points}</span>
+                      <Gift className="w-5 h-5 text-green-600 dark:text-green-400" />
+                      <span className="text-lg font-bold text-yellow-600">{user.points}</span>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* View Full Leaderboard Button */}
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2">
+              <Button className="w-full bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800 text-white font-semibold py-2 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2">
                 View Full Leaderboard
                 <ArrowRight className="w-4 h-4" />
               </Button>
@@ -126,39 +126,34 @@ export default function FeatureShowcaseSection() {
 
           {/* Rewards Grid */}
           <div>
-            <h3 className="text-2xl font-bold text-white mb-6">Unlock Achievements</h3>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Unlock Achievements</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {rewards.map((reward) => {
                 const IconComponent = reward.icon;
                 return (
-                  <Card key={reward.id} className={`${reward.bgColor} border-0 shadow-md hover:shadow-lg transition-shadow duration-300`}>
+                  <Card key={reward.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all duration-300">
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between mb-3">
-                        <div className={`p-2.5 bg-white/20 rounded-lg`}>
+                        <div className={`p-2.5 ${reward.bgColor} rounded-lg`}>
                           <IconComponent className={`w-5 h-5 ${reward.color}`} />
                         </div>
-                        <Badge className="bg-white text-gray-900 hover:bg-gray-100 font-semibold">
+                        <Badge variant="outline" className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-700 font-semibold">
                           {reward.points.toLocaleString()} pts
                         </Badge>
                       </div>
-                      <CardTitle className="text-lg text-gray-900">{reward.name}</CardTitle>
+                      <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">{reward.name}</CardTitle>
                     </CardHeader>
 
                     <CardContent>
-                      <CardDescription className="text-gray-700 mb-4">
-                        {reward.description}
-                      </CardDescription>
+                      <CardDescription className="text-gray-600 dark:text-gray-400">{reward.description}</CardDescription>
 
                       {/* Progress Bar */}
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <p className="text-xs font-medium text-gray-700">Progress</p>
-                          <p className="text-xs font-semibold text-gray-900">{reward.progress}%</p>
+                          <p className="text-xs font-medium text-gray-600 dark:text-gray-400">Progress</p>
+                          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{reward.progress}%</p>
                         </div>
-                        <Progress
-                          value={reward.progress}
-                          className="h-2 bg-white/30"
-                        />
+                        <Progress value={reward.progress} className="h-2 dark:bg-gray-700" />
                       </div>
                     </CardContent>
                   </Card>
@@ -171,14 +166,14 @@ export default function FeatureShowcaseSection() {
 
         {/* Bottom CTA Section */}
         <div className="mt-16 text-center">
-          <p className="text-gray-300 text-lg font-medium mb-4">
+          <p className="text-gray-600 text-lg font-medium mb-4">
             Start competing today and watch your impact grow exponentially
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors duration-300">
               Join the Challenge
             </Button>
-            <Button variant="outline" className="border-gray-600 text-white hover:bg-gray-800 font-semibold px-8 py-3 rounded-lg transition-colors duration-300">
+            <Button variant="outline" className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 font-semibold px-8 py-3 rounded-lg transition-colors duration-300">
               Learn More
             </Button>
           </div>
