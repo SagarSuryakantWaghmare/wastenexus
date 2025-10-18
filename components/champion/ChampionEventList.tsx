@@ -185,7 +185,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
         {events.map((event) => (
           <Card key={event.id} className="border-green-100 hover:shadow-xl transition-shadow">
             <CardHeader className="pb-3">
-              {event.imageUrl && (
+              {event.imageUrl && (event.imageUrl.startsWith('http://') || event.imageUrl.startsWith('https://') || event.imageUrl.startsWith('/')) && (
                 <div className="relative w-full h-40 mb-3 rounded-lg overflow-hidden">
                   <Image
                     src={event.imageUrl}

@@ -7,7 +7,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "migrate-coordinates": "node scripts/migrate-report-coordinates.js"
+    "migrate-coordinates": "node scripts/migrate-report-coordinates.js",
+    "add-admins": "node scripts/add-admins.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -29,6 +30,7 @@
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.545.0",
     "mongodb": "^6.20.0",

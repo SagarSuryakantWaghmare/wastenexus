@@ -19,7 +19,9 @@ export async function GET(request: NextRequest) {
 
     await dbConnect();
 
-    // Import models
+
+    // Import models (register User before population)
+    const User = (await import('@/models/User')).default;
     const Event = (await import('@/models/Event')).default;
 
     // Fetch all events with champion details

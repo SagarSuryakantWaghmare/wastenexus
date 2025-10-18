@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Award, Calendar, Users, MapPin, Loader2, Clock, CheckCircle, Trash2, Eye } from 'lucide-react';
+import { Award, Calendar, Users, MapPin, Loader2, Clock, CheckCircle, Trash2, Eye, ChevronLeft, ChevronRight, X, Download } from 'lucide-react';
 import Image from 'next/image';
 
 interface Event {
@@ -47,11 +47,45 @@ export default function EventsPage() {
   const [processing, setProcessing] = useState<string | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [showImagesDialog, setShowImagesDialog] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Validate image URL - accept Cloudinary URLs or valid absolute URLs
+  const isValidImageUrl = (url?: string): boolean => {
+    if (!url || typeof url !== 'string') return false;
+    const trimmed = url.trim();
+    return trimmed.startsWith('http://') || trimmed.startsWith('https://');
+  };
+
+  // Get valid images list for the selected event
+  const validImages = useMemo(() => {
+    if (!selectedEvent?.images) return [] as string[];
+    return selectedEvent.images.filter(img => isValidImageUrl(img));
+  }, [selectedEvent]);
 
   useEffect(() => {
     fetchEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Keyboard navigation for image slider
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (!showImagesDialog && !isFullscreen) return;
+      
+      if (e.key === 'ArrowLeft') {
+        prevImage();
+      } else if (e.key === 'ArrowRight') {
+        nextImage();
+      } else if (e.key === 'Escape' && isFullscreen) {
+        closeFullscreen();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showImagesDialog, isFullscreen, selectedEvent]);
 
   const fetchEvents = async () => {
     try {
@@ -115,8 +149,34 @@ export default function EventsPage() {
   };
 
   const openImagesDialog = (event: Event) => {
+    console.log('Opening dialog for event:', event.title);
+    console.log('Event images:', event.images);
+    console.log('Valid images:', event.images?.filter(img => isValidImageUrl(img)));
     setSelectedEvent(event);
+    setCurrentImageIndex(0);
     setShowImagesDialog(true);
+  };
+
+  const nextImage = () => {
+    if (selectedEvent?.images) {
+      setCurrentImageIndex((prev) => (prev + 1) % selectedEvent.images!.length);
+    }
+  };
+
+  const prevImage = () => {
+    if (selectedEvent?.images) {
+      setCurrentImageIndex((prev) => 
+        prev === 0 ? selectedEvent.images!.length - 1 : prev - 1
+      );
+    }
+  };
+
+  const openFullscreen = () => {
+    setIsFullscreen(true);
+  };
+
+  const closeFullscreen = () => {
+    setIsFullscreen(false);
   };
 
   const filteredEvents = events.filter((event) => {
@@ -234,7 +294,7 @@ export default function EventsPage() {
                         className="flex flex-col md:flex-row gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                       >
                         {/* Image */}
-                        {event.images && event.images.length > 0 && (
+                        {event.images && event.images.length > 0 && isValidImageUrl(event.images[0]) && (
                           <div className="relative w-full md:w-40 h-40 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                             <Image
                               src={event.images[0]}
@@ -293,6 +353,15 @@ export default function EventsPage() {
 
                           {/* Actions */}
                           <div className="flex gap-2 flex-wrap">
+                            <Button
+                              onClick={() => openImagesDialog(event)}
+                              variant="default"
+                              size="sm"
+                              className="bg-pink-600 hover:bg-pink-700 text-white"
+                            >
+                              <Eye className="w-4 h-4 mr-1" />
+                              View Details
+                            </Button>
                             {event.images && event.images.length > 0 && (
                               <Button
                                 onClick={() => openImagesDialog(event)}
@@ -301,7 +370,7 @@ export default function EventsPage() {
                                 className="border-blue-500 text-blue-700"
                               >
                                 <Eye className="w-4 h-4 mr-1" />
-                                View Images ({event.images.length})
+                                {event.images.length} {event.images.length === 1 ? 'Image' : 'Images'}
                               </Button>
                             )}
                             {event.status !== 'upcoming' && (
@@ -376,78 +445,276 @@ export default function EventsPage() {
 
         {/* Images Dialog */}
         <Dialog open={showImagesDialog} onOpenChange={setShowImagesDialog}>
-          <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-2xl">
-                {selectedEvent?.title} - Event Images
+              <DialogTitle className="text-2xl flex items-center gap-2">
+                <Eye className="w-6 h-6 text-pink-600" />
+                {selectedEvent?.title} - Event Gallery
               </DialogTitle>
             </DialogHeader>
 
             {selectedEvent && (
               <div className="space-y-6">
-                {/* Event Info */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <span className="text-gray-600">Organized by:</span>
-                      <p className="font-medium">{selectedEvent.championId?.name || 'Unknown'}</p>
+                {/* Event Info Card */}
+                <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-6 rounded-xl border-2 border-pink-100">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-5 h-5 text-pink-600" />
+                      <div>
+                        <span className="text-gray-600 text-sm">Organized by</span>
+                        <p className="font-semibold text-gray-900">{selectedEvent.championId?.name || 'Unknown'}</p>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-gray-600">Date:</span>
-                      <p className="font-medium">{new Date(selectedEvent.date).toLocaleDateString()}</p>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-5 h-5 text-pink-600" />
+                      <div>
+                        <span className="text-gray-600 text-sm">Event Date</span>
+                        <p className="font-semibold text-gray-900">{new Date(selectedEvent.date).toLocaleDateString('en-US', { 
+                          weekday: 'short', 
+                          year: 'numeric', 
+                          month: 'short', 
+                          day: 'numeric' 
+                        })}</p>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-gray-600">Participants:</span>
-                      <p className="font-medium">{selectedEvent.participants?.length || 0}</p>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-5 h-5 text-pink-600" />
+                      <div>
+                        <span className="text-gray-600 text-sm">Participants</span>
+                        <p className="font-semibold text-gray-900">{selectedEvent.participants?.length || 0} people joined</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="mt-3">
-                    <span className="text-gray-600">Location:</span>
-                    <p className="font-medium">{selectedEvent.location}</p>
+                  <div className="flex items-start gap-2 mb-3">
+                    <MapPin className="w-5 h-5 text-pink-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <span className="text-gray-600 text-sm">Location</span>
+                      <p className="font-semibold text-gray-900">{selectedEvent.locationName || selectedEvent.location}</p>
+                    </div>
                   </div>
+                  {selectedEvent.wasteFocus && (
+                    <div className="flex items-center gap-2">
+                      <Award className="w-5 h-5 text-pink-600" />
+                      <Badge variant="outline" className="border-pink-300 text-pink-700 bg-white">
+                        {selectedEvent.wasteFocus}
+                      </Badge>
+                    </div>
+                  )}
                   {selectedEvent.description && (
-                    <div className="mt-3">
-                      <span className="text-gray-600">Description:</span>
-                      <p className="font-medium text-gray-700">{selectedEvent.description}</p>
+                    <div className="mt-4 pt-4 border-t border-pink-200">
+                      <span className="text-gray-600 text-sm font-medium">Description</span>
+                      <p className="text-gray-700 mt-1 leading-relaxed">{selectedEvent.description}</p>
                     </div>
                   )}
                 </div>
 
                 {/* Images Gallery */}
-                {selectedEvent.images && selectedEvent.images.length > 0 ? (
+                {(() => {
+                  // use normalized images from useMemo `validImages`
+                  if (validImages.length === 0) {
+                    return (
+                      <div className="text-center py-16 text-gray-500 bg-gray-50 rounded-xl">
+                        <Eye className="w-20 h-20 mx-auto mb-4 text-gray-300" />
+                        <p className="text-lg font-medium">No valid images available</p>
+                        <p className="text-sm mt-1">
+                          {selectedEvent?.images && selectedEvent.images.length > 0 
+                            ? `Found ${selectedEvent.images.length} image(s) but they have invalid URLs`
+                            : 'No images have been uploaded for this event'}
+                        </p>
+                        {selectedEvent?.images && selectedEvent.images.length > 0 && (
+                          <div className="mt-4 text-xs text-gray-400">
+                            <p>Image URLs found:</p>
+                            {selectedEvent.images.map((img, idx) => (
+                              <p key={idx} className="font-mono">{img}</p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  const currentImage = validImages[Math.min(currentImageIndex, validImages.length - 1)];
+
+                  return (
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-lg">
-                      Event Photos ({selectedEvent.images.length})
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {selectedEvent.images.map((img, index) => (
-                        <div
-                          key={index}
-                          className="relative h-80 bg-gray-100 rounded-lg overflow-hidden group"
-                        >
-                          <Image
-                            src={img}
-                            alt={`${selectedEvent.title} - Image ${index + 1}`}
-                            fill
-                            className="object-cover transition-transform group-hover:scale-105"
-                          />
-                          <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-2 text-sm">
-                            Photo {index + 1} of {selectedEvent.images?.length || 0}
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-xl flex items-center gap-2">
+                        <Eye className="w-5 h-5 text-pink-600" />
+                        Event Photos ({validImages.length})
+                      </h3>
+                      <Badge variant="outline" className="text-sm">
+                        {Math.min(currentImageIndex, validImages.length - 1) + 1} of {validImages.length}
+                      </Badge>
+                    </div>
+
+                    {/* Main Image Viewer with Navigation */}
+                    <div className="relative bg-black rounded-xl overflow-hidden group">
+                      <div className="relative w-full h-[500px]">
+                        <Image
+                          src={currentImage}
+                          alt={`${selectedEvent.title} - Image ${Math.min(currentImageIndex, validImages.length - 1) + 1}`}
+                          fill
+                          className="object-contain cursor-pointer transition-transform hover:scale-105"
+                          onClick={openFullscreen}
+                          priority
+                        />
+                        
+                        {/* Navigation Arrows - Only show if more than 1 image */}
+                        {validImages.length > 1 && (
+                          <>
+                            <button
+                              onClick={prevImage}
+                              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                              aria-label="Previous image"
+                            >
+                              <ChevronLeft className="w-6 h-6" />
+                            </button>
+                            <button
+                              onClick={nextImage}
+                              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                              aria-label="Next image"
+                            >
+                              <ChevronRight className="w-6 h-6" />
+                            </button>
+                          </>
+                        )}
+
+                        {/* Image Info Overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4">
+                          <div className="flex items-center justify-between">
+                            <p className="font-medium">Photo {Math.min(currentImageIndex, validImages.length - 1) + 1} of {validImages.length}</p>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={openFullscreen}
+                                className="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-sm flex items-center gap-1 transition-colors"
+                              >
+                                <Eye className="w-4 h-4" />
+                                View Full Size
+                              </button>
+                              <a
+                                href={currentImage}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-sm flex items-center gap-1 transition-colors"
+                              >
+                                <Download className="w-4 h-4" />
+                                Download
+                              </a>
+                            </div>
                           </div>
                         </div>
-                      ))}
+                      </div>
                     </div>
+
+                    {/* Thumbnail Grid - Only show if more than 1 valid image */}
+                    {validImages.length > 1 && (
+                      <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                        {validImages.map((img: string, index: number) => (
+                          <button
+                            key={index}
+                            onClick={() => setCurrentImageIndex(index)}
+                            className={`relative h-20 bg-gray-100 rounded-lg overflow-hidden transition-all ${
+                              index === currentImageIndex
+                                ? 'ring-4 ring-pink-500 scale-105'
+                                : 'ring-2 ring-gray-200 hover:ring-pink-300 opacity-70 hover:opacity-100'
+                            }`}
+                          >
+                            <Image
+                              src={img}
+                              alt={`Thumbnail ${index + 1}`}
+                              fill
+                              className="object-cover"
+                            />
+                            {index === currentImageIndex && (
+                              <div className="absolute inset-0 bg-pink-500/20 flex items-center justify-center">
+                                <CheckCircle className="w-6 h-6 text-white drop-shadow-lg" />
+                              </div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Keyboard Navigation Hint */}
+                    {validImages.length > 1 && (
+                      <div className="text-center text-sm text-gray-500 flex items-center justify-center gap-4">
+                        <span className="flex items-center gap-1">
+                          <kbd className="px-2 py-1 bg-gray-100 rounded text-xs">←</kbd>
+                          <kbd className="px-2 py-1 bg-gray-100 rounded text-xs">→</kbd>
+                          Navigate
+                        </span>
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <div className="text-center py-12 text-gray-500">
-                    <Eye className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                    <p>No images available for this event</p>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
             )}
           </DialogContent>
         </Dialog>
+
+        {/* Fullscreen Image Viewer */}
+        {isFullscreen && selectedEvent && (() => {
+          const currentImage = validImages[Math.min(currentImageIndex, validImages.length - 1)];
+          
+          if (!currentImage) return null;
+          
+          return (
+          <div 
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
+            onClick={closeFullscreen}
+          >
+            <button
+              onClick={closeFullscreen}
+              className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full transition-all z-10"
+              aria-label="Close fullscreen"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="relative w-full h-full flex items-center justify-center p-4">
+              <Image
+                src={currentImage}
+                alt={`${selectedEvent.title} - Image ${Math.min(currentImageIndex, validImages.length - 1) + 1}`}
+                fill
+                className="object-contain"
+                onClick={(e) => e.stopPropagation()}
+              />
+
+              {/* Navigation in Fullscreen */}
+              {validImages.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      prevImage();
+                    }}
+                    className="absolute left-4 bg-white/10 hover:bg-white/20 text-white p-4 rounded-full transition-all"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft className="w-8 h-8" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      nextImage();
+                    }}
+                    className="absolute right-4 bg-white/10 hover:bg-white/20 text-white p-4 rounded-full transition-all"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight className="w-8 h-8" />
+                  </button>
+                </>
+              )}
+
+              {/* Image Counter in Fullscreen */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-6 py-3 rounded-full text-sm font-medium">
+                {Math.min(currentImageIndex, validImages.length - 1) + 1} / {validImages.length}
+              </div>
+            </div>
+          </div>
+          );
+        })()}
       </div>
     </div>
   );

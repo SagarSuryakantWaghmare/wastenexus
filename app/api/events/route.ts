@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Event from '@/models/Event';
 import { verifyToken } from '@/lib/auth';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,15 +34,26 @@ export async function POST(request: NextRequest) {
     const locationAddress = form.get('locationAddress') as string;
     const date = form.get('date') as string;
     
-    // Handle multiple images
+    // Handle multiple images - upload to Cloudinary
     const images: string[] = [];
+    console.log('Processing event images...');
+    
     for (const entry of form.entries()) {
       const [key, value] = entry;
       if (key === 'image' && value instanceof File) {
-        // Save file to disk or cloud storage here (for now, just use filename)
-        images.push(value.name);
+        try {
+          console.log(`Uploading image: ${value.name}`);
+          const cloudinaryUrl = await uploadToCloudinary(value);
+          console.log(`Image uploaded successfully: ${cloudinaryUrl}`);
+          images.push(cloudinaryUrl);
+        } catch (uploadError) {
+          console.error(`Failed to upload image ${value.name}:`, uploadError);
+          // Continue with other images even if one fails
+        }
       }
     }
+    
+    console.log(`Total images uploaded: ${images.length}`);
 
     // Validation
     if (!title || !description || !date) {
