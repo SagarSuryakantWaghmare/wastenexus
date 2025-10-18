@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Job from '@/models/Job';
 import User from '@/models/User';
+import mongoose from 'mongoose';
 import { verifyToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
