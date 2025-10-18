@@ -5,7 +5,14 @@ import { useState as useInputState } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function AddressAutocompleteInput({ value, onSelect }: { value: string; onSelect: (address: string) => void }) {
     const [query, setQuery] = useInputState(value || '');
-    const [suggestions, setSuggestions] = useInputState<Array<{ description: string; place_id: string }>>([]);
+    const [suggestions, setSuggestions] = useInputState<Array<{ 
+        description: string; 
+        place_id: string;
+        structured_formatting?: {
+            main_text: string;
+            secondary_text: string;
+        };
+    }>>([]);
     const [loading, setLoading] = useInputState(false);
     const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
@@ -54,8 +61,8 @@ function AddressAutocompleteInput({ value, onSelect }: { value: string; onSelect
                                 onSelect(suggestion.description);
                             }}
                         >
-                            <p className="font-semibold text-gray-900 text-sm">{suggestion.structured_formatting.main_text}</p>
-                            <p className="text-xs text-gray-500 mt-0.5">{suggestion.structured_formatting.secondary_text}</p>
+                            <p className="font-semibold text-gray-900 text-sm">{suggestion.structured_formatting?.main_text || suggestion.description}</p>
+                            <p className="text-xs text-gray-500 mt-0.5">{suggestion.structured_formatting?.secondary_text || ''}</p>
                         </li>
                     ))}
                 </ul>

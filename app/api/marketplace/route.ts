@@ -33,9 +33,9 @@ export async function GET(request: NextRequest) {
     }
 
     if (minPrice || maxPrice) {
-      query.price = {};
-      if (minPrice) query.price.$gte = parseFloat(minPrice);
-      if (maxPrice) query.price.$lte = parseFloat(maxPrice);
+      query.price = {} as { $gte?: number; $lte?: number };
+      if (minPrice) (query.price as { $gte?: number; $lte?: number }).$gte = parseFloat(minPrice);
+      if (maxPrice) (query.price as { $gte?: number; $lte?: number }).$lte = parseFloat(maxPrice);
     }
 
     if (city) {

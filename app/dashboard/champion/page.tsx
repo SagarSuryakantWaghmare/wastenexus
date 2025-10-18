@@ -28,17 +28,17 @@ interface Report {
 
 interface Event {
   id: string;
-  championId?: string;
+  championId: string;
   title: string;
   description: string;
-  location: string;
-  locationName?: string;
-  locationAddress?: string;
-  wasteFocus?: string;
-  date: string;
-  images?: string[];
+  wasteFocus: string;
+  locationName: string;
+  locationAddress: string;
+  eventDate: string;
+  imageUrl: string;
   participantCount: number;
   status: string;
+  createdAt: string;
 }
 
 export default function ChampionDashboard() {
