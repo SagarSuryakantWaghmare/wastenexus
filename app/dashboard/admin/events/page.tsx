@@ -193,11 +193,11 @@ export default function EventsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-pink-50 dark:from-gray-900 dark:to-pink-950 p-6 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-            <Award className="w-10 h-10 text-pink-600 dark:text-pink-400" />
+            <Award className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
             Events Management
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">Manage cleanup events and community activities</p>
@@ -205,97 +205,117 @@ export default function EventsPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-pink-500 to-pink-600 text-white border-0">
+          <Card className="bg-emerald-500 text-white border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-pink-100 text-sm font-medium mb-1">Total Events</p>
+                  <p className="text-emerald-100 text-sm font-medium mb-1">Total Events</p>
                   <p className="text-4xl font-bold">{stats?.total || 0}</p>
                 </div>
-                <Award className="w-12 h-12 text-pink-200" />
+                <Award className="w-12 h-12 text-emerald-200" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
+          <Card className="bg-cyan-500 text-white border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100 text-sm font-medium mb-1">Upcoming</p>
+                  <p className="text-cyan-100 text-sm font-medium mb-1">Upcoming</p>
                   <p className="text-4xl font-bold">{stats?.upcoming || 0}</p>
                 </div>
-                <Calendar className="w-12 h-12 text-blue-200" />
+                <Calendar className="w-12 h-12 text-cyan-200" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
+          <Card className="bg-amber-500 text-white border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-orange-100 text-sm font-medium mb-1">Ongoing</p>
+                  <p className="text-amber-100 text-sm font-medium mb-1">Ongoing</p>
                   <p className="text-4xl font-bold">{stats?.ongoing || 0}</p>
                 </div>
-                <Clock className="w-12 h-12 text-orange-200" />
+                <Clock className="w-12 h-12 text-amber-200" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
+          <Card className="bg-lime-500 text-white border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-100 text-sm font-medium mb-1">Completed</p>
+                  <p className="text-lime-100 text-sm font-medium mb-1">Completed</p>
                   <p className="text-4xl font-bold">{stats?.completed || 0}</p>
                 </div>
-                <CheckCircle className="w-12 h-12 text-green-200" />
+                <CheckCircle className="w-12 h-12 text-lime-200" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
+          <Card className="bg-teal-500 text-white border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-100 text-sm font-medium mb-1">Participants</p>
+                  <p className="text-teal-100 text-sm font-medium mb-1">Participants</p>
                   <p className="text-4xl font-bold">{stats?.totalParticipants || 0}</p>
                 </div>
-                <Users className="w-12 h-12 text-purple-200" />
+                <Users className="w-12 h-12 text-teal-200" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Events List */}
-        <Card>
-          <CardHeader>
-            <CardTitle>All Events</CardTitle>
+        <Card className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+          <CardHeader className="bg-gray-50 dark:bg-gray-800/50 rounded-t-lg border-b border-gray-100 dark:border-gray-700">
+            <CardTitle className="text-gray-900 dark:text-white text-lg font-semibold">All Events</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6 bg-white dark:bg-gray-800 rounded-b-lg">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="mb-6">
-                <TabsTrigger value="all">All ({stats?.total || 0})</TabsTrigger>
-                <TabsTrigger value="upcoming">Upcoming ({stats?.upcoming || 0})</TabsTrigger>
-                <TabsTrigger value="ongoing">Ongoing ({stats?.ongoing || 0})</TabsTrigger>
-                <TabsTrigger value="completed">Completed ({stats?.completed || 0})</TabsTrigger>
+              <TabsList className="mb-6 bg-gray-100 dark:bg-gray-700/50 p-1 h-auto rounded-lg border border-gray-200 dark:border-gray-600">
+                <TabsTrigger 
+                  value="all" 
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-emerald-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-emerald-400 rounded-md px-3 py-1.5 text-sm"
+                >
+                  All ({stats?.total || 0})
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="upcoming" 
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400 rounded-md px-3 py-1.5 text-sm"
+                >
+                  Upcoming ({stats?.upcoming || 0})
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="ongoing" 
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-orange-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-orange-400 rounded-md px-3 py-1.5 text-sm"
+                >
+                  Ongoing ({stats?.ongoing || 0})
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="completed" 
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-green-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-green-400 rounded-md px-3 py-1.5 text-sm"
+                >
+                  Completed ({stats?.completed || 0})
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value={activeTab}>
                 <div className="space-y-4">
                   {filteredEvents.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                      <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                      <p>No events found</p>
+                    <div className="text-center py-12 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30">
+                      <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-500" />
+                      <p className="text-gray-500 dark:text-gray-400">No events found</p>
                     </div>
                   ) : (
                     filteredEvents.map((event) => (
                       <div
                         key={event._id}
-                        className="flex flex-col md:flex-row gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                        className="flex flex-col md:flex-row gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/80 transition-all duration-200 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md"
                       >
                         {/* Image */}
                         {event.images && event.images.length > 0 && isValidImageUrl(event.images[0]) && (
-                          <div className="relative w-full md:w-40 h-40 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                          <div className="relative w-full md:w-40 h-40 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
                             <Image
                               src={event.images[0]}
                               alt={event.title}
@@ -309,20 +329,20 @@ export default function EventsPage() {
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-2">
                             <div>
-                              <h3 className="font-semibold text-lg">{event.title}</h3>
-                              <p className="text-sm text-gray-600 line-clamp-2">{event.description}</p>
-                              <p className="text-sm text-gray-600 mt-1">
-                                Organized by: <span className="font-medium">{event.championId?.name}</span>
+                              <h3 className="font-semibold text-lg text-gray-900 dark:text-white">{event.title}</h3>
+                              <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{event.description}</p>
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                Organized by: <span className="font-medium text-gray-900 dark:text-white">{event.championId?.name}</span>
                               </p>
                             </div>
                             <Badge
                               variant="outline"
                               className={
                                 event.status === 'upcoming'
-                                  ? 'border-blue-500 text-blue-700'
+                                  ? 'border-blue-500 text-blue-600 dark:border-blue-400 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30'
                                   : event.status === 'ongoing'
-                                  ? 'border-orange-500 text-orange-700'
-                                  : 'border-green-500 text-green-700'
+                                  ? 'border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/30'
+                                  : 'border-green-500 text-green-600 dark:border-green-400 dark:text-green-400 bg-green-50 dark:bg-green-900/30'
                               }
                             >
                               {event.status}
@@ -331,20 +351,20 @@ export default function EventsPage() {
 
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mb-3">
                             <div className="flex items-center gap-1">
-                              <Calendar className="w-4 h-4 text-gray-600" />
-                              <span>{new Date(event.date).toLocaleDateString()}</span>
+                              <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                              <span className="text-gray-700 dark:text-gray-300">{new Date(event.date).toLocaleDateString()}</span>
                             </div>
                             <div className="flex items-center gap-1">
-                              <Users className="w-4 h-4 text-gray-600" />
-                              <span>{event.participants?.length || 0} participants</span>
+                              <Users className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                              <span className="text-gray-700 dark:text-gray-300">{event.participants?.length || 0} participants</span>
                             </div>
                             <div className="flex items-center gap-1">
-                              <MapPin className="w-4 h-4 text-gray-600" />
-                              <span className="truncate">{event.location}</span>
+                              <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                              <span className="truncate text-gray-700 dark:text-gray-300">{event.location}</span>
                             </div>
                             {event.wasteFocus && (
                               <div>
-                                <Badge variant="outline" className="text-xs">
+                                <Badge variant="outline" className="text-xs bg-white/50 dark:bg-gray-700/50 dark:border-gray-600">
                                   {event.wasteFocus}
                                 </Badge>
                               </div>
@@ -357,7 +377,7 @@ export default function EventsPage() {
                               onClick={() => openImagesDialog(event)}
                               variant="default"
                               size="sm"
-                              className="bg-pink-600 hover:bg-pink-700 text-white"
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white dark:bg-emerald-600 dark:hover:bg-emerald-700"
                             >
                               <Eye className="w-4 h-4 mr-1" />
                               View Details
@@ -367,7 +387,7 @@ export default function EventsPage() {
                                 onClick={() => openImagesDialog(event)}
                                 variant="outline"
                                 size="sm"
-                                className="border-blue-500 text-blue-700"
+                                className="border-green-500 text-green-700 dark:border-emerald-400 dark:text-emerald-300 hover:bg-green-50 dark:hover:bg-emerald-900/20"
                               >
                                 <Eye className="w-4 h-4 mr-1" />
                                 {event.images.length} {event.images.length === 1 ? 'Image' : 'Images'}
@@ -389,7 +409,7 @@ export default function EventsPage() {
                                 disabled={processing === event._id}
                                 variant="outline"
                                 size="sm"
-                                className="border-orange-500 text-orange-700"
+                                className="border-amber-500 text-amber-700 dark:border-amber-400 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20"
                               >
                                 Mark Ongoing
                               </Button>
@@ -400,7 +420,7 @@ export default function EventsPage() {
                                 disabled={processing === event._id}
                                 variant="outline"
                                 size="sm"
-                                className="border-green-500 text-green-700"
+                                className="border-emerald-500 text-emerald-700 dark:border-emerald-500 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
                               >
                                 Mark Completed
                               </Button>
@@ -426,15 +446,21 @@ export default function EventsPage() {
 
         {/* Locations */}
         {locations.length > 0 && (
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Event Locations ({locations.length})</CardTitle>
+          <Card className="mt-6 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <CardHeader className="bg-gray-50 dark:bg-gray-800/50 rounded-t-lg border-b border-gray-100 dark:border-gray-700">
+              <CardTitle className="text-gray-900 dark:text-white text-lg font-semibold">
+                Event Locations ({locations.length})
+              </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
+            <CardContent className="p-6 bg-white dark:bg-gray-800 rounded-b-lg">
+              <div className="flex flex-wrap gap-3">
                 {locations.map((location, index) => (
-                  <Badge key={index} variant="outline" className="px-3 py-1">
-                    <MapPin className="w-3 h-3 mr-1" />
+                  <Badge 
+                    key={index} 
+                    variant="outline" 
+                    className="px-3 py-2 bg-white dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <MapPin className="w-4 h-4 mr-1.5 text-emerald-600 dark:text-emerald-400" />
                     {location}
                   </Badge>
                 ))}
@@ -445,10 +471,10 @@ export default function EventsPage() {
 
         {/* Images Dialog */}
         <Dialog open={showImagesDialog} onOpenChange={setShowImagesDialog}>
-          <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto">
+          <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto bg-white dark:bg-gray-800">
             <DialogHeader>
               <DialogTitle className="text-2xl flex items-center gap-2">
-                <Eye className="w-6 h-6 text-pink-600" />
+                <Eye className="w-6 h-6 text-green-600 dark:text-emerald-400" />
                 {selectedEvent?.title} - Event Gallery
               </DialogTitle>
             </DialogHeader>
@@ -456,20 +482,20 @@ export default function EventsPage() {
             {selectedEvent && (
               <div className="space-y-6">
                 {/* Event Info Card */}
-                <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-6 rounded-xl border-2 border-pink-100">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 w-full">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                     <div className="flex items-center gap-2">
-                      <Users className="w-5 h-5 text-pink-600" />
+                      <Users className="w-5 h-5 text-emerald-600" />
                       <div>
                         <span className="text-gray-600 text-sm">Organized by</span>
-                        <p className="font-semibold text-gray-900">{selectedEvent.championId?.name || 'Unknown'}</p>
+                        <p className="font-semibold text-gray-900 dark:text-gray-100">{selectedEvent.championId?.name || 'Unknown'}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-5 h-5 text-pink-600" />
+                      <Calendar className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                       <div>
                         <span className="text-gray-600 text-sm">Event Date</span>
-                        <p className="font-semibold text-gray-900">{new Date(selectedEvent.date).toLocaleDateString('en-US', { 
+                        <p className="font-semibold text-gray-900 dark:text-gray-100">{new Date(selectedEvent.date).toLocaleDateString('en-US', { 
                           weekday: 'short', 
                           year: 'numeric', 
                           month: 'short', 
@@ -478,32 +504,32 @@ export default function EventsPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="w-5 h-5 text-pink-600" />
+                      <Users className="w-5 h-5 text-emerald-600" />
                       <div>
                         <span className="text-gray-600 text-sm">Participants</span>
-                        <p className="font-semibold text-gray-900">{selectedEvent.participants?.length || 0} people joined</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">{selectedEvent.participants?.length || 0} people joined</p>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2 mb-3">
-                    <MapPin className="w-5 h-5 text-pink-600 mt-0.5 flex-shrink-0" />
+                    <MapPin className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
                     <div>
                       <span className="text-gray-600 text-sm">Location</span>
-                      <p className="font-semibold text-gray-900">{selectedEvent.locationName || selectedEvent.location}</p>
+                      <p className="font-semibold text-gray-900 dark:text-white">{selectedEvent.locationName || selectedEvent.location}</p>
                     </div>
                   </div>
                   {selectedEvent.wasteFocus && (
                     <div className="flex items-center gap-2">
-                      <Award className="w-5 h-5 text-pink-600" />
-                      <Badge variant="outline" className="border-pink-300 text-pink-700 bg-white">
+                      <Award className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                      <Badge variant="outline" className="border-emerald-500 text-emerald-700 dark:border-emerald-500 dark:text-emerald-300 bg-white dark:bg-gray-700">
                         {selectedEvent.wasteFocus}
                       </Badge>
                     </div>
                   )}
                   {selectedEvent.description && (
-                    <div className="mt-4 pt-4 border-t border-pink-200">
-                      <span className="text-gray-600 text-sm font-medium">Description</span>
-                      <p className="text-gray-700 mt-1 leading-relaxed">{selectedEvent.description}</p>
+                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <span className="text-emerald-600 dark:text-emerald-400 text-sm font-medium">Description</span>
+                      <p className="text-gray-700 dark:text-gray-200 mt-2 leading-relaxed">{selectedEvent.description}</p>
                     </div>
                   )}
                 </div>
@@ -513,22 +539,14 @@ export default function EventsPage() {
                   // use normalized images from useMemo `validImages`
                   if (validImages.length === 0) {
                     return (
-                      <div className="text-center py-16 text-gray-500 bg-gray-50 rounded-xl">
-                        <Eye className="w-20 h-20 mx-auto mb-4 text-gray-300" />
-                        <p className="text-lg font-medium">No valid images available</p>
+                      <div className="text-center py-12 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <Eye className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-500" />
+                        <p className="text-lg font-medium text-gray-600 dark:text-gray-300">No valid images available</p>
                         <p className="text-sm mt-1">
                           {selectedEvent?.images && selectedEvent.images.length > 0 
                             ? `Found ${selectedEvent.images.length} image(s) but they have invalid URLs`
                             : 'No images have been uploaded for this event'}
                         </p>
-                        {selectedEvent?.images && selectedEvent.images.length > 0 && (
-                          <div className="mt-4 text-xs text-gray-400">
-                            <p>Image URLs found:</p>
-                            {selectedEvent.images.map((img, idx) => (
-                              <p key={idx} className="font-mono">{img}</p>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     );
                   }
@@ -539,17 +557,17 @@ export default function EventsPage() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="font-bold text-xl flex items-center gap-2">
-                        <Eye className="w-5 h-5 text-pink-600" />
+                        <Eye className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                         Event Photos ({validImages.length})
                       </h3>
-                      <Badge variant="outline" className="text-sm">
+                      <Badge variant="outline" className="text-sm border-emerald-300 text-emerald-700 dark:border-emerald-400 dark:text-emerald-300">
                         {Math.min(currentImageIndex, validImages.length - 1) + 1} of {validImages.length}
                       </Badge>
                     </div>
 
                     {/* Main Image Viewer with Navigation */}
-                    <div className="relative bg-black rounded-xl overflow-hidden group">
-                      <div className="relative w-full h-[500px]">
+                    <div className="relative bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden group border border-gray-200 dark:border-gray-700">
+                      <div className="relative w-full h-[500px] bg-white dark:bg-gray-800 rounded-lg">
                         <Image
                           src={currentImage}
                           alt={`${selectedEvent.title} - Image ${Math.min(currentImageIndex, validImages.length - 1) + 1}`}
@@ -564,14 +582,14 @@ export default function EventsPage() {
                           <>
                             <button
                               onClick={prevImage}
-                              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                              className="absolute left-4 top-1/2 -translate-y-1/2 bg-gray-900/80 hover:bg-gray-900 text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
                               aria-label="Previous image"
                             >
                               <ChevronLeft className="w-6 h-6" />
                             </button>
                             <button
                               onClick={nextImage}
-                              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
+                              className="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-900/80 hover:bg-gray-900 text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
                               aria-label="Next image"
                             >
                               <ChevronRight className="w-6 h-6" />
@@ -580,7 +598,7 @@ export default function EventsPage() {
                         )}
 
                         {/* Image Info Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent text-white p-4">
+                        <div className="absolute bottom-0 left-0 right-0 bg-gray-900/80 dark:bg-gray-900/90 text-white p-4 backdrop-blur-sm">
                           <div className="flex items-center justify-between">
                             <p className="font-medium">Photo {Math.min(currentImageIndex, validImages.length - 1) + 1} of {validImages.length}</p>
                             <div className="flex gap-2">
@@ -608,15 +626,15 @@ export default function EventsPage() {
 
                     {/* Thumbnail Grid - Only show if more than 1 valid image */}
                     {validImages.length > 1 && (
-                      <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                      <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 p-1">
                         {validImages.map((img: string, index: number) => (
                           <button
                             key={index}
                             onClick={() => setCurrentImageIndex(index)}
-                            className={`relative h-20 bg-gray-100 rounded-lg overflow-hidden transition-all ${
+                            className={`relative h-20 bg-white dark:bg-gray-800 rounded-lg overflow-hidden transition-all border border-gray-200 dark:border-gray-700 ${
                               index === currentImageIndex
-                                ? 'ring-4 ring-pink-500 scale-105'
-                                : 'ring-2 ring-gray-200 hover:ring-pink-300 opacity-70 hover:opacity-100'
+                                ? 'ring-2 ring-emerald-500 scale-105'
+                                : 'ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-emerald-300 opacity-70 hover:opacity-100'
                             }`}
                           >
                             <Image
@@ -626,7 +644,7 @@ export default function EventsPage() {
                               className="object-cover"
                             />
                             {index === currentImageIndex && (
-                              <div className="absolute inset-0 bg-pink-500/20 flex items-center justify-center">
+                              <div className="absolute inset-0 bg-emerald-500/20 dark:bg-emerald-500/30 flex items-center justify-center">
                                 <CheckCircle className="w-6 h-6 text-white drop-shadow-lg" />
                               </div>
                             )}
