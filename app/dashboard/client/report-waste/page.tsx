@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { WasteReportForm } from "@/components/WasteReportForm";
 import { Navbar } from "@/components/Navbar";
+import { BackButton } from "@/components/ui/back-button";
 
 export default function ReportWastePage() {
   const router = useRouter();
@@ -54,10 +55,13 @@ export default function ReportWastePage() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
       <Navbar />
       <main className="flex-1 flex flex-col items-center w-full px-2 sm:px-4 py-10">
-        <section className="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 sm:p-10 border border-green-100 dark:border-gray-700 flex flex-col justify-center min-h-[480px] transition-colors duration-300">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-green-700 dark:text-green-400 mb-2 text-center">Report Waste</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-center mb-6">Submit a new waste report and help keep your community clean!</p>
-          <WasteReportForm onSuccess={fetchReports} />
+        <section className="w-full max-w-6xl">
+          <BackButton href="/dashboard/client" label="Back to Dashboard" />
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 sm:p-10 border border-green-100 dark:border-gray-700 transition-colors duration-300">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-green-700 dark:text-green-400 mb-2 text-center">Report Waste</h1>
+            <p className="text-gray-500 dark:text-gray-400 text-center mb-6">Submit a new waste report and help keep your community clean!</p>
+            <WasteReportForm onSuccess={fetchReports} />
+          </div>
         </section>
       </main>
     </div>

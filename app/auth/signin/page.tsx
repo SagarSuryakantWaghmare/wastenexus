@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, Eye, EyeOff } from "lucide-react";
+import { Leaf } from "lucide-react";
 import Image from "next/image";
 
 export default function SignInPage() {
@@ -18,7 +18,6 @@ export default function SignInPage() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (!isLoading && user) {
@@ -95,29 +94,21 @@ export default function SignInPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="bg-gray-900/70 border border-green-300 text-white placeholder:text-white/60 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/80"
+                  className="bg-gray-900/60 border border-gray-700 text-white placeholder:text-white/50 rounded-md px-3 py-1.5 h-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/70"
                 />
               </div>
               <div className="relative">
                 <Label htmlFor="password" className="text-white font-semibold mb-2 block">Password</Label>
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"}
+                  type="password"
                   placeholder="Enter your password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
                   minLength={6}
-                  className="bg-gray-900/70 border border-green-300 text-white placeholder:text-white/60 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/80 pr-10 h-12"
+                  className="bg-gray-900/60 border border-gray-700 text-white placeholder:text-white/50 rounded-md px-3 py-1.5 h-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/70"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-3 flex items-center justify-center px-2 text-white/80"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
               </div>
               {error && (
                 <div className="rounded-lg bg-red-200 border border-red-400 p-3 text-sm text-red-800">{error}</div>

@@ -6,14 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, Eye, EyeOff } from "lucide-react";
+import { Leaf } from "lucide-react";
 import Image from "next/image";
 
 export default function SignUpPage() {
     const router = useRouter();
     const { user, signup, isLoading } = useAuth();
-
-    const [showPassword, setShowPassword] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -103,7 +101,7 @@ export default function SignUpPage() {
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     required
-                                    className="bg-black/70 border border-white/30 text-white placeholder:text-white/60 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-black/80"
+                                    className="bg-gray-900/60 border border-gray-700 text-white placeholder:text-white/50 rounded-md px-3 py-1.5 h-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/70"
                                 />
                             </div>
 
@@ -116,31 +114,23 @@ export default function SignUpPage() {
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     required
-                                    className="bg-black/70 border border-white/30 text-white placeholder:text-white/60 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-black/80"
+                                    className="bg-gray-900/60 border border-gray-700 text-white placeholder:text-white/50 rounded-md px-3 py-1.5 h-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/70"
                                 />
                             </div>
 
-                            {/* Password with Eye Toggle */}
-                            <div className="relative">
+                            {/* Password */}
+                            <div>
                                 <Label htmlFor="password" className="text-white font-semibold mb-2">Password</Label>
                                 <Input
                                     id="password"
-                                    type={showPassword ? "text" : "password"}
+                                    type="password"
                                     placeholder="Enter a strong password"
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                     required
                                     minLength={6}
-                                    className="bg-black/70 border border-white/40 text-white placeholder:text-white/60 focus:border-white/60 focus:bg-black/80 pr-10 h-12 rounded-md px-3 py-2"
+                                    className="bg-gray-900/60 border border-gray-700 text-white placeholder:text-white/50 h-10 rounded-md px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/70"
                                 />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute inset-y-0 right-3 flex items-center justify-center px-2 text-white/80"
-                                    aria-label={showPassword ? "Hide password" : "Show password"}
-                                >
-                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                                </button>
                             </div>
 
                             <div>
@@ -149,12 +139,10 @@ export default function SignUpPage() {
                                     id="role"
                                     value={formData.role}
                                     onChange={(e) => setFormData({ ...formData, role: e.target.value as "client" | "champion" | "worker" | "admin" })}
-                                    className="w-full bg-white/10 border border-white/30 text-white rounded-md px-3 py-2.5"
+                                    className="w-full bg-gray-900/60 border border-gray-700 text-white rounded-md px-3 py-1.5 h-10"
                                 >
                                     <option value="client" className="bg-gray-900 text-white">Client - Report waste & earn rewards</option>
-                                    <option value="worker" className="bg-gray-900 text-white">Worker - Collect waste & manage routes</option>
                                     <option value="champion" className="bg-gray-900 text-white">Champion - Verify reports & create events</option>
-                                    <option value="admin" className="bg-gray-900 text-white">Admin - Manage platform</option>
                                 </select>
                             </div>
 

@@ -255,6 +255,53 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
                   {location?.address ? location.address : 'Select location on map to continue'}
                 </span>
               </div>
+              {/* Manual Address Input */}
+              <div className="flex gap-2 items-center mt-2">
+                <Button
+                  type="button"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold"
+                  onClick={async () => {
+                    if (navigator.geolocation) {
+                      navigator.geolocation.getCurrentPosition(async (pos) => {
+                        const { latitude, longitude } = pos.coords;
+                        let address = '';
+                        try {
+                          // Use a free reverse geocoding API (OpenStreetMap Nominatim)
+                          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+                          const data = await res.json();
+                          address = data.display_name || '';
+                        } catch {
+                          address = '';
+                        }
+                        setLocation({ latitude, longitude, address });
+                        toast.success('Location detected!');
+                      }, () => {
+                        toast.error('Unable to detect location');
+                      });
+                    } else {
+                      toast.error('Geolocation not supported');
+                    }
+                  }}
+                >
+                  Auto Detect Location
+                </Button>
+                <Label htmlFor="manual-address" className="text-gray-700 dark:text-gray-100 font-semibold">Or enter address manually</Label>
+              </div>
+              <input
+                id="manual-address"
+                type="text"
+                value={location?.address || ''}
+                onChange={e => {
+                  const address = e.target.value;
+                  setLocation(prev => ({
+                    latitude: prev?.latitude || 0,
+                    longitude: prev?.longitude || 0,
+                    address,
+                  }));
+                }}
+                placeholder="Type address here..."
+                className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-gray-100 shadow-sm px-4 py-2.5 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-base"
+              />
             </div>
           </div>
 

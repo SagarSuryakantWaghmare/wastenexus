@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navbar } from "@/components/Navbar";
+import { BackButton } from "@/components/ui/back-button";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Search, Zap, Crown } from "lucide-react";
 
@@ -73,6 +74,7 @@ export default function LeaderboardPage() {
       
       <main className="flex-1 flex flex-col items-center w-full px-2 sm:px-4 py-12">
         <section className="w-full max-w-5xl">
+          <BackButton href="/dashboard/client" label="Back to Dashboard" />
           {/* Header Section */}
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-4">
