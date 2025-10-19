@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
           name: user.name,
           email: user.email,
           role: user.role,
+          profileImage: user.profileImage || '',
           totalPoints: user.totalPoints,
         },
       },

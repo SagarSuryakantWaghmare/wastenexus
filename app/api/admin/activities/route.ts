@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 import dbConnect from '@/lib/mongodb';
-import { Types } from 'mongoose';
-import { ObjectId } from 'mongodb';
 
 export async function GET(request: Request) {
   try {
@@ -48,7 +46,16 @@ export async function GET(request: Request) {
     const total = await db.collection('activities').countDocuments();
 
     // Format the response
-    const formattedActivities = activities.map((activity: any) => ({
+    interface Activity {
+      _id?: { toString: () => string };
+      action?: string;
+      type?: string;
+      details?: string;
+      userId?: { toString: () => string };
+      userName?: string;
+      createdAt?: Date;
+    }
+    const formattedActivities = activities.map((activity: Activity) => ({
       id: activity._id?.toString() || '',
       action: activity.action || '',
       type: activity.type || 'system',

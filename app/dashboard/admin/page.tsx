@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from "react";
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,7 +32,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchRecentActivities = async () => {
+  const fetchRecentActivities = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch('/api/admin/activities?limit=5', {
@@ -53,28 +53,15 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     if (token) {
       fetchRecentActivities();
     }
-  }, [token]);
+  }, [token, fetchRecentActivities]);
 
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'marketplace':
-        return <ShoppingBag className="w-4 h-4" />;
-      case 'user':
-        return <Users className="w-4 h-4" />;
-      case 'report':
-        return <FileText className="w-4 h-4" />;
-      case 'event':
-        return <Award className="w-4 h-4" />;
-      default:
-        return <AlertCircle className="w-4 h-4" />;
-    }
-  };
+  // Removed unused getActivityIcon function
 
   const getActivityColor = (type: string) => {
     switch (type) {

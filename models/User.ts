@@ -6,6 +6,7 @@ export interface IUser {
   email: string;
   password: string;
   role: 'client' | 'champion' | 'admin' | 'worker';
+  profileImage?: string;
   totalPoints: number;
   createdAt: Date;
   updatedAt: Date;
@@ -35,6 +36,10 @@ const UserSchema = new Schema<IUser>(
       enum: ['client', 'champion', 'admin', 'worker'],
       required: [true, 'Please specify a role'],
       default: 'client',
+    },
+    profileImage: {
+      type: String,
+      default: '',
     },
     totalPoints: {
       type: Number,

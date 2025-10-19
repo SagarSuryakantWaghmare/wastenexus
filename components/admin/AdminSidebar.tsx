@@ -7,6 +7,9 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import ProfileModal from '../ProfileModal';
+import UserAvatar from '../UserAvatar';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   ShoppingBag,
   Users,
@@ -73,7 +76,9 @@ const adminRoutes = [
 
 export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
   const pathname = usePathname();
+  const { user } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   return (
     <>
@@ -112,14 +117,24 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
         {!collapsed && (
           <div className="p-4 border-b border-gray-700 dark:border-gray-800">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center font-bold text-white">
-                {userName.charAt(0).toUpperCase()}
-              </div>
+              <UserAvatar 
+                name={user?.name || userName} 
+                profileImage={user?.profileImage}
+                size="md"
+                className="ring-2 ring-green-400"
+              />
               <div className="flex-1">
-                <p className="text-sm font-medium">{userName}</p>
+                <p className="text-sm font-medium">{user?.name || userName}</p>
                 <p className="text-xs text-gray-400">Administrator</p>
               </div>
             </div>
+            {/* Profile Modal Trigger */}
+            <button
+              onClick={() => setShowProfileModal(true)}
+              className="mt-3 w-full flex items-center gap-2 px-3 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
+            >
+              Profile
+            </button>
           </div>
         )}
 
@@ -158,10 +173,18 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
             />
             {!collapsed && <span className="text-sm font-medium">Toggle Theme</span>}
           </div>
-          <div className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-700 dark:hover:bg-gray-800 transition-colors cursor-pointer">
-            <LogOut className="h-5 w-5 text-red-400" />
+          <button
+            type="button"
+            className="flex items-center gap-3 p-2 rounded-md bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400 text-white transition-colors w-full"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.location.href = '/auth/signin';
+              }
+            }}
+          >
+            <LogOut className="h-5 w-5" />
             {!collapsed && <span className="text-sm font-medium">Logout</span>}
-          </div>
+          </button>
         </div>
       </div>
 
@@ -188,14 +211,24 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
           {/* Mobile User Info */}
           <div className="p-4 border-b border-gray-700">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center font-bold text-white">
-                {userName.charAt(0).toUpperCase()}
-              </div>
+              <UserAvatar 
+                name={user?.name || userName} 
+                profileImage={user?.profileImage}
+                size="md"
+                className="ring-2 ring-green-400"
+              />
               <div className="flex-1">
-                <p className="text-sm font-medium">{userName}</p>
+                <p className="text-sm font-medium">{user?.name || userName}</p>
                 <p className="text-xs text-gray-400">Administrator</p>
               </div>
             </div>
+            {/* Profile Modal Trigger (Mobile) */}
+            <button
+              onClick={() => setShowProfileModal(true)}
+              className="mt-3 w-full flex items-center gap-2 px-3 py-2 rounded-md bg-green-600 hover:bg-green-700 text-white font-medium transition-colors"
+            >
+              Profile
+            </button>
           </div>
 
           {/* Mobile Navigation */}
@@ -224,15 +257,26 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
 
           {/* Mobile Footer */}
           <div className="absolute bottom-0 w-full p-3 border-t border-gray-700 dark:border-gray-800">
-            <Link href="/auth/signin">
-              <div className="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-400 hover:bg-red-500/10 dark:hover:bg-red-500/20 hover:text-red-400 cursor-pointer transition-all">
-                <LogOut className="w-5 h-5" />
-                <span className="text-sm font-medium">Logout</span>
-              </div>
-            </Link>
+            <button
+              type="button"
+              className="flex items-center gap-3 w-full px-3 py-3 rounded-lg bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400 text-white transition-colors"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.href = '/auth/signin';
+                }
+              }}
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="text-sm font-medium">Logout</span>
+            </button>
           </div>
         </SheetContent>
       </Sheet>
+      {/* Profile Modal (shared for desktop & mobile) */}
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+      />
     </>
   );
 }

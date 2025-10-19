@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clock, FileText, ShoppingBag, Users, Trash2, CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Clock, Trash2, AlertCircle, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 interface Activity {
@@ -28,7 +28,7 @@ interface ApiResponse {
 }
 
 export default function ActivityLog() {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({
@@ -74,26 +74,10 @@ export default function ActivityLog() {
     if (token) {
       fetchActivities();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.page, pagination.limit, token]);
 
-  const handlePageChange = (newPage: number) => {
-    setPagination(prev => ({ ...prev, page: newPage }));
-  };
 
-  const getActivityIcon = (type: string) => {
-    switch (type) {
-      case 'marketplace':
-        return <ShoppingBag className="w-4 h-4" />;
-      case 'user':
-        return <Users className="w-4 h-4" />;
-      case 'report':
-        return <FileText className="w-4 h-4" />;
-      case 'event':
-        return <AlertCircle className="w-4 h-4" />;
-      default:
-        return <Clock className="w-4 h-4" />;
-    }
-  };
 
   const getActivityColor = (type: string) => {
     switch (type) {

@@ -21,7 +21,6 @@ import {
 import {
   Users,
   Search,
-  UserPlus,
   Shield,
   Loader2,
   Mail,

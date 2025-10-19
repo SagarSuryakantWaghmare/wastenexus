@@ -666,7 +666,7 @@ export default function AdminMarketplaceDashboard() {
                     ].map((filter) => (
                       <button
                         key={filter.value}
-                        onClick={() => setItemsFilter(filter.value as any)}
+                        onClick={() => setItemsFilter(filter.value as string)}
                         className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                           itemsFilter === filter.value
                             ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400'
