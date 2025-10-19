@@ -19,8 +19,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Briefcase,
-  Moon,
-  Sun,
 } from 'lucide-react';
 import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
 
@@ -156,8 +154,6 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
           <div className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-700 dark:hover:bg-gray-800 transition-colors">
             <AnimatedThemeToggler
               className="text-gray-300 hover:text-white transition-colors h-5 w-5"
-              moonIcon={<Moon className="h-4 w-4" />}
-              sunIcon={<Sun className="h-4 w-4" />}
               aria-label="Toggle theme"
             />
             {!collapsed && <span className="text-sm font-medium">Toggle Theme</span>}

@@ -1,9 +1,14 @@
 import mongoose from 'mongoose';
+import '../models/User';
+import '../models/MarketplaceItem';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   var mongoose: any;
 }
+
+// Import models to ensure they're registered
+import './registerModels';
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 

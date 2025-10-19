@@ -48,11 +48,6 @@ const UserSchema = new Schema<IUser>(
 );
 
 // Prevent model recompilation in development
-// Delete the model if it exists to ensure schema updates are applied
-if (models.User) {
-  delete models.User;
-}
-
-const User = model<IUser>('User', UserSchema);
+const User = models.User || model<IUser>('User', UserSchema);
 
 export default User;

@@ -19,7 +19,9 @@ import {
   Eye,
   MapPin,
   IndianRupee,
-  AlertTriangle
+  AlertTriangle,
+  RefreshCw,
+  Search
 } from 'lucide-react';
 import { normalizeMarketplaceList } from '@/lib/marketplace';
 import Image from 'next/image';
@@ -58,6 +60,15 @@ interface Stats {
     rejectedItems: number;
     soldItems: number;
     totalViews: number;
+    // Add comparison data
+    comparison: {
+      totalItems: { change: number; isPositive: boolean };
+      pendingItems: { change: number; isPositive: boolean };
+      approvedItems: { change: number; isPositive: boolean };
+      rejectedItems: { change: number; isPositive: boolean };
+      soldItems: { change: number; isPositive: boolean };
+      totalViews: { change: number; isPositive: boolean };
+    };
   };
   categoryBreakdown: Array<{
     _id: string;
@@ -76,6 +87,7 @@ interface Stats {
 export default function AdminMarketplaceDashboard() {
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [pendingItems, setPendingItems] = useState<MarketplaceItem[]>([]);
   const [allItems, setAllItems] = useState<MarketplaceItem[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -88,15 +100,20 @@ export default function AdminMarketplaceDashboard() {
   const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [activeTab, setActiveTab] = useState('pending');
   const [itemsFilter, setItemsFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async (isRefreshing = false) => {
     try {
-      setLoading(true);
+      if (isRefreshing) {
+        setRefreshing(true);
+      } else {
+        setLoading(true);
+      }
       const [pendingRes, allItemsRes, statsRes] = await Promise.all([
         fetch('/api/admin/marketplace/pending', {
           headers: { 'Authorization': `Bearer ${token}` },
@@ -134,6 +151,7 @@ export default function AdminMarketplaceDashboard() {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -191,110 +209,249 @@ export default function AdminMarketplaceDashboard() {
   };
 
   const filteredAllItems = allItems.filter((item) => {
-    if (itemsFilter === 'all') return true;
-    return item.status === itemsFilter;
+    // Filter by status
+    const matchesFilter = itemsFilter === 'all' || item.status === itemsFilter;
+    
+    // Filter by search query if provided
+    if (searchQuery.trim() === '') return matchesFilter;
+    
+    const query = searchQuery.toLowerCase();
+    return matchesFilter && (
+      (item.title && item.title.toLowerCase().includes(query)) ||
+      (item.description && item.description.toLowerCase().includes(query)) ||
+      (item.category && item.category.toLowerCase().includes(query)) ||
+      (item.sellerName && item.sellerName.toLowerCase().includes(query)) ||
+      (item.location?.city && item.location.city.toLowerCase().includes(query)) ||
+      (item.location?.state && item.location.state.toLowerCase().includes(query))
+    );
   });
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50 dark:from-gray-900 dark:to-green-950 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
-            <ShoppingBag className="w-10 h-10 text-green-600" />
-            Marketplace Admin Dashboard
-          </h1>
-          <p className="text-gray-600 mt-2">Review and manage marketplace listings</p>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                <ShoppingBag className="w-8 h-8 text-green-600" />
+                Marketplace Admin
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300 mt-1">Manage and monitor all marketplace listings</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => fetchData(true)}
+                disabled={refreshing}
+              >
+                {refreshing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Refreshing...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                    Refresh
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Alert */}
         {alert && (
-          <Alert className={`mb-6 ${alert.type === 'success' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-            <AlertDescription className={alert.type === 'success' ? 'text-green-800' : 'text-red-800'}>
-              {alert.message}
-            </AlertDescription>
+          <Alert 
+            className={`mb-6 border-l-4 ${
+              alert.type === 'success' 
+                ? 'border-green-500 bg-green-50 dark:bg-green-900/20' 
+                : 'border-red-500 bg-red-50 dark:bg-red-900/20'
+            }`}
+          >
+            <div className="flex items-center">
+              {alert.type === 'success' ? (
+                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mr-3" />
+              ) : (
+                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400 mr-3" />
+              )}
+              <AlertDescription 
+                className={`text-sm ${
+                  alert.type === 'success' 
+                    ? 'text-green-700 dark:text-green-300' 
+                    : 'text-red-700 dark:text-red-300'
+                }`}
+              >
+                {alert.message}
+              </AlertDescription>
+            </div>
           </Alert>
         )}
 
         {/* Statistics Cards */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
-            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+            <Card className="bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
+              <CardContent className="p-4 sm:p-5">
+                <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm font-medium text-blue-600">Total Items</p>
-                    <p className="text-3xl font-bold text-blue-900">{stats.overview.totalItems}</p>
+                    <p className="text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400">Total Items</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.overview.totalItems || 0}</p>
+                    {stats.overview.comparison?.totalItems ? (
+                      <div className={`mt-1 flex items-center text-xs ${stats.overview.comparison.totalItems.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats.overview.comparison.totalItems.isPositive ? (
+                          <TrendingUp className="w-3 h-3 mr-1" />
+                        ) : (
+                          <TrendingUp className="w-3 h-3 mr-1 transform rotate-180" />
+                        )}
+                        {Math.abs(stats.overview.comparison.totalItems.change || 0)}% from last period
+                      </div>
+                    ) : (
+                      <div className="mt-1 h-4"></div>
+                    )}
                   </div>
-                  <ShoppingBag className="w-8 h-8 text-blue-600" />
+                  <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+                    <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+            <Card className="bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
+              <CardContent className="p-4 sm:p-5">
+                <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm font-medium text-yellow-600">Pending</p>
-                    <p className="text-3xl font-bold text-yellow-900">{stats.overview.pendingItems}</p>
+                    <p className="text-xs sm:text-sm font-medium text-amber-600 dark:text-amber-400">Pending</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.overview.pendingItems || 0}</p>
+                    {stats.overview.comparison?.pendingItems ? (
+                      <div className={`mt-1 flex items-center text-xs ${stats.overview.comparison.pendingItems.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats.overview.comparison.pendingItems.isPositive ? (
+                          <TrendingUp className="w-3 h-3 mr-1" />
+                        ) : (
+                          <TrendingUp className="w-3 h-3 mr-1 transform rotate-180" />
+                        )}
+                        {Math.abs(stats.overview.comparison.pendingItems.change || 0)}% from last period
+                      </div>
+                    ) : (
+                      <div className="mt-1 h-4"></div>
+                    )}
                   </div>
-                  <Clock className="w-8 h-8 text-yellow-600" />
+                  <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-900/20">
+                    <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 dark:text-amber-400" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+            <Card className="bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
+              <CardContent className="p-4 sm:p-5">
+                <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm font-medium text-green-600">Approved</p>
-                    <p className="text-3xl font-bold text-green-900">{stats.overview.approvedItems}</p>
+                    <p className="text-xs sm:text-sm font-medium text-green-600 dark:text-green-400">Approved</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.overview.approvedItems || 0}</p>
+                    {stats.overview.comparison?.approvedItems ? (
+                      <div className={`mt-1 flex items-center text-xs ${stats.overview.comparison.approvedItems.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats.overview.comparison.approvedItems.isPositive ? (
+                          <TrendingUp className="w-3 h-3 mr-1" />
+                        ) : (
+                          <TrendingUp className="w-3 h-3 mr-1 transform rotate-180" />
+                        )}
+                        {Math.abs(stats.overview.comparison.approvedItems.change || 0)}% from last period
+                      </div>
+                    ) : (
+                      <div className="mt-1 h-4"></div>
+                    )}
                   </div>
-                  <CheckCircle className="w-8 h-8 text-green-600" />
+                  <div className="p-2 rounded-lg bg-green-50 dark:bg-green-900/20">
+                    <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+            <Card className="bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
+              <CardContent className="p-4 sm:p-5">
+                <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm font-medium text-red-600">Rejected</p>
-                    <p className="text-3xl font-bold text-red-900">{stats.overview.rejectedItems}</p>
+                    <p className="text-xs sm:text-sm font-medium text-red-600 dark:text-red-400">Rejected</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.overview.rejectedItems || 0}</p>
+                    {stats.overview.comparison?.rejectedItems ? (
+                      <div className={`mt-1 flex items-center text-xs ${stats.overview.comparison.rejectedItems.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats.overview.comparison.rejectedItems.isPositive ? (
+                          <TrendingUp className="w-3 h-3 mr-1" />
+                        ) : (
+                          <TrendingUp className="w-3 h-3 mr-1 transform rotate-180" />
+                        )}
+                        {Math.abs(stats.overview.comparison.rejectedItems.change || 0)}% from last period
+                      </div>
+                    ) : (
+                      <div className="mt-1 h-4"></div>
+                    )}
                   </div>
-                  <XCircle className="w-8 h-8 text-red-600" />
+                  <div className="p-2 rounded-lg bg-red-50 dark:bg-red-900/20">
+                    <XCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 dark:text-red-400" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+            <Card className="bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
+              <CardContent className="p-4 sm:p-5">
+                <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm font-medium text-purple-600">Sold</p>
-                    <p className="text-3xl font-bold text-purple-900">{stats.overview.soldItems}</p>
+                    <p className="text-xs sm:text-sm font-medium text-purple-600 dark:text-purple-400">Sold</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.overview.soldItems || 0}</p>
+                    {stats.overview.comparison?.soldItems ? (
+                      <div className={`mt-1 flex items-center text-xs ${stats.overview.comparison.soldItems.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats.overview.comparison.soldItems.isPositive ? (
+                          <TrendingUp className="w-3 h-3 mr-1" />
+                        ) : (
+                          <TrendingUp className="w-3 h-3 mr-1 transform rotate-180" />
+                        )}
+                        {Math.abs(stats.overview.comparison.soldItems.change || 0)}% from last period
+                      </div>
+                    ) : (
+                      <div className="mt-1 h-4"></div>
+                    )}
                   </div>
-                  <TrendingUp className="w-8 h-8 text-purple-600" />
+                  <div className="p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+                    <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+            <Card className="bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
+              <CardContent className="p-4 sm:p-5">
+                <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-sm font-medium text-indigo-600">Total Views</p>
-                    <p className="text-3xl font-bold text-indigo-900">{stats.overview.totalViews}</p>
+                    <p className="text-xs sm:text-sm font-medium text-cyan-600 dark:text-cyan-400">Total Views</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.overview.totalViews || 0}</p>
+                    {stats.overview.comparison?.totalViews ? (
+                      <div className={`mt-1 flex items-center text-xs ${stats.overview.comparison.totalViews.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats.overview.comparison.totalViews.isPositive ? (
+                          <TrendingUp className="w-3 h-3 mr-1" />
+                        ) : (
+                          <TrendingUp className="w-3 h-3 mr-1 transform rotate-180" />
+                        )}
+                        {Math.abs(stats.overview.comparison.totalViews.change || 0)}% from last period
+                      </div>
+                    ) : (
+                      <div className="mt-1 h-4"></div>
+                    )}
                   </div>
-                  <Eye className="w-8 h-8 text-indigo-600" />
+                  <div className="p-2 rounded-lg bg-cyan-50 dark:bg-cyan-900/20">
+                    <Eye className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-600 dark:text-cyan-400" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -303,10 +460,10 @@ export default function AdminMarketplaceDashboard() {
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6 inline-flex items-center gap-2 rounded-md p-1 bg-white dark:bg-transparent border border-gray-200 dark:border-gray-700">
+          <TabsList className="mb-6 inline-flex items-center gap-2 rounded-lg p-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
               <TabsTrigger
                 value="pending"
-                className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+                className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 data-[state=active]:bg-green-100 data-[state=active]:text-green-700 dark:data-[state=active]:bg-green-900/50 dark:data-[state=active]:text-green-400 transition-colors"
               >
                 Pending Review ({stats?.overview.pendingItems || 0})
               </TabsTrigger>
@@ -325,30 +482,92 @@ export default function AdminMarketplaceDashboard() {
             </TabsList>
 
           {/* Pending Items Tab */}
+          <div className="mb-6 flex justify-between items-center">
+            <div className="flex items-center space-x-2">
+              <h3 className="text-lg font-medium">
+                {activeTab === 'pending' && 'Pending Approvals'}
+                {activeTab === 'allItems' && 'All Listings'}
+                {activeTab === 'stats' && 'Statistics & Insights'}
+              </h3>
+              <Badge variant="outline" className="bg-gray-100 dark:bg-gray-800">
+                {activeTab === 'pending' && pendingItems.length}
+                {activeTab === 'allItems' && allItems.length}
+                {activeTab === 'stats' && 'View'}
+              </Badge>
+            </div>
+            <div className="flex items-center space-x-2">
+              {activeTab !== 'stats' && (
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search items..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white text-sm w-64"
+                  />
+                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                </div>
+              )}
+              <div className="relative">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-gray-300 dark:border-gray-600 min-w-[100px]"
+                  onClick={() => fetchData(true)}
+                  disabled={refreshing}
+                >
+                  {refreshing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Refreshing...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                      Refresh
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </div>
+
           <TabsContent value="pending">
             {pendingItems.length === 0 ? (
-              <Card>
-                <CardContent className="py-16 text-center">
-                  <CheckCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">All Caught Up!</h3>
-                  <p className="text-gray-600">No pending items to review at the moment.</p>
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-8 text-center">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50 mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">All Caught Up!</h3>
+                  <p className="text-gray-500 dark:text-gray-400">No pending items to review at the moment.</p>
                 </CardContent>
               </Card>
             ) : (
               <div className="grid grid-cols-1 gap-6">
                 {pendingItems.map((item) => (
-                  <Card key={item._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <Card key={item._id} className="overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
                     <div className="md:flex">
                       {/* Image Section */}
-                      <div className="md:w-1/3 bg-gray-100 relative h-64 md:h-auto">
+                      <div className="md:w-1/3 bg-gray-100 dark:bg-gray-700 relative h-64 md:h-auto">
                         <Image
                           src={(item.images && item.images[0]) || '/placeholder-image.jpg'}
                           alt={item.title || 'Item'}
                           fill
                           className="object-cover"
                         />
-                        <Badge className="absolute top-4 left-4 bg-yellow-500">
-                          Pending Review
+                        <Badge 
+                          className={`absolute top-4 left-4 ${
+                            item.status === 'approved' 
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                              : item.status === 'rejected'
+                              ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                              : item.status === 'sold'
+                              ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                              : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                          }`}
+                        >
+                          {item.status?.charAt(0).toUpperCase() + item.status?.slice(1) || 'Pending Review'}
                         </Badge>
                       </div>
 
@@ -385,7 +604,7 @@ export default function AdminMarketplaceDashboard() {
                           </div>
 
                           {/* Seller Info */}
-                          <div className="bg-gray-50 p-4 rounded-lg">
+                          <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
                             <p className="text-sm font-semibold text-gray-900 mb-2">Seller Information</p>
                             <div className="space-y-1 text-sm">
                               <p><span className="font-medium">Name:</span> {item.sellerName || 'Unknown'}</p>
@@ -433,68 +652,49 @@ export default function AdminMarketplaceDashboard() {
 
           {/* All Items Tab */}
           <TabsContent value="allItems">
-            <Card className="mb-6">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Filter by Status</CardTitle>
-                  <div className="flex gap-2">
-                    <Button
-                      variant={itemsFilter === 'all' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setItemsFilter('all')}
-                      className={itemsFilter === 'all' ? 'dark:bg-gray-700 dark:text-gray-100' : 'dark:border-gray-600 dark:text-gray-100'}
-                    >
-                      All
-                    </Button>
-                    <Button
-                      variant={itemsFilter === 'pending' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setItemsFilter('pending')}
-                      className={itemsFilter === 'pending' ? 'dark:bg-gray-700 dark:text-gray-100' : 'dark:border-gray-600 dark:text-gray-100'}
-                    >
-                      Pending
-                    </Button>
-                    <Button
-                      variant={itemsFilter === 'approved' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setItemsFilter('approved')}
-                      className={itemsFilter === 'approved' ? 'dark:bg-gray-700 dark:text-gray-100' : 'dark:border-gray-600 dark:text-gray-100'}
-                    >
-                      Approved
-                    </Button>
-                    <Button
-                      variant={itemsFilter === 'rejected' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setItemsFilter('rejected')}
-                      className={itemsFilter === 'rejected' ? 'dark:bg-gray-700 dark:text-gray-100' : 'dark:border-gray-600 dark:text-gray-100'}
-                    >
-                      Rejected
-                    </Button>
-                    <Button
-                      variant={itemsFilter === 'sold' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setItemsFilter('sold')}
-                      className={itemsFilter === 'sold' ? 'dark:bg-gray-700 dark:text-gray-100' : 'dark:border-gray-600 dark:text-gray-100'}
-                    >
-                      Sold
-                    </Button>
+            <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+              <CardHeader className="p-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <CardTitle className="text-base font-medium text-gray-900 dark:text-white">Filter by Status</CardTitle>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: 'all', label: 'All' },
+                      { value: 'pending', label: 'Pending' },
+                      { value: 'approved', label: 'Approved' },
+                      { value: 'rejected', label: 'Rejected' },
+                      { value: 'sold', label: 'Sold' }
+                    ].map((filter) => (
+                      <button
+                        key={filter.value}
+                        onClick={() => setItemsFilter(filter.value as any)}
+                        className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                          itemsFilter === filter.value
+                            ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400'
+                            : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600'
+                        }`}
+                      >
+                        {filter.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
               </CardHeader>
             </Card>
 
             {filteredAllItems.length === 0 ? (
-              <Card>
-                <CardContent className="py-16 text-center">
-                  <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">No Items Found</h3>
-                  <p className="text-gray-600">No marketplace items match your filter.</p>
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+                <CardContent className="p-8 text-center">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700/50 mb-4">
+                    <ShoppingBag className="h-8 w-8 text-gray-500 dark:text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No Items Found</h3>
+                  <p className="text-gray-500 dark:text-gray-400">No marketplace items match your filter.</p>
                 </CardContent>
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredAllItems.map((item) => (
-                  <Card key={item._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <Card key={item._id} className="overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
                     {/* Image */}
                     <div className="relative h-48 bg-gray-100">
                       <Image
@@ -581,64 +781,131 @@ export default function AdminMarketplaceDashboard() {
 
           {/* Statistics Tab */}
           <TabsContent value="stats">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Category Breakdown */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Category Breakdown</CardTitle>
-                  <CardDescription>Items by category</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {stats?.categoryBreakdown.map((cat) => (
-                    <div key={cat._id} className="flex items-center justify-between py-3 border-b last:border-0">
-                      <div>
-                        <p className="font-semibold">{cat._id}</p>
-                        <p className="text-sm text-gray-600">{cat.count} items</p>
+            <div className="space-y-6">
+              {/* Stats Overview */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                {[
+                  { 
+                    title: 'Total Items', 
+                    value: stats?.overview?.totalItems || 0,
+                    icon: <ShoppingBag className="w-5 h-5 text-green-600 dark:text-green-400" />,
+                    bgColor: 'bg-green-100 dark:bg-green-900/20'
+                  },
+                  { 
+                    title: 'Pending', 
+                    value: stats?.overview?.pendingItems || 0,
+                    icon: <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />,
+                    bgColor: 'bg-yellow-100 dark:bg-yellow-900/20'
+                  },
+                  { 
+                    title: 'Approved', 
+                    value: stats?.overview?.approvedItems || 0,
+                    icon: <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />,
+                    bgColor: 'bg-blue-100 dark:bg-blue-900/20'
+                  },
+                  { 
+                    title: 'Total Views', 
+                    value: stats?.overview?.totalViews || 0,
+                    icon: <Eye className="w-5 h-5 text-purple-600 dark:text-purple-400" />,
+                    bgColor: 'bg-purple-100 dark:bg-purple-900/20'
+                  }
+                ].map((stat, index) => (
+                  <Card key={index} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{stat.title}</p>
+                          <p className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value.toLocaleString()}</p>
+                        </div>
+                        <div className={`${stat.bgColor} p-3 rounded-lg`}>
+                          {stat.icon}
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-green-600">
-                          ₹{cat.totalValue.toLocaleString('en-IN')}
-                        </p>
-                        <p className="text-xs text-gray-500">Total Value</p>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
 
-              {/* Recent Items */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Submissions</CardTitle>
-                  <CardDescription>Latest marketplace items</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {stats?.recentItems.map((item) => (
-                    <div key={item._id} className="flex items-center justify-between py-3 border-b last:border-0">
-                      <div className="flex-1">
-                        <p className="font-semibold truncate">{item.title}</p>
-                        <p className="text-xs text-gray-500">
-                          {new Date(item.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Badge
-                          variant="outline"
-                          className={
-                            item.status === 'pending' ? 'border-yellow-500 text-yellow-700' :
-                            item.status === 'approved' ? 'border-green-500 text-green-700' :
-                            item.status === 'rejected' ? 'border-red-500 text-red-700' :
-                            'border-gray-500 text-gray-700'
-                          }
-                        >
-                          {item.status}
-                        </Badge>
-                        <p className="font-semibold">₹{item.price ? item.price.toLocaleString() : '0'}</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Category Breakdown */}
+                <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+                  <CardHeader className="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-base font-medium text-gray-900 dark:text-white">Category Breakdown</CardTitle>
+                        <CardDescription className="text-sm text-gray-500 dark:text-gray-400">Items by category</CardDescription>
                       </div>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    {stats?.categoryBreakdown?.map((cat, index, array) => (
+                      <div 
+                        key={cat._id} 
+                        className={`flex items-center justify-between p-4 ${index !== array.length - 1 ? 'border-b border-gray-200 dark:border-gray-700' : ''}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                          <div>
+                            <p className="font-medium text-gray-900 dark:text-white">{cat._id}</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">{cat.count} items</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-green-600 dark:text-green-400">
+                            ₹{cat.totalValue.toLocaleString('en-IN')}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                {/* Recent Items */}
+                <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+                  <CardHeader className="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-base font-medium text-gray-900 dark:text-white">Recent Submissions</CardTitle>
+                        <CardDescription className="text-sm text-gray-500 dark:text-gray-400">Latest marketplace items</CardDescription>
+                      </div>
+                      <Button variant="outline" size="sm" className="text-xs">
+                        View All
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    {stats?.recentItems?.map((item, index, array) => (
+                      <div 
+                        key={item._id} 
+                        className={`flex items-center justify-between p-4 ${index !== array.length - 1 ? 'border-b border-gray-200 dark:border-gray-700' : ''}`}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900 dark:text-white truncate">{item.title}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            {new Date(item.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-3 ml-4">
+                          <Badge
+                            variant="outline"
+                            className={
+                              item.status === 'pending' ? 'bg-yellow-50 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-400' :
+                              item.status === 'approved' ? 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-700 dark:text-green-400' :
+                              item.status === 'rejected' ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400' :
+                              'bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-400'
+                            }
+                          >
+                            {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                          </Badge>
+                          <p className="font-semibold text-gray-900 dark:text-white">
+                            ₹{item.price ? item.price.toLocaleString('en-IN') : '0'}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
