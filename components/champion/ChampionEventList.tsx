@@ -161,7 +161,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
     return (
       <Card>
         <CardContent className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-emerald-600 dark:text-emerald-400" />
         </CardContent>
       </Card>
     );
@@ -172,8 +172,8 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12 text-center">
           <Calendar className="h-16 w-16 text-gray-300 mb-4" />
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">No Events Yet</h3>
-          <p className="text-gray-700 dark:text-gray-300">Create your first event to get started!</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">No Events Yet</h3>
+          <p className="text-gray-600 dark:text-gray-400">Create your first event to get started!</p>
         </CardContent>
       </Card>
     );
@@ -213,46 +213,57 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
               <CardDescription className="text-gray-600 dark:text-gray-400">{event.description}</CardDescription>
               
               <div className="space-y-2 text-sm">
-                <div className="flex items-start gap-2 text-gray-600">
-                  <Target className="h-4 w-4 mt-0.5 flex-shrink-0 text-green-600" />
+                <div className="flex items-start gap-2 text-gray-700 dark:text-gray-300">
+                  <Target className="h-4 w-4 mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                   <span className="font-medium">{event.wasteFocus}</span>
                 </div>
-                <div className="flex items-start gap-2 text-gray-600">
-                  <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-green-600" />
+                <div className="flex items-start gap-2 text-gray-700 dark:text-gray-300">
+                  <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
                   <div>
                     <p className="font-medium">{event.locationName}</p>
                     <p className="text-sm text-gray-600 dark:text-gray-400">{event.locationAddress}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Calendar className="h-4 w-4 text-green-600" />
+                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <Calendar className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   <span>{formatDate(event.eventDate)}</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Users className="h-4 w-4 text-green-600" />
-                  <span>{event.participantCount} participant{event.participantCount !== 1 ? 's' : ''}</span>
+                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                  <Users className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span className="font-semibold">{event.participantCount}</span>
+                  <span>participant{event.participantCount !== 1 ? 's' : ''}</span>
                 </div>
               </div>
 
-              <div className="flex gap-2 pt-3">
+              <div className="space-y-2 pt-3">
                 <Button
-                  variant="outline"
                   size="sm"
-                  onClick={() => handleEditClick(event)}
-                  className="flex-1 border-green-300 text-green-700 hover:bg-green-50"
+                  onClick={() => window.location.href = `/dashboard/champion/events/${event.id}`}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white"
                 >
-                  <Edit className="h-3 w-3 mr-1" />
-                  Edit
+                  <Users className="h-3 w-3 mr-1" />
+                  View Details & Participants
                 </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => setDeletingEventId(event.id)}
-                  className="flex-1"
-                >
-                  <Trash2 className="h-3 w-3 mr-1" />
-                  Delete
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEditClick(event)}
+                    className="flex-1 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                  >
+                    <Edit className="h-3 w-3 mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => setDeletingEventId(event.id)}
+                    className="flex-1"
+                  >
+                    <Trash2 className="h-3 w-3 mr-1" />
+                    Delete
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -275,7 +286,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
                   id="edit-title"
                   value={editFormData.title}
                   onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
-                  className="border-green-200"
+                  className="border-emerald-200 dark:border-emerald-700"
                 />
               </div>
 
@@ -285,7 +296,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
                   value={editFormData.wasteFocus}
                   onValueChange={(value) => setEditFormData({ ...editFormData, wasteFocus: value })}
                 >
-                  <SelectTrigger className="border-green-200">
+                  <SelectTrigger className="border-emerald-200 dark:border-emerald-700">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -306,7 +317,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
                 value={editFormData.description}
                 onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
                 rows={4}
-                className="border-green-200"
+                className="border-emerald-200 dark:border-emerald-700"
               />
               <p className="text-xs text-gray-500">{editFormData.description.length} / 50</p>
             </div>
@@ -318,7 +329,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
                   id="edit-locationName"
                   value={editFormData.locationName}
                   onChange={(e) => setEditFormData({ ...editFormData, locationName: e.target.value })}
-                  className="border-green-200"
+                  className="border-emerald-200 dark:border-emerald-700"
                 />
               </div>
 
@@ -329,7 +340,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
                   type="datetime-local"
                   value={editFormData.eventDate}
                   onChange={(e) => setEditFormData({ ...editFormData, eventDate: e.target.value })}
-                  className="border-green-200"
+                  className="border-emerald-200 dark:border-emerald-700"
                 />
               </div>
             </div>
@@ -340,7 +351,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
                 id="edit-locationAddress"
                 value={editFormData.locationAddress}
                 onChange={(e) => setEditFormData({ ...editFormData, locationAddress: e.target.value })}
-                className="border-green-200"
+                className="border-emerald-200 dark:border-emerald-700"
               />
             </div>
 
@@ -351,7 +362,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
                 type="url"
                 value={editFormData.imageUrl}
                 onChange={(e) => setEditFormData({ ...editFormData, imageUrl: e.target.value })}
-                className="border-green-200"
+                className="border-emerald-200 dark:border-emerald-700"
               />
             </div>
           </div>
@@ -369,7 +380,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
               type="button"
               onClick={handleEditSubmit}
               disabled={isSubmitting}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
             >
               {isSubmitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Saving...</> : 'Save Changes'}
             </Button>

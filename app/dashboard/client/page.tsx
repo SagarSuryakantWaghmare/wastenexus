@@ -75,7 +75,7 @@ export default function ClientDashboard() {
       title: 'New Event',
       description: 'Create community event',
       icon: CalendarDays,
-      href: '/dashboard/client/new-event',
+      href: '/dashboard/client/events',
       color: 'from-orange-500 to-red-600',
       iconBg: 'bg-orange-100 dark:bg-orange-900/30',
       iconColor: 'text-orange-600 dark:text-orange-400',

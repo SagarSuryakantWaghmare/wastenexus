@@ -3,6 +3,61 @@ import dbConnect from '@/lib/mongodb';
 import Event from '@/models/Event';
 import { verifyToken } from '@/lib/auth';
 
+// GET /api/events/[id] - Get event details with participants
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await dbConnect();
+
+    // Await params in Next.js 15
+    const { id } = await params;
+
+    // Find the event and populate champion and participants
+    const event = await Event.findById(id)
+      .populate('championId', 'name email profileImage')
+      .populate('participants', 'name email profileImage');
+
+    if (!event) {
+      return NextResponse.json(
+        { error: 'Event not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        event: {
+          id: event._id,
+          champion: event.championId,
+          title: event.title,
+          description: event.description,
+          location: event.location,
+          locationName: event.locationName,
+          locationAddress: event.locationAddress,
+          wasteFocus: event.wasteFocus,
+          coordinates: event.coordinates,
+          date: event.date,
+          images: event.images || [],
+          participants: event.participants,
+          participantCount: event.participants.length,
+          status: event.status,
+          createdAt: event.createdAt,
+          updatedAt: event.updatedAt,
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Fetch event error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch event details' },
+      { status: 500 }
+    );
+  }
+}
+
 // PUT /api/events/[id] - Update an event (Champion only, must own the event)
 export async function PUT(
   request: NextRequest,
