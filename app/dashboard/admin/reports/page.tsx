@@ -135,128 +135,238 @@ export default function WasteReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50 dark:from-gray-900 dark:to-orange-950 p-6 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-            <FileText className="w-10 h-10 text-orange-600 dark:text-orange-400" />
-            Waste Reports Management
-          </h1>
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+              <FileText className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+              Waste Reports Management
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Monitor and manage waste collection reports</p>
+          </div>
           <p className="text-gray-600 dark:text-gray-400 mt-2">Monitor and manage waste collection reports</p>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
+              <FileText className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-orange-100 text-sm font-medium mb-1">Total Reports</p>
-                  <p className="text-4xl font-bold">{stats?.total || 0}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Total Reports</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.total || 0}</p>
+                  <div className="flex items-center text-sm text-orange-600 dark:text-orange-400 font-medium">
+                    <span className="mr-1">+3.7%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <FileText className="w-12 h-12 text-orange-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-orange-600 dark:text-orange-400 font-medium">+15</span> from last month
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white border-0">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+              <div className="relative">
+                <div className="w-2 h-2 bg-blue-500 rounded-full absolute -top-1 -right-1 animate-ping"></div>
+                <Clock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              </div>
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-yellow-100 text-sm font-medium mb-1">Pending</p>
-                  <p className="text-4xl font-bold">{stats?.pending || 0}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Pending</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.pending || 0}</p>
+                  <div className="flex items-center text-sm text-blue-600 dark:text-blue-400 font-medium">
+                    <span className="mr-1">+5.2%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <Clock className="w-12 h-12 text-yellow-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-blue-600 dark:text-blue-400 font-medium">+8</span> from last month
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100 text-sm font-medium mb-1">Verified</p>
-                  <p className="text-4xl font-bold">{stats?.verified || 0}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Verified</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.verified || 0}</p>
+                  <div className="flex items-center text-sm text-green-600 dark:text-green-400 font-medium">
+                    <span className="mr-1">+2.5%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <CheckCircle className="w-12 h-12 text-green-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-green-600 dark:text-green-400 font-medium">+12</span> from last month
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-red-500 to-red-600 text-white border-0">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-red-100 dark:bg-red-900/20 rounded-lg flex items-center justify-center">
+              <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-red-100 text-sm font-medium mb-1">Rejected</p>
-                  <p className="text-4xl font-bold">{stats?.rejected || 0}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Rejected</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.rejected || 0}</p>
+                  <div className="flex items-center text-sm text-red-600 dark:text-red-400 font-medium">
+                    <span className="mr-1">-1.8%</span>
+                    <svg className="w-4 h-4 transform rotate-180" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <XCircle className="w-12 h-12 text-red-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-red-600 dark:text-red-400 font-medium">-3</span> from last month
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-indigo-100 dark:bg-indigo-900/20 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100 text-sm font-medium mb-1">Total Weight</p>
-                  <p className="text-4xl font-bold">{stats?.totalWeight.toFixed(1) || 0}</p>
-                  <p className="text-blue-100 text-xs">kg</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Total Weight</p>
+                <div className="flex items-end justify-between">
+                  <div className="flex items-baseline">
+                    <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.totalWeight.toFixed(1) || 0}</p>
+                    <span className="ml-1.5 text-sm text-gray-500 dark:text-gray-400">kg</span>
+                  </div>
+                  <div className="flex items-center text-sm text-indigo-600 dark:text-indigo-400 font-medium">
+                    <span className="mr-1">+4.2%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <TrendingUp className="w-12 h-12 text-blue-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-indigo-600 dark:text-indigo-400 font-medium">+28.5kg</span> from last month
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+              <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100 text-sm font-medium mb-1">Total Points</p>
-                  <p className="text-4xl font-bold">{stats?.totalPoints || 0}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Total Points</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.totalPoints || 0}</p>
+                  <div className="flex items-center text-sm text-purple-600 dark:text-purple-400 font-medium">
+                    <span className="mr-1">+7.8%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <Award className="w-12 h-12 text-purple-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-purple-600 dark:text-purple-400 font-medium">+45</span> points earned
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Reports List */}
-        <Card>
-          <CardHeader>
-            <CardTitle>All Waste Reports</CardTitle>
+        <Card className="mb-8 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+          <CardHeader className="bg-gray-50 dark:bg-gray-800/80 border-b border-gray-100 dark:border-gray-700 rounded-t-lg p-6">
+            <CardTitle className="text-gray-900 dark:text-white text-xl font-semibold">Waste Reports</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0 bg-white dark:bg-gray-800 rounded-b-lg">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="mb-6">
-                <TabsTrigger value="all">All ({stats?.total || 0})</TabsTrigger>
-                <TabsTrigger value="pending">Pending ({stats?.pending || 0})</TabsTrigger>
-                <TabsTrigger value="verified">Verified ({stats?.verified || 0})</TabsTrigger>
-                <TabsTrigger value="rejected">Rejected ({stats?.rejected || 0})</TabsTrigger>
+              <TabsList className="bg-gray-100 dark:bg-gray-700/50 p-1 h-auto rounded-lg border border-gray-200 dark:border-gray-600 m-6 mb-0">
+                <TabsTrigger 
+                  value="all" 
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-emerald-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-emerald-400 rounded-md px-3 py-1.5 text-sm"
+                >
+                  All ({stats?.total || 0})
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="pending" 
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-yellow-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-yellow-400 rounded-md px-3 py-1.5 text-sm"
+                >
+                  Pending ({stats?.pending || 0})
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="verified" 
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-green-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-green-400 rounded-md px-3 py-1.5 text-sm"
+                >
+                  Verified ({stats?.verified || 0})
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="rejected" 
+                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-red-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-red-400 rounded-md px-3 py-1.5 text-sm"
+                >
+                  Rejected ({stats?.rejected || 0})
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value={activeTab}>
                 <div className="space-y-4">
                   {filteredReports.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500">
-                      <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                      <p>No reports found</p>
+                    <div className="text-center py-12 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 m-6 bg-white dark:bg-gray-800">
+                      <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+                      <p className="text-gray-500 dark:text-gray-400">No reports found</p>
                     </div>
                   ) : (
                     filteredReports.map((report) => (
                       <div
                         key={report._id}
-                        className="flex flex-col md:flex-row gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                        className="flex flex-col md:flex-row gap-4 p-6 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors border border-gray-100 dark:border-gray-700 shadow-sm"
                       >
                         {/* Image */}
                         {report.imageUrl && (
-                          <div className="relative w-full md:w-32 h-32 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
-                            <Image
-                              src={report.imageUrl}
-                              alt={report.type}
-                              fill
-                              className="object-cover"
-                            />
+                          <div className="relative w-full md:w-48 h-48 rounded-lg overflow-hidden flex-shrink-0">
+                            <div className="relative w-full h-full">
+                              <Image
+                                src={report.imageUrl}
+                                alt="Waste report"
+                                fill
+                                className="object-cover rounded-md border border-gray-200 dark:border-gray-600"
+                                sizes="(max-width: 768px) 100vw, 12rem"
+                                priority={false}
+                              />
+                            </div>
                           </div>
                         )}
 
@@ -264,7 +374,7 @@ export default function WasteReportsPage() {
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-2">
                             <div>
-                              <h3 className="font-semibold text-lg capitalize">{report.type} Waste</h3>
+                              <h3 className="font-semibold text-lg capitalize text-gray-900 dark:text-white">{report.type} Waste</h3>
                               <p className="text-sm text-gray-600">
                                 Reported by: <span className="font-medium">{report.userId?.name}</span> ({report.userId?.email})
                               </p>
@@ -273,71 +383,82 @@ export default function WasteReportsPage() {
                               variant="outline"
                               className={
                                 report.status === 'pending'
-                                  ? 'border-yellow-500 text-yellow-700'
+                                  ? 'border-yellow-500 text-yellow-600 dark:border-yellow-400 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/30'
                                   : report.status === 'verified'
-                                  ? 'border-green-500 text-green-700'
-                                  : 'border-red-500 text-red-700'
+                                  ? 'border-green-500 text-green-600 dark:border-green-400 dark:text-green-400 bg-green-50 dark:bg-green-900/30'
+                                  : 'border-red-500 text-red-600 dark:border-red-400 dark:text-red-400 bg-red-50 dark:bg-red-900/30'
                               }
                             >
                               {report.status}
                             </Badge>
                           </div>
 
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mb-3">
-                            <div>
-                              <span className="text-gray-600">Weight:</span>
-                              <span className="font-semibold ml-1">{report.weightKg} kg</span>
+                          <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-all duration-200 bg-white dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                            <div className="flex flex-wrap gap-4 text-sm mb-3">
+                              <div>
+                                <span className="text-gray-600 dark:text-gray-300">Weight:</span>
+                                <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                                  <span className="font-medium text-gray-800 dark:text-gray-100">{report.type}</span> • {report.weightKg} kg
+                                  {report.pointsAwarded > 0 && (
+                                    <span className="ml-2 inline-flex items-center text-sm text-emerald-600 dark:text-emerald-400">
+                                      <Award className="w-3.5 h-3.5 mr-1" />
+                                      {report.pointsAwarded} pts
+                                    </span>
+                                  )}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-gray-600 dark:text-gray-300">Points:</span>
+                                <span className="font-semibold ml-1 text-gray-800 dark:text-gray-100">{report.pointsAwarded}</span>
+                              </div>
+                              <div>
+                                <span className="text-gray-600 dark:text-gray-300">Date:</span>
+                                <span className="font-semibold ml-1 text-gray-800 dark:text-gray-100">
+                                  {new Date(report.date).toLocaleDateString()}
+                                </span>
+                              </div>
+                              {report.location?.address && (
+                                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                  <MapPin className="w-4 h-4 mr-1.5 text-emerald-600 dark:text-emerald-400" />
+                                  <span>{report.location?.address || 'Location not specified'}</span>
+                                </div>
+                              )}
                             </div>
-                            <div>
-                              <span className="text-gray-600">Points:</span>
-                              <span className="font-semibold ml-1">{report.pointsAwarded}</span>
-                            </div>
-                            <div>
-                              <span className="text-gray-600">Date:</span>
-                              <span className="font-semibold ml-1">
-                                {new Date(report.date).toLocaleDateString()}
-                              </span>
-                            </div>
-                            {report.location?.address && (
-                              <div className="flex items-center gap-1">
-                                <MapPin className="w-3 h-3 text-gray-600" />
-                                <span className="text-xs truncate">{report.location.address}</span>
+
+                            {/* Actions */}
+                            {report.status === 'pending' && (
+                              <div className="flex gap-2 mt-4 flex-wrap">
+                                <Button
+                                  onClick={() => handleVerify(report._id)}
+                                  disabled={processing === report._id}
+                                  className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
+                                  size="sm"
+                                >
+                                  {processing === report._id ? (
+                                    <>
+                                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                      Processing...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <CheckCircle className="w-4 h-4 mr-2" />
+                                      Verify
+                                    </>
+                                  )}
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-red-600 dark:text-red-400 border-red-300 dark:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/30"
+                                  onClick={() => handleReject(report._id)}
+                                  disabled={processing === report._id}
+                                >
+                                  <XCircle className="w-4 h-4 mr-2" />
+                                  Reject
+                                </Button>
                               </div>
                             )}
                           </div>
-
-                          {/* Actions */}
-                          {report.status === 'pending' && (
-                            <div className="flex gap-2">
-                              <Button
-                                onClick={() => handleVerify(report._id)}
-                                disabled={processing === report._id}
-                                className="bg-green-600 hover:bg-green-700"
-                                size="sm"
-                              >
-                                {processing === report._id ? (
-                                  <>
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                    Processing...
-                                  </>
-                                ) : (
-                                  <>
-                                    <CheckCircle className="w-4 h-4 mr-2" />
-                                    Verify
-                                  </>
-                                )}
-                              </Button>
-                              <Button
-                                onClick={() => handleReject(report._id)}
-                                disabled={processing === report._id}
-                                variant="destructive"
-                                size="sm"
-                              >
-                                <XCircle className="w-4 h-4 mr-2" />
-                                Reject
-                              </Button>
-                            </div>
-                          )}
                         </div>
                       </div>
                     ))
@@ -350,25 +471,50 @@ export default function WasteReportsPage() {
 
         {/* Type Breakdown */}
         {Object.keys(typeBreakdown).length > 0 && (
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>Waste Type Breakdown</CardTitle>
+          <Card className="mt-6 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <CardHeader className="border-b border-gray-100 dark:border-gray-700">
+              <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">Waste Type Breakdown</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {Object.entries(typeBreakdown).map(([type, data]) => (
-                  <div key={type} className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold capitalize mb-2">{type}</h4>
-                    <div className="space-y-1 text-sm">
-                      <p className="text-gray-600">
-                        Reports: <span className="font-semibold text-gray-900">{data.count}</span>
-                      </p>
-                      <p className="text-gray-600">
-                        Weight: <span className="font-semibold text-gray-900">{data.weight.toFixed(1)} kg</span>
-                      </p>
-                      <p className="text-gray-600">
-                        Points: <span className="font-semibold text-gray-900">{data.points}</span>
-                      </p>
+                  <div 
+                    key={type} 
+                    className="p-5 bg-white dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-semibold text-gray-900 dark:text-white capitalize">
+                        {type}
+                      </h4>
+                      <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center border border-emerald-200 dark:border-emerald-800/50">
+                        <FileText className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">Reports</span>
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          {data.count}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">Weight</span>
+                        <span className="font-medium text-gray-900 dark:text-white">
+                          {data.weight.toFixed(1)} kg
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500 dark:text-gray-400">Points</span>
+                        <span className="font-medium text-emerald-600 dark:text-emerald-400">
+                          {data.points}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
+                      <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400 mr-2"></div>
+                        {data.count} {data.count === 1 ? 'report' : 'reports'} this month
+                      </div>
                     </div>
                   </div>
                 ))}

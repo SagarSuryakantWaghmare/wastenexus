@@ -19,7 +19,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Briefcase,
+  Moon,
+  Sun,
 } from 'lucide-react';
+import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
 
 interface AdminSidebarProps {
   userName?: string;
@@ -149,13 +152,20 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
         </ScrollArea>
 
         {/* Footer */}
-        <div className="p-3 border-t border-gray-700 dark:border-gray-800">
-          <Link href="/auth/signin">
-            <div className="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-400 hover:bg-red-500/10 hover:text-red-400 cursor-pointer transition-all">
-              <LogOut className="w-5 h-5" />
-              {!collapsed && <span className="text-sm font-medium">Logout</span>}
-            </div>
-          </Link>
+        <div className="mt-auto p-4 space-y-2">
+          <div className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-700 dark:hover:bg-gray-800 transition-colors">
+            <AnimatedThemeToggler
+              className="text-gray-300 hover:text-white transition-colors h-5 w-5"
+              moonIcon={<Moon className="h-4 w-4" />}
+              sunIcon={<Sun className="h-4 w-4" />}
+              aria-label="Toggle theme"
+            />
+            {!collapsed && <span className="text-sm font-medium">Toggle Theme</span>}
+          </div>
+          <div className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-700 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+            <LogOut className="h-5 w-5 text-red-400" />
+            {!collapsed && <span className="text-sm font-medium">Logout</span>}
+          </div>
         </div>
       </div>
 

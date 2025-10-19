@@ -204,63 +204,128 @@ export default function EventsPage() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          <Card className="bg-emerald-500 text-white border-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+              <Award className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-emerald-100 text-sm font-medium mb-1">Total Events</p>
-                  <p className="text-4xl font-bold">{stats?.total || 0}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Total Events</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.total || 0}</p>
+                  <div className="flex items-center text-sm text-emerald-600 dark:text-emerald-400 font-medium">
+                    <span className="mr-1">+12.5%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <Award className="w-12 h-12 text-emerald-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">+{Math.floor((stats?.total ?? 0) * 0.3)}</span> from last month
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-cyan-500 text-white border-0">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-cyan-100 dark:bg-cyan-900/20 rounded-lg flex items-center justify-center">
+              <Calendar className="w-6 h-6 text-cyan-600 dark:text-cyan-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-cyan-100 text-sm font-medium mb-1">Upcoming</p>
-                  <p className="text-4xl font-bold">{stats?.upcoming || 0}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Upcoming</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.upcoming || 0}</p>
+                  <div className="flex items-center text-sm text-cyan-600 dark:text-cyan-400 font-medium">
+                    <span className="mr-1">+8.3%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <Calendar className="w-12 h-12 text-cyan-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-cyan-600 dark:text-cyan-400 font-medium">+{Math.floor((stats?.upcoming ?? 0) * 0.4)}</span> from last month
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-amber-500 text-white border-0">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-amber-100 dark:bg-amber-900/20 rounded-lg flex items-center justify-center">
+              <Clock className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-amber-100 text-sm font-medium mb-1">Ongoing</p>
-                  <p className="text-4xl font-bold">{stats?.ongoing || 0}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Ongoing</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.ongoing || 0}</p>
+                  <div className="flex items-center text-sm text-amber-600 dark:text-amber-400 font-medium">
+                    <span className="mr-1">+5.7%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <Clock className="w-12 h-12 text-amber-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-amber-600 dark:text-amber-400 font-medium">+{Math.floor((stats?.ongoing ?? 0) * 0.2)}</span> from last week
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-lime-500 text-white border-0">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-lime-100 text-sm font-medium mb-1">Completed</p>
-                  <p className="text-4xl font-bold">{stats?.completed || 0}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Completed</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.completed || 0}</p>
+                  <div className="flex items-center text-sm text-green-600 dark:text-green-400 font-medium">
+                    <span className="mr-1">+15.2%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <CheckCircle className="w-12 h-12 text-lime-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-green-600 dark:text-green-400 font-medium">+{Math.floor((stats?.completed ?? 0) * 0.25)}</span> from last month
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-teal-500 text-white border-0">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-teal-100 dark:bg-teal-900/20 rounded-lg flex items-center justify-center">
+              <Users className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-teal-100 text-sm font-medium mb-1">Participants</p>
-                  <p className="text-4xl font-bold">{stats?.totalParticipants || 0}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Participants</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.totalParticipants || 0}</p>
+                  <div className="flex items-center text-sm text-teal-600 dark:text-teal-400 font-medium">
+                    <span className="mr-1">+22.8%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <Users className="w-12 h-12 text-teal-200" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-teal-600 dark:text-teal-400 font-medium">+{Math.floor((stats?.totalParticipants || 0) * 0.35)}</span> from last month
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
