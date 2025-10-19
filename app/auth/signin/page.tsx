@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf } from "lucide-react";
+import { Leaf, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 
 export default function SignInPage() {
@@ -18,6 +18,7 @@ export default function SignInPage() {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (!isLoading && user) {
@@ -71,7 +72,7 @@ export default function SignInPage() {
         <Image src="/assets/authbg.jpg" alt="Background" fill className="object-cover" />
       </div>
 
-      <div className="container mx-auto px-4 py-16 flex justify-center items-center min-h-screen relative z-10">
+      <div className="container mx-auto px-4 min-h-screen flex items-center justify-center relative z-10">
         <Card className="w-full max-w-md bg-white/10 backdrop-blur-2xl border border-green-200 shadow-xl">
           <CardHeader>
             <div className="flex items-center gap-2 mb-4">
@@ -97,18 +98,28 @@ export default function SignInPage() {
                   className="bg-gray-900/60 border border-gray-700 text-white placeholder:text-white/50 rounded-md px-3 py-1.5 h-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/70"
                 />
               </div>
-              <div className="relative">
-                <Label htmlFor="password" className="text-white font-semibold mb-2 block">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  required
-                  minLength={6}
-                  className="bg-gray-900/60 border border-gray-700 text-white placeholder:text-white/50 rounded-md px-3 py-1.5 h-10 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/70"
-                />
+              <div>
+                <Label htmlFor="password" className="text-white font-semibold mb-2">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter a strong password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    required
+                    minLength={6}
+                    className="bg-gray-900/60 border border-gray-700 text-white placeholder:text-white/50 h-10 rounded-md px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/70"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((s) => !s)}
+                    className="absolute inset-y-0 right-2 flex items-center pr-2 text-white/70"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
               {error && (
                 <div className="rounded-lg bg-red-200 border border-red-400 p-3 text-sm text-red-800">{error}</div>

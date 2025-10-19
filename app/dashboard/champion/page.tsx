@@ -6,26 +6,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useApi } from '@/hooks/useApi';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, XCircle, Loader2, Calendar, Users } from 'lucide-react';
-import { formatDateTime, calculatePoints } from '@/lib/helpers';
+import { Loader2, Calendar, Users } from 'lucide-react';
 import { ChampionEventList } from '@/components/champion/ChampionEventList';
-import { toast } from 'sonner';
 
-interface Report {
-  id: string;
-  user: {
-    name: string;
-    email: string;
-  };
-  type: string;
-  weightKg: number;
-  status: string;
-  pointsAwarded: number;
-  createdAt: string;
-}
 
 interface Event {
   id: string;
@@ -47,11 +32,8 @@ export default function ChampionDashboard() {
   const { user, isLoading } = useAuth();
   const { apiCall } = useApi();
   
-  const [pendingReports, setPendingReports] = useState<Report[]>([]);
   const [myEvents, setMyEvents] = useState<Event[]>([]);
-  const [loadingData, setLoadingData] = useState(true);
   const [loadingEvents, setLoadingEvents] = useState(true);
-  const [processingReport, setProcessingReport] = useState<string | null>(null);
   // Removed showEventCreator state; event creation will be on a separate page
 
   useEffect(() => {
@@ -62,23 +44,10 @@ export default function ChampionDashboard() {
 
   useEffect(() => {
     if (user) {
-      fetchData();
       fetchMyEvents();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
-
-  const fetchData = async () => {
-    try {
-      setLoadingData(true);
-      const reportsData = await apiCall('/api/reports?status=pending');
-      setPendingReports(reportsData.reports || []);
-    } catch (error) {
-      console.error('Error fetching reports:', error);
-    } finally {
-      setLoadingData(false);
-    }
-  };
 
   const fetchMyEvents = async () => {
     try {
@@ -92,24 +61,7 @@ export default function ChampionDashboard() {
     }
   };
 
-  const handleVerifyReport = async (reportId: string, status: 'verified' | 'rejected') => {
-    try {
-      setProcessingReport(reportId);
-      await apiCall(`/api/reports/${reportId}/verify`, {
-        method: 'PUT',
-        body: JSON.stringify({ status }),
-      });
-      
-      toast.success(`Report ${status} successfully!`);
-      // Refresh data
-      await fetchData();
-    } catch (error) {
-      console.error('Error verifying report:', error);
-      toast.error('Failed to process report');
-    } finally {
-      setProcessingReport(null);
-    }
-  };
+  // Report verification removed from champion dashboard per request
 
   if (isLoading || !user) {
     return (
@@ -130,19 +82,7 @@ export default function ChampionDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="border-orange-200 shadow-lg">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">Pending Reports</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <p className="text-3xl font-bold text-orange-700">{pendingReports.length}</p>
-                <CheckCircle2 className="h-12 w-12 text-orange-600" />
-              </div>
-            </CardContent>
-          </Card>
-
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card className="border-blue-200 shadow-lg">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-gray-600">My Events</CardTitle>
@@ -170,79 +110,7 @@ export default function ChampionDashboard() {
           </Card>
         </div>
 
-        {/* Pending Reports */}
-        <Card className="mb-8 shadow-lg">
-          <CardHeader>
-            <CardTitle>Pending Verification</CardTitle>
-            <CardDescription>Review and verify waste reports submitted by clients</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {loadingData ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-green-600" />
-              </div>
-            ) : pendingReports.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">No pending reports to review</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Weight</TableHead>
-                    <TableHead>Est. Points</TableHead>
-                    <TableHead>Submitted</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {pendingReports.map((report) => (
-                    <TableRow key={report.id}>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium">{report.user?.name || 'Unknown'}</p>
-                          <p className="text-xs text-gray-500">{report.user?.email || 'N/A'}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell className="capitalize">{report.type}</TableCell>
-                      <TableCell>{report.weightKg} kg</TableCell>
-                      <TableCell className="text-green-700 font-semibold">
-                        {calculatePoints(report.weightKg, report.type)} pts
-                      </TableCell>
-                      <TableCell className="text-sm text-gray-500">
-                        {formatDateTime(new Date(report.createdAt))}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            onClick={() => handleVerifyReport(report.id, 'verified')}
-                            disabled={processingReport === report.id}
-                            className="bg-green-600 hover:bg-green-700"
-                          >
-                            {processingReport === report.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <><CheckCircle2 className="mr-1 h-4 w-4" />Verify</>
-                            )}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleVerifyReport(report.id, 'rejected')}
-                            disabled={processingReport === report.id}
-                          >
-                            <XCircle className="mr-1 h-4 w-4" />Reject
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
+        {/* Pending reports section removed per request */}
 
         {/* Event Management Section */}
         <div className="space-y-8">

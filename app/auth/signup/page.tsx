@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf } from "lucide-react";
+import { Leaf, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 
 export default function SignUpPage() {
@@ -22,6 +22,7 @@ export default function SignUpPage() {
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         if (!isLoading && user) {
@@ -75,7 +76,7 @@ export default function SignUpPage() {
                 <Image src="/assets/authbg.jpg" alt="Background" fill className="object-cover" />
             </div>
 
-            <div className="container mx-auto px-4 py-16 flex justify-center items-center min-h-screen relative z-10">
+            <div className="container mx-auto px-4 min-h-screen flex items-center justify-center relative z-10">
                 <Card className="border border-white/30 shadow-2xl w-full max-w-md bg-white/10 backdrop-blur-2xl">
                     <CardHeader className="pb-6">
                         <div className="flex items-center gap-2 mb-4">
@@ -121,9 +122,10 @@ export default function SignUpPage() {
                             {/* Password */}
                             <div>
                                 <Label htmlFor="password" className="text-white font-semibold mb-2">Password</Label>
+                                <div className="relative">
                                 <Input
                                     id="password"
-                                    type="password"
+                                    type={showPassword ? "text" : "password"}
                                     placeholder="Enter a strong password"
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -131,6 +133,15 @@ export default function SignUpPage() {
                                     minLength={6}
                                     className="bg-gray-900/60 border border-gray-700 text-white placeholder:text-white/50 h-10 rounded-md px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-gray-900/70"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword((s) => !s)}
+                                    className="absolute inset-y-0 right-2 flex items-center pr-2 text-white/70"
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                </button>
+                                </div>
                             </div>
 
                             <div>

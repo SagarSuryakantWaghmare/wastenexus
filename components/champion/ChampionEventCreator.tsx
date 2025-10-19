@@ -105,6 +105,7 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
     });
     const [location, setLocation] = useState<{ name: string; address: string }>({ name: '', address: '' });
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [detectingLocation, setDetectingLocation] = useState(false);
 
     const wasteFocusOptions = [
         { value: 'Waste Collection', label: 'Waste Collection' },
@@ -242,14 +243,52 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                                     <MapPin className="h-4 w-4 text-green-600 dark:text-green-400" />
                                     Event Address *
                                 </Label>
-                                <Input
-                                    id="eventAddress"
-                                    value={location.address}
-                                    onChange={e => setLocation({ ...location, address: e.target.value })}
-                                    placeholder="Enter event address..."
-                                    className="border-2 border-gray-300 focus:border-transparent"
-                                    required
-                                />
+                                <div className="flex gap-2">
+                                    <Input
+                                        id="eventAddress"
+                                        value={location.address}
+                                        onChange={e => setLocation({ ...location, address: e.target.value })}
+                                        placeholder="Enter event address..."
+                                        className="border-2 border-gray-300 focus:border-transparent flex-1"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={async () => {
+                                            if (!navigator.geolocation) {
+                                                toast.error('Geolocation is not supported by your browser');
+                                                return;
+                                            }
+                                            setDetectingLocation(true);
+                                            navigator.geolocation.getCurrentPosition(async (pos) => {
+                                                try {
+                                                    const { latitude, longitude } = pos.coords;
+                                                    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+                                                    const data = await res.json();
+                                                    const display = data.display_name || '';
+                                                    const name = data.name || (data.address && (data.address.road || data.address.neighbourhood || data.address.suburb)) || 'Current location';
+                                                    setLocation({ name, address: display });
+                                                    toast.success('Location detected');
+                                                } catch (err) {
+                                                    console.error('Reverse geocode failed', err);
+                                                    toast.error('Failed to detect location');
+                                                } finally {
+                                                    setDetectingLocation(false);
+                                                }
+                                            }, (err) => {
+                                                console.error('Geolocation error', err);
+                                                toast.error('Unable to get your location');
+                                                setDetectingLocation(false);
+                                            }, { enableHighAccuracy: true, timeout: 10000 });
+                                        }}
+                                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-green-600 hover:bg-green-700 text-white font-semibold"
+                                    >
+                                        {detectingLocation ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Auto-detect'}
+                                    </button>
+                                </div>
+                                {location.name && (
+                                    <p className="text-xs text-gray-500">Detected: <span className="font-medium">{location.name}</span></p>
+                                )}
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
