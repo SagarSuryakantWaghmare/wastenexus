@@ -4,6 +4,7 @@ import WorkerApplication from '@/models/WorkerApplication';
 import User from '@/models/User';
 import { verifyToken } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
+import { sendEmail, getWorkerVerificationEmail, getWorkerRejectionEmail } from '@/lib/email';
 
 export async function GET(
   req: NextRequest,
@@ -81,7 +82,7 @@ export async function PUT(
       }
 
       // Generate a temporary password (worker should change it on first login)
-      const tempPassword = Math.random().toString(36).slice(-8);
+      const tempPassword = `Worker@${Math.random().toString(36).slice(-8)}`;
       const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
       const newUser = await User.create({
@@ -89,7 +90,7 @@ export async function PUT(
         email: application.email,
         password: hashedPassword,
         role: 'worker',
-        profileImage: application.photo,
+        profileImage: application.photo?.secure_url,
       });
 
       // Update application status
@@ -99,12 +100,26 @@ export async function PUT(
       application.userId = newUser._id;
       await application.save();
 
-      // TODO: Send email to worker with login credentials
-      console.log(`Worker account created. Email: ${application.email}, Temp Password: ${tempPassword}`);
+      // Send email to worker with login credentials
+      try {
+        await sendEmail({
+          to: application.email,
+          subject: '🎉 Your WasteNexus Worker Application Has Been Approved!',
+          html: getWorkerVerificationEmail(application.name, application.email, tempPassword),
+        });
+        console.log(`✅ Verification email sent to ${application.email}`);
+      } catch (emailError) {
+        console.error('❌ Failed to send verification email:', emailError);
+        // Don't fail the whole operation if email fails
+      }
 
       return NextResponse.json({
-        message: 'Application verified and worker account created',
-        tempPassword, // In production, this should be sent via email only
+        message: 'Application verified, worker account created, and email sent successfully',
+        user: {
+          name: newUser.name,
+          email: newUser.email,
+          role: newUser.role,
+        },
       });
     } else if (action === 'reject') {
       if (!rejectionReason) {
@@ -118,9 +133,23 @@ export async function PUT(
       application.rejectionReason = rejectionReason;
       await application.save();
 
-      // TODO: Send rejection email to applicant
+      // Send rejection email to applicant
+      try {
+        await sendEmail({
+          to: application.email,
+          subject: 'WasteNexus Worker Application Status Update',
+          html: getWorkerRejectionEmail(application.name, rejectionReason),
+        });
+        console.log(`✅ Rejection email sent to ${application.email}`);
+      } catch (emailError) {
+        console.error('❌ Failed to send rejection email:', emailError);
+        // Don't fail the whole operation if email fails
+      }
 
-      return NextResponse.json({ message: 'Application rejected' });
+      return NextResponse.json({ 
+        message: 'Application rejected and email notification sent',
+        status: 'rejected',
+      });
     } else {
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
