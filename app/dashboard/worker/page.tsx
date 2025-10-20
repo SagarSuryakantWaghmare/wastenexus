@@ -15,15 +15,38 @@ import {
   Clock,
   Package,
   TrendingUp,
-  Calendar,
   Navigation,
   Loader2,
   Briefcase,
   Home,
   Building2,
   AlertCircle,
+  Award,
 } from 'lucide-react';
 import Image from 'next/image';
+
+interface VerifiedReport {
+  _id: string;
+  userId: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  type: string;
+  weightKg: number;
+  status: 'verified';
+  pointsAwarded: number;
+  imageUrl?: string;
+  location?: {
+    address: string;
+    coordinates?: {
+      lat: number;
+      lng: number;
+    };
+  };
+  date: string;
+  createdAt: string;
+}
 
 interface CollectionTask {
   _id: string;
@@ -72,6 +95,7 @@ interface Job {
 export default function WorkerDashboard() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [verifiedReports, setVerifiedReports] = useState<VerifiedReport[]>([]);
   const [tasks, setTasks] = useState<CollectionTask[]>([]);
   const [stats, setStats] = useState({
     totalAssigned: 0,
@@ -80,17 +104,53 @@ export default function WorkerDashboard() {
     pending: 0,
     totalWeight: 0,
   });
-  const [activeTab, setActiveTab] = useState('assigned');
+  const [reportsStats, setReportsStats] = useState({
+    total: 0,
+    totalWeight: 0,
+    totalPoints: 0,
+  });
+  const [typeFilter, setTypeFilter] = useState('all');
   const [jobs, setJobs] = useState<Job[]>([]);
   const [myJobs, setMyJobs] = useState<Job[]>([]);
   const [jobsLoading, setJobsLoading] = useState(false);
   const [activeView, setActiveView] = useState<'tasks' | 'available-jobs' | 'my-jobs'>('tasks');
 
   useEffect(() => {
+    fetchVerifiedReports();
     fetchTasks();
     fetchAvailableJobs();
     fetchMyJobs();
   }, []);
+
+  const fetchVerifiedReports = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No authentication token found');
+        return;
+      }
+
+      const response = await fetch('/api/worker/verified-reports', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch verified reports');
+      }
+
+      const data = await response.json();
+      setVerifiedReports(data.reports || []);
+      setReportsStats(data.stats || { total: 0, totalWeight: 0, totalPoints: 0 });
+    } catch (error) {
+      console.error('Error fetching verified reports:', error);
+      setVerifiedReports([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchTasks = async () => {
     try {
@@ -136,46 +196,6 @@ export default function WorkerDashboard() {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const updateTaskStatus = async (taskId: string, status: 'in-progress' | 'completed') => {
-    try {
-      // Get token from localStorage
-      const token = localStorage.getItem('token');
-      if (!token) {
-        console.error('No authentication token found');
-        return;
-      }
-
-      // Update task status via API
-      const response = await fetch('/api/worker/tasks', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ taskId, status }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update task status');
-      }
-
-      const data = await response.json();
-      
-      // Update local state with the updated task
-      setTasks(
-        tasks.map((task) =>
-          task._id === taskId ? data.task : task
-        )
-      );
-
-      // Refetch tasks to update statistics
-      fetchTasks();
-    } catch (error) {
-      console.error('Error updating task:', error);
-      alert('Failed to update task status. Please try again.');
     }
   };
 
@@ -242,10 +262,29 @@ export default function WorkerDashboard() {
     }
   };
 
-  const filteredTasks = tasks.filter((task) => {
-    if (activeTab === 'all') return true;
-    return task.status === activeTab || (activeTab === 'assigned' && task.status === 'assigned');
-  });
+  const handleCompleteReport = async (reportId: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch('/api/worker/complete-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ reportId }),
+      });
+
+      if (!response.ok) throw new Error('Failed to complete report');
+      
+      alert('Report marked as completed successfully!');
+      fetchVerifiedReports();
+    } catch (error) {
+      console.error('Error completing report:', error);
+      alert('Failed to complete report. Please try again.');
+    }
+  };
 
   if (loading) {
     return (
@@ -256,26 +295,26 @@ export default function WorkerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col transition-colors duration-300">
       <Navbar />
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-            <Truck className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+        <div className="mb-6 bg-white dark:bg-gray-800 border-b dark:border-gray-700 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-6">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+            <Truck className="w-8 h-8 text-green-600 dark:text-green-400" />
             Worker Dashboard
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Welcome back, {user?.name}! Manage your waste collection tasks.
           </p>
         </div>
 
         {/* View Switcher */}
-        <div className="mb-6 flex gap-4">
+        <div className="mb-6 flex flex-wrap gap-3">
           <Button
             onClick={() => setActiveView('tasks')}
             variant={activeView === 'tasks' ? 'default' : 'outline'}
-            className={activeView === 'tasks' ? 'bg-blue-600 hover:bg-blue-700' : ''}
+            className={activeView === 'tasks' ? 'bg-green-600 hover:bg-green-700' : 'dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'}
           >
             <Truck className="w-4 h-4 mr-2" />
             Collection Tasks
@@ -283,7 +322,7 @@ export default function WorkerDashboard() {
           <Button
             onClick={() => setActiveView('available-jobs')}
             variant={activeView === 'available-jobs' ? 'default' : 'outline'}
-            className={activeView === 'available-jobs' ? 'bg-green-600 hover:bg-green-700' : ''}
+            className={activeView === 'available-jobs' ? 'bg-green-600 hover:bg-green-700' : 'dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'}
           >
             <Briefcase className="w-4 h-4 mr-2" />
             Available Jobs ({jobs.length})
@@ -291,7 +330,7 @@ export default function WorkerDashboard() {
           <Button
             onClick={() => setActiveView('my-jobs')}
             variant={activeView === 'my-jobs' ? 'default' : 'outline'}
-            className={activeView === 'my-jobs' ? 'bg-purple-600 hover:bg-purple-700' : ''}
+            className={activeView === 'my-jobs' ? 'bg-green-600 hover:bg-green-700' : 'dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'}
           >
             <Package className="w-4 h-4 mr-2" />
             My Jobs ({myJobs.length})
@@ -300,107 +339,164 @@ export default function WorkerDashboard() {
 
         {/* Stats Cards */}
         {activeView === 'tasks' && (
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100 text-sm font-medium mb-1">Total Tasks</p>
-                  <p className="text-4xl font-bold">{stats.totalAssigned}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Tasks</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.totalAssigned}</p>
                 </div>
-                <Package className="w-12 h-12 text-blue-200" />
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                  <Package className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-orange-100 text-sm font-medium mb-1">Pending</p>
-                  <p className="text-4xl font-bold">{stats.pending}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Pending</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.pending}</p>
                 </div>
-                <Clock className="w-12 h-12 text-orange-200" />
+                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-100 text-sm font-medium mb-1">In Progress</p>
-                  <p className="text-4xl font-bold">{stats.inProgress}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">In Progress</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.inProgress}</p>
                 </div>
-                <Navigation className="w-12 h-12 text-purple-200" />
+                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                  <Navigation className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-100 text-sm font-medium mb-1">Completed</p>
-                  <p className="text-4xl font-bold">{stats.completed}</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Completed</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.completed}</p>
                 </div>
-                <CheckCircle className="w-12 h-12 text-green-200" />
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white border-0">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-indigo-100 text-sm font-medium mb-1">Total Weight</p>
-                  <p className="text-4xl font-bold">{stats.totalWeight.toFixed(1)}</p>
-                  <p className="text-indigo-100 text-xs">kg collected</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Weight</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.totalWeight.toFixed(1)}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-xs">kg collected</p>
                 </div>
-                <TrendingUp className="w-12 h-12 text-indigo-200" />
+                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
         )}
 
-        {/* Collection Tasks */}
+        {/* Collection Tasks - Verified Reports */}
         {activeView === 'tasks' && (
-        <Card>
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
           <CardHeader>
-            <CardTitle>Collection Tasks</CardTitle>
-            <CardDescription>Manage your assigned waste collection tasks</CardDescription>
+            <CardTitle className="text-gray-900 dark:text-white text-xl">Verified Waste Reports</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-400">All verified waste collection reports in your city</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="mb-6">
-                <TabsTrigger value="assigned">Assigned ({stats.pending})</TabsTrigger>
-                <TabsTrigger value="in-progress">In Progress ({stats.inProgress})</TabsTrigger>
-                <TabsTrigger value="completed">Completed ({stats.completed})</TabsTrigger>
-                <TabsTrigger value="all">All ({stats.totalAssigned})</TabsTrigger>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <div className="absolute top-4 right-4 w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
+                <CardContent className="p-6">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Reports</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{reportsStats.total || 0}</p>
+                </CardContent>
+              </Card>
+
+              <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <div className="absolute top-4 right-4 w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+                <CardContent className="p-6">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Weight</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{reportsStats.totalWeight.toFixed(1)}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">kg collected</p>
+                </CardContent>
+              </Card>
+
+              <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <div className="absolute top-4 right-4 w-12 h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
+                  <Award className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <CardContent className="p-6">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Points</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{reportsStats.totalPoints || 0}</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Tabs for filtering */}
+            <Tabs value={typeFilter} onValueChange={setTypeFilter} className="w-full">
+              <TabsList className="mb-6 flex-wrap h-auto bg-gray-100 dark:bg-gray-700/50">
+                <TabsTrigger value="all" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">All Reports</TabsTrigger>
+                <TabsTrigger value="plastic" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Plastic</TabsTrigger>
+                <TabsTrigger value="cardboard" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Cardboard</TabsTrigger>
+                <TabsTrigger value="e-waste" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">E-Waste</TabsTrigger>
+                <TabsTrigger value="metal" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Metal</TabsTrigger>
+                <TabsTrigger value="glass" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Glass</TabsTrigger>
+                <TabsTrigger value="organic" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Organic</TabsTrigger>
+                <TabsTrigger value="paper" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Paper</TabsTrigger>
               </TabsList>
 
-              <TabsContent value={activeTab}>
+              <TabsContent value={typeFilter}>
                 <div className="space-y-4">
-                  {filteredTasks.length === 0 ? (
+                  {loading ? (
+                    <div className="text-center py-12">
+                      <Loader2 className="w-8 h-8 animate-spin text-green-600 mx-auto mb-4" />
+                      <p className="text-gray-600 dark:text-gray-400">Loading reports...</p>
+                    </div>
+                  ) : verifiedReports.filter(report => typeFilter === 'all' || report.type === typeFilter).length === 0 ? (
                     <div className="text-center py-12 text-gray-500">
                       <Package className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                      <p>No tasks found</p>
+                      <p>No verified reports found</p>
                     </div>
                   ) : (
-                    filteredTasks.map((task) => (
+                    verifiedReports
+                      .filter(report => typeFilter === 'all' || report.type === typeFilter)
+                      .map((report) => (
                       <div
-                        key={task._id}
-                        className="flex flex-col md:flex-row gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                        key={report._id}
+                        className="flex flex-col md:flex-row gap-4 p-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
                       >
                         {/* Image */}
-                        {task.reportId.imageUrl && (
-                          <div className="relative w-full md:w-32 h-32 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                        {report.imageUrl && (
+                          <div className="relative w-full md:w-48 h-48 rounded-lg overflow-hidden flex-shrink-0">
                             <Image
-                              src={task.reportId.imageUrl}
-                              alt="Waste"
+                              src={report.imageUrl}
+                              alt="Waste report"
                               fill
-                              className="object-cover"
+                              className="object-cover rounded-md border border-gray-200 dark:border-gray-600"
+                              sizes="(max-width: 768px) 100vw, 12rem"
                             />
                           </div>
                         )}
@@ -409,87 +505,79 @@ export default function WorkerDashboard() {
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-2">
                             <div>
-                              <h3 className="font-semibold text-lg capitalize">
-                                {task.reportId.type} Waste
+                              <h3 className="font-semibold text-lg capitalize text-gray-900 dark:text-white">
+                                {report.type} Waste
                               </h3>
-                              <p className="text-sm text-gray-600">
-                                Reporter: {task.reportId.userId.name}
-                              </p>
-                              <p className="text-sm text-gray-600">
-                                Weight: {task.reportId.weightKg} kg
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                Reported by: <span className="font-medium">{report.userId?.name}</span> ({report.userId?.email})
                               </p>
                             </div>
                             <Badge
                               variant="outline"
-                              className={
-                                task.status === 'assigned'
-                                  ? 'border-orange-500 text-orange-700'
-                                  : task.status === 'in-progress'
-                                  ? 'border-purple-500 text-purple-700'
-                                  : 'border-green-500 text-green-700'
-                              }
+                              className="border-green-500 text-green-600 dark:border-green-400 dark:text-green-400 bg-green-50 dark:bg-green-900/30"
                             >
-                              {task.status === 'assigned'
-                                ? 'Pending'
-                                : task.status === 'in-progress'
-                                ? 'In Progress'
-                                : 'Completed'}
+                              Verified
                             </Badge>
                           </div>
 
-                          <div className="flex items-start gap-2 mb-3">
-                            <MapPin className="w-4 h-4 text-gray-600 mt-0.5 flex-shrink-0" />
-                            <p className="text-sm text-gray-700">
-                              {task.reportId.location.address}
-                            </p>
-                          </div>
+                          <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-all duration-200 bg-white dark:bg-gray-800/50">
+                            <div className="flex flex-wrap gap-4 text-sm mb-3">
+                              <div>
+                                <span className="text-gray-600 dark:text-gray-300">Weight:</span>
+                                <span className="font-semibold ml-1 text-gray-800 dark:text-gray-100">{report.weightKg} kg</span>
+                              </div>
+                              <div>
+                                <span className="text-gray-600 dark:text-gray-300">Points Awarded:</span>
+                                <span className="font-semibold ml-1 text-emerald-600 dark:text-emerald-400 inline-flex items-center">
+                                  <Award className="w-3.5 h-3.5 mr-1" />
+                                  {report.pointsAwarded} pts
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-gray-600 dark:text-gray-300">Date:</span>
+                                <span className="font-semibold ml-1 text-gray-800 dark:text-gray-100">
+                                  {new Date(report.date).toLocaleDateString()}
+                                </span>
+                              </div>
+                            </div>
 
-                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-                            <Calendar className="w-4 h-4" />
-                            <span>
-                              Assigned: {new Date(task.assignedDate).toLocaleString()}
-                            </span>
-                          </div>
-
-                          {/* Actions */}
-                          <div className="flex gap-2 flex-wrap">
-                            {task.reportId.location.coordinates && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  const { lat, lng } = task.reportId.location.coordinates!;
-                                  window.open(
-                                    `https://www.google.com/maps?q=${lat},${lng}`,
-                                    '_blank'
-                                  );
-                                }}
-                              >
-                                <Navigation className="w-4 h-4 mr-1" />
-                                Get Directions
-                              </Button>
+                            {report.location?.address && (
+                              <div className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                <MapPin className="w-4 h-4 mt-0.5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                                <span>{report.location.address}</span>
+                              </div>
                             )}
 
-                            {task.status === 'assigned' && (
+                            {/* Action Buttons */}
+                            <div className="flex gap-2 mt-2">
+                              {report.location?.coordinates && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    if (report.location?.coordinates) {
+                                      const { lat, lng } = report.location.coordinates;
+                                      window.open(
+                                        `https://www.google.com/maps?q=${lat},${lng}`,
+                                        '_blank'
+                                      );
+                                    }
+                                  }}
+                                  className="flex-1 dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                >
+                                  <MapPin className="w-4 h-4 mr-2" />
+                                  Get Directions
+                                </Button>
+                              )}
                               <Button
                                 size="sm"
-                                onClick={() => updateTaskStatus(task._id, 'in-progress')}
-                                className="bg-purple-600 hover:bg-purple-700"
+                                onClick={() => handleCompleteReport(report._id)}
+                                className="flex-1 bg-green-600 hover:bg-green-700"
                               >
-                                Start Collection
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                Mark Completed
                               </Button>
-                            )}
-
-                            {task.status === 'in-progress' && (
-                              <Button
-                                size="sm"
-                                onClick={() => updateTaskStatus(task._id, 'completed')}
-                                className="bg-green-600 hover:bg-green-700"
-                              >
-                                <CheckCircle className="w-4 h-4 mr-1" />
-                                Mark as Completed
-                              </Button>
-                            )}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -504,24 +592,24 @@ export default function WorkerDashboard() {
 
         {/* Available Jobs Section */}
         {activeView === 'available-jobs' && (
-          <Card>
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Briefcase className="w-6 h-6 text-green-600" />
+              <CardTitle className="flex items-center gap-2 text-xl text-gray-900 dark:text-white">
+                <Briefcase className="w-6 h-6 text-green-600 dark:text-green-400" />
                 Available Jobs
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-400">
                 Browse and accept jobs posted by clients
               </CardDescription>
             </CardHeader>
             <CardContent>
               {jobsLoading ? (
                 <div className="text-center py-12">
-                  <Loader2 className="w-8 h-8 animate-spin text-green-600 mx-auto" />
+                  <Loader2 className="w-8 h-8 animate-spin text-green-600 dark:text-green-400 mx-auto" />
                 </div>
               ) : jobs.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
-                  <Briefcase className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                  <Briefcase className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
                   <p>No available jobs at the moment</p>
                 </div>
               ) : (
@@ -529,64 +617,64 @@ export default function WorkerDashboard() {
                   {jobs.map((job) => (
                     <div
                       key={job._id}
-                      className="p-6 bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+                      className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-bold text-xl text-gray-900">{job.title}</h3>
-                            <div className="flex items-center gap-2">
+                            <h3 className="font-bold text-xl text-gray-900 dark:text-white">{job.title}</h3>
+                            <div className="flex flex-wrap items-center gap-2">
                               {job.category === 'home' && (
-                                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium flex items-center gap-1">
+                                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-sm font-medium flex items-center gap-1">
                                   <Home className="w-3 h-3" /> Home
                                 </span>
                               )}
                               {job.category === 'industry' && (
-                                <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium flex items-center gap-1">
+                                <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-full text-sm font-medium flex items-center gap-1">
                                   <Building2 className="w-3 h-3" /> Industry
                                 </span>
                               )}
                               {job.category === 'other' && (
-                                <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium flex items-center gap-1">
+                                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium flex items-center gap-1">
                                   <Package className="w-3 h-3" /> Other
                                 </span>
                               )}
                               {job.urgency === 'high' && (
-                                <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium flex items-center gap-1">
+                                <span className="px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-full text-sm font-medium flex items-center gap-1">
                                   <AlertCircle className="w-3 h-3" /> Urgent
                                 </span>
                               )}
                             </div>
                           </div>
-                          <p className="text-gray-600 mb-3">{job.description}</p>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
+                          <p className="text-gray-600 dark:text-gray-400 mb-3">{job.description}</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                             <div>
-                              <p className="text-gray-500">Client:</p>
-                              <p className="font-medium text-gray-900">{job.clientId.name}</p>
+                              <p className="text-gray-500 dark:text-gray-400">Client:</p>
+                              <p className="font-medium text-gray-900 dark:text-white">{job.clientId.name}</p>
                             </div>
                             <div>
-                              <p className="text-gray-500">Waste Types:</p>
-                              <p className="font-medium text-gray-900 capitalize">
+                              <p className="text-gray-500 dark:text-gray-400">Waste Types:</p>
+                              <p className="font-medium text-gray-900 dark:text-white capitalize">
                                 {job.wasteType.join(', ')}
                               </p>
                             </div>
                             <div>
-                              <p className="text-gray-500">Location:</p>
-                              <p className="font-medium text-gray-900 flex items-center gap-1">
+                              <p className="text-gray-500 dark:text-gray-400">Location:</p>
+                              <p className="font-medium text-gray-900 dark:text-white flex items-center gap-1">
                                 <MapPin className="w-3 h-3" />
                                 {job.location.address}
                               </p>
                             </div>
                             {job.estimatedWeight && (
                               <div>
-                                <p className="text-gray-500">Est. Weight:</p>
-                                <p className="font-medium text-gray-900">{job.estimatedWeight} kg</p>
+                                <p className="text-gray-500 dark:text-gray-400">Est. Weight:</p>
+                                <p className="font-medium text-gray-900 dark:text-white">{job.estimatedWeight} kg</p>
                               </div>
                             )}
                             {job.budget && (
                               <div>
-                                <p className="text-gray-500">Budget:</p>
-                                <p className="font-medium text-green-600">₹{job.budget}</p>
+                                <p className="text-gray-500 dark:text-gray-400">Budget:</p>
+                                <p className="font-medium text-green-600 dark:text-green-400">₹{job.budget}</p>
                               </div>
                             )}
                           </div>
@@ -608,20 +696,20 @@ export default function WorkerDashboard() {
 
         {/* My Jobs Section */}
         {activeView === 'my-jobs' && (
-          <Card>
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Package className="w-6 h-6 text-purple-600" />
+              <CardTitle className="flex items-center gap-2 text-xl text-gray-900 dark:text-white">
+                <Package className="w-6 h-6 text-green-600 dark:text-green-400" />
                 My Jobs
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-600 dark:text-gray-400">
                 Jobs you have accepted and are working on
               </CardDescription>
             </CardHeader>
             <CardContent>
               {myJobs.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
-                  <Package className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                  <Package className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
                   <p>You haven&apos;t accepted any jobs yet</p>
                 </div>
               ) : (
@@ -629,19 +717,19 @@ export default function WorkerDashboard() {
                   {myJobs.map((job) => (
                     <div
                       key={job._id}
-                      className="p-6 bg-white border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+                      className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-bold text-xl text-gray-900">{job.title}</h3>
+                            <h3 className="font-bold text-xl text-gray-900 dark:text-white">{job.title}</h3>
                             <span
                               className={`px-3 py-1 rounded-full text-sm font-medium ${
                                 job.status === 'assigned'
-                                  ? 'bg-orange-100 text-orange-700'
+                                  ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400'
                                   : job.status === 'in-progress'
-                                  ? 'bg-purple-100 text-purple-700'
-                                  : 'bg-green-100 text-green-700'
+                                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                                  : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
                               }`}
                             >
                               {job.status === 'assigned'
@@ -651,25 +739,26 @@ export default function WorkerDashboard() {
                                 : 'Completed'}
                             </span>
                           </div>
-                          <p className="text-gray-600 mb-3">{job.description}</p>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
+                          <p className="text-gray-600 dark:text-gray-400 mb-3">{job.description}</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                             <div>
-                              <p className="text-gray-500">Client:</p>
-                              <p className="font-medium text-gray-900">{job.clientId.name}</p>
+                              <p className="text-gray-500 dark:text-gray-400">Client:</p>
+                              <p className="font-medium text-gray-900 dark:text-white">{job.clientId.name}</p>
                             </div>
                             <div>
-                              <p className="text-gray-500">Location:</p>
-                              <p className="font-medium text-gray-900">{job.location.address}</p>
+                              <p className="text-gray-500 dark:text-gray-400">Location:</p>
+                              <p className="font-medium text-gray-900 dark:text-white">{job.location.address}</p>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 mt-4">
                         {job.status === 'assigned' && (
                           <Button
                             onClick={() => handleJobAction(job._id, 'start')}
-                            className="flex-1 bg-purple-600 hover:bg-purple-700"
+                            className="flex-1 bg-green-600 hover:bg-green-700"
                           >
+                            <Navigation className="w-4 h-4 mr-2" />
                             Start Job
                           </Button>
                         )}
