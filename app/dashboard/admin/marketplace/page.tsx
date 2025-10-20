@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { toast } from 'sonner';
 import { 
   Loader2, 
   ShoppingBag, 
@@ -19,7 +19,6 @@ import {
   Eye,
   MapPin,
   IndianRupee,
-  AlertTriangle,
   RefreshCw,
   Search
 } from 'lucide-react';
@@ -97,7 +96,6 @@ export default function AdminMarketplaceDashboard() {
   const [action, setAction] = useState<'approve' | 'reject' | null>(null);
   const [rejectionReason, setRejectionReason] = useState('');
   const [processing, setProcessing] = useState(false);
-  const [alert, setAlert] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [activeTab, setActiveTab] = useState('pending');
   const [itemsFilter, setItemsFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -159,7 +157,7 @@ export default function AdminMarketplaceDashboard() {
     if (!selectedItem || !action) return;
 
     if (action === 'reject' && !rejectionReason.trim()) {
-      setAlert({ type: 'error', message: 'Please provide a rejection reason' });
+      toast.error('Please provide a rejection reason');
       return;
     }
 
@@ -178,20 +176,17 @@ export default function AdminMarketplaceDashboard() {
       });
 
       if (response.ok) {
-        setAlert({
-          type: 'success',
-          message: `Item ${action}d successfully!`,
-        });
+        toast.success(`Item ${action}d successfully!`);
         setShowDialog(false);
         setSelectedItem(null);
         setRejectionReason('');
         fetchData(); // Refresh data
       } else {
         const data = await response.json();
-        setAlert({ type: 'error', message: data.error || `Failed to ${action} item` });
+        toast.error(data.error || `Failed to ${action} item`);
       }
     } catch {
-      setAlert({ type: 'error', message: 'An error occurred' });
+      toast.error('An error occurred');
     } finally {
       setProcessing(false);
     }
@@ -268,34 +263,6 @@ export default function AdminMarketplaceDashboard() {
             </div>
           </div>
         </div>
-
-        {/* Alert */}
-        {alert && (
-          <Alert 
-            className={`mb-6 border-l-4 ${
-              alert.type === 'success' 
-                ? 'border-green-500 bg-green-50 dark:bg-green-900/20' 
-                : 'border-red-500 bg-red-50 dark:bg-red-900/20'
-            }`}
-          >
-            <div className="flex items-center">
-              {alert.type === 'success' ? (
-                <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mr-3" />
-              ) : (
-                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400 mr-3" />
-              )}
-              <AlertDescription 
-                className={`text-sm ${
-                  alert.type === 'success' 
-                    ? 'text-green-700 dark:text-green-300' 
-                    : 'text-red-700 dark:text-red-300'
-                }`}
-              >
-                {alert.message}
-              </AlertDescription>
-            </div>
-          </Alert>
-        )}
 
         {/* Statistics Cards */}
         {stats && (
@@ -947,21 +914,21 @@ export default function AdminMarketplaceDashboard() {
                 )}
 
                 {action === 'approve' && (
-                  <Alert className="bg-green-50 border-green-200">
-                    <CheckCircle className="w-4 h-4 text-green-600" />
-                    <AlertDescription className="text-green-800">
+                  <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-4 rounded-lg flex items-start gap-3">
+                    <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-green-800 dark:text-green-300">
                       The seller will be notified and the item will appear in marketplace listings.
-                    </AlertDescription>
-                  </Alert>
+                    </p>
+                  </div>
                 )}
 
                 {action === 'reject' && (
-                  <Alert className="bg-red-50 border-red-200">
-                    <AlertTriangle className="w-4 h-4 text-red-600" />
-                    <AlertDescription className="text-red-800">
+                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 rounded-lg flex items-start gap-3">
+                    <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-red-800 dark:text-red-300">
                       The seller will be notified with your rejection reason.
-                    </AlertDescription>
-                  </Alert>
+                    </p>
+                  </div>
                 )}
               </div>
             )}

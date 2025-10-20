@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Plus, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import ItemGrid from '@/components/Marketplace/ItemGrid';
 import { normalizeMarketplaceList, type NormalizedMarketplaceItem } from '@/lib/marketplace';
 import ItemFilters, { FilterValues } from '@/components/Marketplace/ItemFilters';
@@ -69,7 +70,7 @@ export default function MarketplacePage() {
 
   const handleFavorite = async (itemId: string) => {
     if (!token) {
-      alert('Please log in to favorite items');
+      toast.error('Please log in to favorite items');
       return;
     }
 

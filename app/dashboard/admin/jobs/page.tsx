@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
 import {
   Briefcase,
   CheckCircle,
@@ -146,13 +147,13 @@ export default function AdminJobsPage() {
 
       if (!response.ok) throw new Error('Failed to update job');
 
-      alert(`Job ${status} successfully!`);
+      toast.success(`Job ${status} successfully!`);
       setSelectedJob(null);
       setAdminNotes('');
       fetchJobs();
     } catch (error) {
       console.error('Error updating job:', error);
-      alert('Failed to update job. Please try again.');
+      toast.error('Failed to update job. Please try again.');
     } finally {
       setActionLoading(false);
     }

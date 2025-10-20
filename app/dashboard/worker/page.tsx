@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
 import {
   Truck,
   MapPin,
@@ -255,10 +256,10 @@ export default function WorkerDashboard() {
       // Refresh job lists
       fetchAvailableJobs();
       fetchMyJobs();
-      alert(`Job ${action}ed successfully!`);
+      toast.success(`Job ${action}ed successfully!`);
     } catch (error) {
       console.error('Error updating job:', error);
-      alert('Failed to update job. Please try again.');
+      toast.error('Failed to update job. Please try again.');
     }
   };
 
@@ -278,11 +279,11 @@ export default function WorkerDashboard() {
 
       if (!response.ok) throw new Error('Failed to complete report');
       
-      alert('Report marked as completed successfully!');
+      toast.success('Report marked as completed successfully!');
       fetchVerifiedReports();
     } catch (error) {
       console.error('Error completing report:', error);
-      alert('Failed to complete report. Please try again.');
+      toast.error('Failed to complete report. Please try again.');
     }
   };
 
