@@ -53,7 +53,7 @@ export async function POST(
 
     // Check if user is already a participant
     const isAlreadyParticipant = event.participants.some(
-      (participantId) => participantId.toString() === decoded.userId
+      (participantId: string | { toString(): string }) => participantId.toString() === decoded.userId
     );
 
     if (isAlreadyParticipant) {
@@ -125,7 +125,7 @@ export async function DELETE(
 
     // Check if user is a participant
     const participantIndex = event.participants.findIndex(
-      (participantId) => participantId.toString() === decoded.userId
+      (participantId: string | { toString(): string }) => participantId.toString() === decoded.userId
     );
 
     if (participantIndex === -1) {
