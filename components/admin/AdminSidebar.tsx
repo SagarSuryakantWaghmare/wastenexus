@@ -76,9 +76,19 @@ const adminRoutes = [
 
 export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+
+  // Handles logout and redirect
+  const handleLogout = async () => {
+    if (logout) {
+      await logout();
+    }
+    if (typeof window !== 'undefined') {
+      window.location.href = '/auth/signin';
+    }
+  };
 
   return (
     <>
@@ -176,11 +186,7 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
           <button
             type="button"
             className="flex items-center gap-3 p-2 rounded-md bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400 text-white transition-colors w-full"
-            onClick={() => {
-              if (typeof window !== 'undefined') {
-                window.location.href = '/auth/signin';
-              }
-            }}
+            onClick={handleLogout}
           >
             <LogOut className="h-5 w-5" />
             {!collapsed && <span className="text-sm font-medium">Logout</span>}
@@ -260,11 +266,7 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
             <button
               type="button"
               className="flex items-center gap-3 w-full px-3 py-3 rounded-lg bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400 text-white transition-colors"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.location.href = '/auth/signin';
-                }
-              }}
+              onClick={handleLogout}
             >
               <LogOut className="w-5 h-5" />
               <span className="text-sm font-medium">Logout</span>

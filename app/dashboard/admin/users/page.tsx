@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import UserAvatar from '@/components/UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -37,6 +38,7 @@ interface User {
   role: 'client' | 'champion' | 'admin';
   totalPoints: number;
   createdAt: string;
+  profileImage?: string;
 }
 
 export default function UserManagementPage() {
@@ -510,9 +512,18 @@ export default function UserManagementPage() {
                         className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 font-bold text-lg border border-gray-200 dark:border-gray-600">
-                            {user.name.charAt(0).toUpperCase()}
-                          </div>
+                          {user.profileImage ? (
+                            <UserAvatar
+                              name={user.name}
+                              profileImage={user.profileImage}
+                              size="lg"
+                              className="ring-2 ring-green-400 border border-gray-200 dark:border-gray-600"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 font-bold text-lg border border-gray-200 dark:border-gray-600">
+                              {user.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
                           <div>
                             <p className="font-semibold text-gray-900 dark:text-white">{user.name}</p>
                             <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
