@@ -133,6 +133,15 @@ export default function AdminDashboard() {
       bgColor: 'bg-teal-900/30',
       stats: 'Pending jobs',
     },
+    {
+      title: 'Worker Applications',
+      description: 'Review and approve worker registrations',
+      icon: Users,
+      href: '/dashboard/admin/workers',
+      color: 'from-emerald-500 to-emerald-600',
+      bgColor: 'bg-emerald-900/30',
+      stats: 'Pending applications',
+    },
   ];
 
   return (
@@ -228,8 +237,10 @@ export default function AdminDashboard() {
                       <module.icon className={`w-6 h-6 ${
                         module.color.includes('blue') ? 'text-blue-600 dark:text-blue-400' :
                         module.color.includes('purple') ? 'text-purple-600 dark:text-purple-400' :
-                        module.color.includes('green') ? 'text-green-600 dark:text-green-400' :
+                        module.color.includes('green') && !module.color.includes('emerald') ? 'text-green-600 dark:text-green-400' :
+                        module.color.includes('emerald') ? 'text-emerald-600 dark:text-emerald-400' :
                         module.color.includes('pink') ? 'text-pink-600 dark:text-pink-400' :
+                        module.color.includes('orange') ? 'text-orange-600 dark:text-orange-400' :
                         'text-teal-600 dark:text-teal-400'
                       }`} />
                     </div>

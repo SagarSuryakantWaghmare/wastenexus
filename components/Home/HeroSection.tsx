@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
-import { CheckCircle, Users } from 'lucide-react';
+import { CheckCircle, Users, Briefcase } from 'lucide-react';
 
 export default function HeroSection() {
   return (
@@ -50,6 +50,15 @@ export default function HeroSection() {
           >
             <Users className="w-5 h-5" />
             Join as Champion
+          </InteractiveHoverButton>
+
+          {/* Tertiary CTA - Worker Application */}
+          <InteractiveHoverButton
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg font-semibold flex items-center gap-2 border-0"
+            onClick={() => window.location.href = '/worker/apply'}
+          >
+            <Briefcase className="w-5 h-5" />
+            Join as Worker
           </InteractiveHoverButton>
         </div>
       </div>

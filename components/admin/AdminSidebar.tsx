@@ -49,6 +49,12 @@ const adminRoutes = [
     color: 'text-purple-500',
   },
   {
+    label: 'Worker Management',
+    icon: Briefcase,
+    href: '/dashboard/admin/workers',
+    color: 'text-emerald-500',
+  },
+  {
     label: 'Analytics',
     icon: BarChart3,
     href: '/dashboard/admin/analytics',
