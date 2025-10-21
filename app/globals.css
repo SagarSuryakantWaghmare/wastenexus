@@ -176,3 +176,42 @@
 .dark .custom-scrollbar {
   scrollbar-color: rgb(75 85 99) rgb(31 41 55);
 }
+
+/* Horizontal Scrollbar Styles with Green Theme */
+.horizontal-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track {
+  @apply bg-green-50 dark:bg-gray-800 rounded-full;
+  margin: 0 8px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+  @apply bg-green-500 dark:bg-green-600 rounded-full;
+  transition: background-color 0.2s ease;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+  @apply bg-green-600 dark:bg-green-500;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb:active {
+  @apply bg-green-700 dark:bg-green-400;
+}
+
+/* Firefox Horizontal Scrollbar */
+.horizontal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(34 197 94) rgb(240 253 244);
+}
+
+.dark .horizontal-scroll {
+  scrollbar-color: rgb(22 163 74) rgb(31 41 55);
+}
+
+/* Smooth Scrolling */
+.horizontal-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}

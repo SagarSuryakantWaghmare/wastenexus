@@ -338,32 +338,34 @@ export default function EventsPage() {
           </CardHeader>
           <CardContent className="p-6 bg-white dark:bg-gray-800 rounded-b-lg">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="mb-6 bg-gray-100 dark:bg-gray-700/50 p-1 h-auto rounded-lg border border-gray-200 dark:border-gray-600">
-                <TabsTrigger 
-                  value="all" 
-                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-emerald-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-emerald-400 rounded-md px-3 py-1.5 text-sm"
-                >
-                  All ({stats?.total || 0})
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="upcoming" 
-                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400 rounded-md px-3 py-1.5 text-sm"
-                >
-                  Upcoming ({stats?.upcoming || 0})
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="ongoing" 
-                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-orange-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-orange-400 rounded-md px-3 py-1.5 text-sm"
-                >
-                  Ongoing ({stats?.ongoing || 0})
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="completed" 
-                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-green-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-green-400 rounded-md px-3 py-1.5 text-sm"
-                >
-                  Completed ({stats?.completed || 0})
-                </TabsTrigger>
-              </TabsList>
+              <div className="overflow-x-auto horizontal-scroll pb-2 mb-6">
+                <TabsList className="bg-gray-100 dark:bg-gray-700/50 p-1 h-auto rounded-lg border border-gray-200 dark:border-gray-600 inline-flex min-w-max">
+                  <TabsTrigger 
+                    value="all" 
+                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-emerald-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-emerald-400 rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    All ({stats?.total || 0})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="upcoming" 
+                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400 rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    Upcoming ({stats?.upcoming || 0})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="ongoing" 
+                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-orange-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-orange-400 rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    Ongoing ({stats?.ongoing || 0})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="completed" 
+                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-green-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-green-400 rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    Completed ({stats?.completed || 0})
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value={activeTab}>
                 <div className="space-y-4">

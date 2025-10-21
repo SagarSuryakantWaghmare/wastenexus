@@ -9,10 +9,19 @@ export async function GET(request: NextRequest) {
     // Get query parameters
     const searchParams = request.nextUrl.searchParams;
     const limit = parseInt(searchParams.get('limit') || '50');
+    const role = searchParams.get('role'); // Optional role filter
+
+    // Build query - exclude admins from leaderboard
+    const query: { role?: { $in: string[] } } = {};
+    if (role && ['client', 'worker', 'champion'].includes(role)) {
+      query.role = { $in: [role] };
+    } else {
+      query.role = { $in: ['client', 'worker', 'champion'] };
+    }
 
     // Fetch top users by points
-    const users = await User.find({ role: 'client' })
-      .select('name email totalPoints createdAt')
+    const users = await User.find(query)
+      .select('name email role totalPoints createdAt')
       .sort({ totalPoints: -1, createdAt: 1 })
       .limit(Math.min(limit, 100));
 
@@ -23,6 +32,7 @@ export async function GET(request: NextRequest) {
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
           totalPoints: user.totalPoints,
           joinedAt: user.createdAt,
         })),

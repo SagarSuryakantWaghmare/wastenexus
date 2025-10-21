@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Report from '@/models/Report';
 import WorkerTask from '@/models/WorkerTask';
+import User from '@/models/User';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -91,12 +92,19 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Award bonus points to worker for completing the collection (10 points)
+    await User.findByIdAndUpdate(
+      decoded.userId,
+      { $inc: { totalPoints: 10 } }
+    );
+
     // Note: Report status remains 'verified' - WorkerTask tracks collection completion
 
     return NextResponse.json({
       success: true,
-      message: 'Report marked as completed successfully',
+      message: 'Report marked as completed successfully. +10 points earned!',
       task: existingTask || { reportId, status: 'completed' },
+      pointsEarned: 10,
     });
   } catch (error) {
     console.error('Error completing report:', error);

@@ -135,21 +135,20 @@ export default function WasteReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-              <FileText className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
+        <div className="mb-6 sm:mb-8">
+          <div className="mb-4 sm:mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2 sm:gap-3">
+              <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-600 dark:text-emerald-400" />
               Waste Reports Management
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">Monitor and manage waste collection reports</p>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">Monitor and manage waste collection reports</p>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">Monitor and manage waste collection reports</p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
             <div className="absolute top-4 right-4 w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
               <FileText className="w-6 h-6 text-orange-600 dark:text-orange-400" />
@@ -308,45 +307,47 @@ export default function WasteReportsPage() {
         </div>
 
         {/* Reports List */}
-        <Card className="mb-8 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <CardHeader className="bg-gray-50 dark:bg-gray-800/80 border-b border-gray-100 dark:border-gray-700 rounded-t-lg p-6">
-            <CardTitle className="text-gray-900 dark:text-white text-xl font-semibold">Waste Reports</CardTitle>
+        <Card className="mb-6 sm:mb-8 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+          <CardHeader className="bg-gray-50 dark:bg-gray-800/80 border-b border-gray-100 dark:border-gray-700 rounded-t-lg p-4 sm:p-6">
+            <CardTitle className="text-gray-900 dark:text-white text-lg sm:text-xl font-semibold">Waste Reports</CardTitle>
           </CardHeader>
           <CardContent className="p-0 bg-white dark:bg-gray-800 rounded-b-lg">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="bg-gray-100 dark:bg-gray-700/50 p-1 h-auto rounded-lg border border-gray-200 dark:border-gray-600 m-6 mb-0">
-                <TabsTrigger 
-                  value="all" 
-                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-emerald-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-emerald-400 rounded-md px-3 py-1.5 text-sm"
-                >
-                  All ({stats?.total || 0})
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="pending" 
-                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-yellow-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-yellow-400 rounded-md px-3 py-1.5 text-sm"
-                >
-                  Pending ({stats?.pending || 0})
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="verified" 
-                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-green-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-green-400 rounded-md px-3 py-1.5 text-sm"
-                >
-                  Verified ({stats?.verified || 0})
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="rejected" 
-                  className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-red-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-red-400 rounded-md px-3 py-1.5 text-sm"
-                >
-                  Rejected ({stats?.rejected || 0})
-                </TabsTrigger>
-              </TabsList>
+              <div className="overflow-x-auto">
+                <TabsList className="bg-gray-100 dark:bg-gray-700/50 p-1 h-auto rounded-lg border border-gray-200 dark:border-gray-600 m-4 sm:m-6 mb-0 inline-flex min-w-full sm:min-w-0">
+                  <TabsTrigger 
+                    value="all" 
+                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-emerald-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-emerald-400 rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    All ({stats?.total || 0})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="pending" 
+                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-yellow-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-yellow-400 rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    Pending ({stats?.pending || 0})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="verified" 
+                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-green-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-green-400 rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    Verified ({stats?.verified || 0})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="rejected" 
+                    className="data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-red-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-red-400 rounded-md px-2 sm:px-3 py-1.5 text-xs sm:text-sm whitespace-nowrap"
+                  >
+                    Rejected ({stats?.rejected || 0})
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value={activeTab}>
                 <div className="space-y-4">
                   {filteredReports.length === 0 ? (
-                    <div className="text-center py-12 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 m-6 bg-white dark:bg-gray-800">
-                      <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-                      <p className="text-gray-500 dark:text-gray-400">No reports found</p>
+                    <div className="text-center py-12 rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-700 m-4 sm:m-6 bg-white dark:bg-gray-800">
+                      <FileText className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+                      <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">No reports found</p>
                     </div>
                   ) : (
                     filteredReports.map((report) => (

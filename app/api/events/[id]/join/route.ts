@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Event from '@/models/Event';
+import User from '@/models/User';
 import { verifyToken } from '@/lib/auth';
 
 // Join an event
@@ -67,10 +68,17 @@ export async function POST(
     event.participants.push(decoded.userId);
     await event.save();
 
+    // Award bonus points to user for joining event (20 points)
+    await User.findByIdAndUpdate(
+      decoded.userId,
+      { $inc: { totalPoints: 20 } }
+    );
+
     return NextResponse.json(
       {
-        message: 'Successfully joined the event',
+        message: 'Successfully joined the event! +20 points earned',
         participantCount: event.participants.length,
+        pointsEarned: 20,
       },
       { status: 200 }
     );

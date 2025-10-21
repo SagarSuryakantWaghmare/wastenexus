@@ -47,30 +47,8 @@ interface VerifiedReport {
   };
   date: string;
   createdAt: string;
-}
-
-interface CollectionTask {
-  _id: string;
-  reportId: {
-    _id: string;
-    type: string;
-    weightKg: number;
-    imageUrl?: string;
-    location: {
-      address: string;
-      coordinates?: {
-        lat: number;
-        lng: number;
-      };
-    };
-    userId: {
-      name: string;
-      email: string;
-    };
-  };
-  status: 'assigned' | 'in-progress' | 'completed';
-  assignedDate: string;
-  completedDate?: string;
+  workerCompletedAt?: string | null;
+  isCompleted?: boolean;
 }
 
 interface Job {
@@ -97,7 +75,6 @@ export default function WorkerDashboard() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [verifiedReports, setVerifiedReports] = useState<VerifiedReport[]>([]);
-  const [tasks, setTasks] = useState<CollectionTask[]>([]);
   const [stats, setStats] = useState({
     totalAssigned: 0,
     completed: 0,
@@ -115,6 +92,7 @@ export default function WorkerDashboard() {
   const [myJobs, setMyJobs] = useState<Job[]>([]);
   const [jobsLoading, setJobsLoading] = useState(false);
   const [activeView, setActiveView] = useState<'tasks' | 'available-jobs' | 'my-jobs'>('tasks');
+  const [completingReports, setCompletingReports] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchVerifiedReports();
@@ -176,7 +154,6 @@ export default function WorkerDashboard() {
       }
 
       const data = await response.json();
-      setTasks(data.tasks || []);
       setStats(data.stats || {
         totalAssigned: 0,
         completed: 0,
@@ -187,7 +164,6 @@ export default function WorkerDashboard() {
     } catch (error) {
       console.error('Error fetching tasks:', error);
       // Set empty state on error
-      setTasks([]);
       setStats({
         totalAssigned: 0,
         completed: 0,
@@ -265,6 +241,9 @@ export default function WorkerDashboard() {
 
   const handleCompleteReport = async (reportId: string) => {
     try {
+      // Add to completing set
+      setCompletingReports(prev => new Set(prev).add(reportId));
+      
       const token = localStorage.getItem('token');
       if (!token) return;
 
@@ -279,11 +258,27 @@ export default function WorkerDashboard() {
 
       if (!response.ok) throw new Error('Failed to complete report');
       
+      // Remove from UI immediately (optimistic update)
+      setVerifiedReports(prev => prev.filter(report => report._id !== reportId));
+      setReportsStats(prev => ({
+        ...prev,
+        total: Math.max(0, prev.total - 1)
+      }));
+      
       toast.success('Report marked as completed successfully!');
+      
+      // Refresh to get accurate data
       fetchVerifiedReports();
     } catch (error) {
       console.error('Error completing report:', error);
       toast.error('Failed to complete report. Please try again.');
+    } finally {
+      // Remove from completing set
+      setCompletingReports(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(reportId);
+        return newSet;
+      });
     }
   };
 
@@ -458,16 +453,18 @@ export default function WorkerDashboard() {
 
             {/* Tabs for filtering */}
             <Tabs value={typeFilter} onValueChange={setTypeFilter} className="w-full">
-              <TabsList className="mb-6 flex-wrap h-auto bg-gray-100 dark:bg-gray-700/50">
-                <TabsTrigger value="all" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">All Reports</TabsTrigger>
-                <TabsTrigger value="plastic" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Plastic</TabsTrigger>
-                <TabsTrigger value="cardboard" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Cardboard</TabsTrigger>
-                <TabsTrigger value="e-waste" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">E-Waste</TabsTrigger>
-                <TabsTrigger value="metal" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Metal</TabsTrigger>
-                <TabsTrigger value="glass" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Glass</TabsTrigger>
-                <TabsTrigger value="organic" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Organic</TabsTrigger>
-                <TabsTrigger value="paper" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800">Paper</TabsTrigger>
-              </TabsList>
+              <div className="overflow-x-auto horizontal-scroll pb-2 mb-6">
+                <TabsList className="h-auto bg-gray-100 dark:bg-gray-700/50 inline-flex min-w-max">
+                  <TabsTrigger value="all" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">All Reports</TabsTrigger>
+                  <TabsTrigger value="plastic" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Plastic</TabsTrigger>
+                  <TabsTrigger value="cardboard" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Cardboard</TabsTrigger>
+                  <TabsTrigger value="e-waste" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">E-Waste</TabsTrigger>
+                  <TabsTrigger value="metal" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Metal</TabsTrigger>
+                  <TabsTrigger value="glass" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Glass</TabsTrigger>
+                  <TabsTrigger value="organic" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Organic</TabsTrigger>
+                  <TabsTrigger value="paper" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Paper</TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value={typeFilter}>
                 <div className="space-y-4">
@@ -570,14 +567,31 @@ export default function WorkerDashboard() {
                                   Get Directions
                                 </Button>
                               )}
-                              <Button
-                                size="sm"
-                                onClick={() => handleCompleteReport(report._id)}
-                                className="flex-1 bg-green-600 hover:bg-green-700"
-                              >
-                                <CheckCircle className="w-4 h-4 mr-2" />
-                                Mark Completed
-                              </Button>
+                              {report.isCompleted ? (
+                                <div className="flex-1 flex items-center justify-center px-4 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-md">
+                                  <CheckCircle className="w-4 h-4 mr-2 text-green-600 dark:text-green-400" />
+                                  <span className="text-sm font-medium text-green-700 dark:text-green-300">Completed</span>
+                                </div>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  onClick={() => handleCompleteReport(report._id)}
+                                  disabled={completingReports.has(report._id)}
+                                  className="flex-1 bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                  {completingReports.has(report._id) ? (
+                                    <>
+                                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                      Completing...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <CheckCircle className="w-4 h-4 mr-2" />
+                                      Mark Completed
+                                    </>
+                                  )}
+                                </Button>
+                              )}
                             </div>
                           </div>
                         </div>

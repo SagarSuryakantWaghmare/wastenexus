@@ -46,14 +46,17 @@ export function Navbar() {
                 Dashboard
               </Link>
 
-              {/* Points for client */}
-              {user.role === 'client' && user.totalPoints !== undefined && (
-                <div className="flex items-center gap-2 rounded-full bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 px-4 py-2 border border-green-300 dark:border-green-700 shadow-sm">
+              {/* Points for all roles */}
+              {user.totalPoints !== undefined && user.role !== 'admin' && (
+                <Link 
+                  href="/rewards"
+                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 px-4 py-2 border border-green-300 dark:border-green-700 shadow-sm hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer"
+                >
                   <Trophy className="h-4 w-4 text-green-600 dark:text-green-400" />
                   <span className="text-sm font-bold text-green-700 dark:text-green-400">
-                    {user.totalPoints} pts
+                    {user.totalPoints.toLocaleString()} pts
                   </span>
-                </div>
+                </Link>
               )}
 
               {/* Theme Toggle (animated) */}

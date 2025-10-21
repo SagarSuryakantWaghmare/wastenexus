@@ -6,7 +6,12 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import ProfileModal from '../ProfileModal';
 import UserAvatar from '../UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
@@ -212,15 +217,13 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-64 p-0 bg-gradient-to-b from-gray-900 to-gray-800 dark:from-gray-950 dark:to-gray-900 text-white border-gray-700 dark:border-gray-800">
-          {/* Mobile Header */}
+          {/* Header */}
           <div className="p-6 border-b border-gray-700 dark:border-gray-800">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">
-              WasteNexus
-            </h1>
-            <p className="text-xs text-gray-400 mt-1">Admin Panel</p>
-          </div>
-
-          {/* Mobile User Info */}
+            <SheetTitle className="text-2xl font-bold text-white flex items-center gap-2">
+              <Home className="w-6 h-6" />
+              Admin Panel
+            </SheetTitle>
+          </div>          {/* Mobile User Info */}
           <div className="p-4 border-b border-gray-700">
             <div className="flex items-center gap-3">
               <UserAvatar 

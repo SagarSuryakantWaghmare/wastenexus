@@ -427,26 +427,28 @@ export default function AdminMarketplaceDashboard() {
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6 inline-flex items-center gap-2 rounded-lg p-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="overflow-x-auto horizontal-scroll pb-2 mb-6">
+            <TabsList className="inline-flex items-center gap-2 rounded-lg p-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm min-w-max">
               <TabsTrigger
                 value="pending"
-                className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 data-[state=active]:bg-green-100 data-[state=active]:text-green-700 dark:data-[state=active]:bg-green-900/50 dark:data-[state=active]:text-green-400 transition-colors"
+                className="px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 data-[state=active]:bg-green-100 data-[state=active]:text-green-700 dark:data-[state=active]:bg-green-900/50 dark:data-[state=active]:text-green-400 transition-colors whitespace-nowrap"
               >
                 Pending Review ({stats?.overview.pendingItems || 0})
               </TabsTrigger>
               <TabsTrigger
                 value="allItems"
-                className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+                className="px-3 py-1 rounded-md text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100 whitespace-nowrap"
               >
                 All Items ({stats?.overview.totalItems || 0})
               </TabsTrigger>
               <TabsTrigger
                 value="stats"
-                className="px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100"
+                className="px-3 py-1 rounded-md text-xs sm:text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 data-[state=active]:bg-input/30 dark:data-[state=active]:bg-gray-700 data-[state=active]:text-gray-900 dark:data-[state=active]:text-gray-100 whitespace-nowrap"
               >
                 Statistics & Insights
               </TabsTrigger>
             </TabsList>
+          </div>
 
           {/* Pending Items Tab */}
           <div className="mb-6 flex justify-between items-center">

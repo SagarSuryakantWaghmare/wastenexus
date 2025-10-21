@@ -146,13 +146,13 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        <div className="mb-8 sm:mb-12">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-2">
             Admin Dashboard
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300">
             Welcome back, {user?.name}! Manage and monitor the WasteNexus platform.
           </p>
         </div>
@@ -221,14 +221,14 @@ export default function AdminDashboard() {
         </div>
 
         {/* Admin Modules */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <div className="mb-8 sm:mb-12">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
               Quick Access
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {adminModules.map((module, index) => (
               <Link href={module.href} key={index} className="group block h-full">
                 <Card className="h-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 hover:border-gray-300 dark:hover:border-gray-600">
@@ -263,22 +263,22 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Activity */}
-        <div className="mb-12">
+        <div className="mb-8 sm:mb-12">
           <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between">
+            <CardHeader className="border-b border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+                  <CardTitle className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
                     Recent Activity
                   </CardTitle>
-                  <CardDescription className="text-gray-500 dark:text-gray-400">
+                  <CardDescription className="text-sm text-gray-500 dark:text-gray-400">
                     Latest actions across the platform
                   </CardDescription>
                 </div>
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="text-sm"
+                  className="text-xs sm:text-sm w-full sm:w-auto"
                   onClick={() => window.location.href = '/dashboard/admin/activity'}
                 >
                   View All
@@ -293,7 +293,7 @@ export default function AdminDashboard() {
                   </div>
                 ) : error ? (
                   <div className="p-6 text-center text-red-500">
-                    <p>{error}</p>
+                    <p className="text-sm sm:text-base">{error}</p>
                     <Button 
                       variant="outline" 
                       size="sm" 
@@ -305,21 +305,21 @@ export default function AdminDashboard() {
                   </div>
                 ) : activities.length === 0 ? (
                   <div className="p-6 text-center text-gray-500">
-                    <p>No recent activities</p>
+                    <p className="text-sm sm:text-base">No recent activities</p>
                   </div>
                 ) : (
                   activities.map((activity) => (
                     <div
                       key={activity.id}
-                      className="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                      className="flex items-center justify-between p-3 sm:p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors gap-3"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-2 h-2 rounded-full ${getActivityColor(activity.type)}`} />
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${getActivityColor(activity.type)}`} />
+                        <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white truncate">
                           {activity.action}
                         </p>
                       </div>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                      <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap flex-shrink-0">
                         {activity.time}
                       </span>
                     </div>

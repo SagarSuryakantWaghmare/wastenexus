@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Event from '@/models/Event';
+import User from '@/models/User';
 import { verifyToken } from '@/lib/auth';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 
@@ -93,9 +94,15 @@ export async function POST(request: NextRequest) {
       status: 'upcoming',
     });
 
+    // Award bonus points to champion for creating event (50 points)
+    await User.findByIdAndUpdate(
+      decoded.userId,
+      { $inc: { totalPoints: 50 } }
+    );
+
     return NextResponse.json(
       {
-        message: 'Event created successfully',
+        message: 'Event created successfully! +50 points earned',
         event: {
           id: event._id,
           championId: event.championId,
@@ -112,6 +119,7 @@ export async function POST(request: NextRequest) {
           status: event.status,
           createdAt: event.createdAt,
         },
+        pointsEarned: 50,
       },
       { status: 201 }
     );

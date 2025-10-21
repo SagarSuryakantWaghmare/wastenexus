@@ -155,22 +155,22 @@ export default function UserManagementPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header with Time Range Selector */}
         <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div className="flex flex-col gap-4 mb-4">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-                <Users className="w-8 h-8 sm:w-10 sm:h-10 text-green-600 dark:text-green-400" />
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 sm:gap-3">
+                <Users className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-green-600 dark:text-green-400" />
                 User Management
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1 sm:mt-2 text-sm sm:text-base">
+              <p className="text-gray-600 dark:text-gray-400 mt-1 sm:mt-2 text-xs sm:text-sm lg:text-base">
                 Manage users, roles, and permissions
               </p>
             </div>
-            <div className="flex items-center gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-1 sm:gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 w-full sm:w-auto">
               {['all', 'today', 'week', 'month'].map((period) => (
                 <button
                   key={period}
                   onClick={() => setTimeRange(period)}
-                  className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                  className={`flex-1 sm:flex-none px-2 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors whitespace-nowrap ${
                     timeRange === period
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400'
                       : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
@@ -284,31 +284,33 @@ export default function UserManagementPage() {
         </div>
 
         {/* User Distribution */}
-        <Card className="mb-8 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm">
-          <CardHeader className="pb-2">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <Card className="mb-6 sm:mb-8 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm">
+          <CardHeader className="pb-2 p-4 sm:p-6">
+            <div className="flex flex-col gap-3">
               <div>
-                <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">User Distribution</CardTitle>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Overview of user roles and their distribution</p>
+                <CardTitle className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">User Distribution</CardTitle>
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Overview of user roles and their distribution</p>
               </div>
-              <div className="flex items-center gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700">
-                {['all', 'today', 'week', 'month'].map((period) => (
-                  <button
-                    key={period}
-                    onClick={() => setTimeRange(period)}
-                    className={`px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors ${
-                      timeRange === period
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400'
-                        : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
-                    }`}
-                  >
-                    {period.charAt(0).toUpperCase() + period.slice(1)}
-                  </button>
-                ))}
+              <div className="overflow-x-auto horizontal-scroll pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+                <div className="flex items-center gap-1 sm:gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 min-w-max">
+                  {['all', 'today', 'week', 'month'].map((period) => (
+                    <button
+                      key={period}
+                      onClick={() => setTimeRange(period)}
+                      className={`px-2 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors whitespace-nowrap ${
+                        timeRange === period
+                          ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400'
+                          : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      {period.charAt(0).toUpperCase() + period.slice(1)}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6">
             <div className="h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden mb-6">
               <div className="h-full flex">
                 <div 
@@ -388,8 +390,8 @@ export default function UserManagementPage() {
         </Card>
 
         {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div className="relative w-full sm:w-80">
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               type="text"
@@ -399,34 +401,37 @@ export default function UserManagementPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-            <TabsList className="grid w-full grid-cols-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-1">
-              <TabsTrigger 
-                value="all"
-                className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 dark:data-[state=active]:bg-green-900/50 dark:data-[state=active]:text-green-400"
-              >
-                All
-              </TabsTrigger>
-              <TabsTrigger 
-                value="client"
-                className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 dark:data-[state=active]:bg-blue-900/50 dark:data-[state=active]:text-blue-400"
-              >
-                Clients
-              </TabsTrigger>
-              <TabsTrigger 
-                value="champion"
-                className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-700 dark:data-[state=active]:bg-amber-900/50 dark:data-[state=active]:text-amber-400"
-              >
-                Champions
-              </TabsTrigger>
-              <TabsTrigger 
-                value="admin"
-                className="data-[state=active]:bg-purple-100 data-[state=active]:text-purple-700 dark:data-[state=active]:bg-purple-900/50 dark:data-[state=active]:text-purple-400"
-              >
-                Admins
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          
+          <div className="overflow-x-auto horizontal-scroll pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full min-w-max sm:min-w-0">
+              <TabsList className="inline-flex w-auto min-w-full sm:grid sm:w-full sm:grid-cols-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-1">
+                <TabsTrigger 
+                  value="all"
+                  className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 dark:data-[state=active]:bg-green-900/50 dark:data-[state=active]:text-green-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
+                >
+                  All
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="client"
+                  className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 dark:data-[state=active]:bg-blue-900/50 dark:data-[state=active]:text-blue-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
+                >
+                  Clients
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="champion"
+                  className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-700 dark:data-[state=active]:bg-amber-900/50 dark:data-[state=active]:text-amber-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
+                >
+                  Champions
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="admin"
+                  className="data-[state=active]:bg-purple-100 data-[state=active]:text-purple-700 dark:data-[state=active]:bg-purple-900/50 dark:data-[state=active]:text-purple-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
+                >
+                  Admins
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Clients Card */}
@@ -465,81 +470,83 @@ export default function UserManagementPage() {
 
         {/* Users Table */}
         <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-white">All Users</CardTitle>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Manage user accounts and permissions</p>
+          <CardHeader className="pb-2 p-4 sm:p-6">
+            <CardTitle className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">All Users</CardTitle>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Manage user accounts and permissions</p>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-1">
-                <TabsTrigger 
-                  value="all"
-                  className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 dark:data-[state=active]:bg-green-900/50 dark:data-[state=active]:text-green-400"
-                >
-                  All ({roleStats.all})
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="client"
-                  className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 dark:data-[state=active]:bg-blue-900/50 dark:data-[state=active]:text-blue-400"
-                >
-                  Clients ({roleStats.client})
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="champion"
-                  className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-700 dark:data-[state=active]:bg-amber-900/50 dark:data-[state=active]:text-amber-400"
-                >
-                  Champions ({roleStats.champion})
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="admin"
-                  className="data-[state=active]:bg-purple-100 data-[state=active]:text-purple-700 dark:data-[state=active]:bg-purple-900/50 dark:data-[state=active]:text-purple-400"
-                >
-                  Admins ({roleStats.admin})
-                </TabsTrigger>
-              </TabsList>
+              <div className="overflow-x-auto horizontal-scroll pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 mb-4 sm:mb-6">
+                <TabsList className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-1 inline-flex min-w-max">
+                  <TabsTrigger 
+                    value="all"
+                    className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 dark:data-[state=active]:bg-green-900/50 dark:data-[state=active]:text-green-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
+                  >
+                    All ({roleStats.all})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="client"
+                    className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 dark:data-[state=active]:bg-blue-900/50 dark:data-[state=active]:text-blue-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
+                  >
+                    Clients ({roleStats.client})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="champion"
+                    className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-700 dark:data-[state=active]:bg-amber-900/50 dark:data-[state=active]:text-amber-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
+                  >
+                    Champions ({roleStats.champion})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="admin"
+                    className="data-[state=active]:bg-purple-100 data-[state=active]:text-purple-700 dark:data-[state=active]:bg-purple-900/50 dark:data-[state=active]:text-purple-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
+                  >
+                    Admins ({roleStats.admin})
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value={activeTab}>
                 <div className="space-y-3">
                   {filteredUsers.length === 0 ? (
                     <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                      <Users className="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-                      <p>No users found</p>
+                      <Users className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+                      <p className="text-sm sm:text-base">No users found</p>
                     </div>
                   ) : (
                     filteredUsers.map((user) => (
                       <div
                         key={user._id}
-                        className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow gap-3"
                       >
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
                           {user.profileImage ? (
                             <UserAvatar
                               name={user.name}
                               profileImage={user.profileImage}
-                              size="lg"
-                              className="ring-2 ring-green-400 border border-gray-200 dark:border-gray-600"
+                              size="md"
+                              className="ring-2 ring-green-400 border border-gray-200 dark:border-gray-600 flex-shrink-0"
                             />
                           ) : (
-                            <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 font-bold text-lg border border-gray-200 dark:border-gray-600">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 font-bold text-base sm:text-lg border border-gray-200 dark:border-gray-600 flex-shrink-0">
                               {user.name.charAt(0).toUpperCase()}
                             </div>
                           )}
-                          <div>
-                            <p className="font-semibold text-gray-900 dark:text-white">{user.name}</p>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white truncate">{user.name}</p>
+                            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                          <div className="text-right">
+                        <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 pl-13 sm:pl-0">
+                          <div className="text-left sm:text-right">
                             <Badge
                               variant="outline"
-                              className={
+                              className={`text-xs ${
                                 user.role === 'admin'
                                   ? 'border-purple-500 text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20'
                                   : user.role === 'champion'
                                   ? 'border-amber-500 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20'
                                   : 'border-blue-500 text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                              }
+                              }`}
                             >
                               {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                             </Badge>
