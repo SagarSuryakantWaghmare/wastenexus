@@ -9,7 +9,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Sheet,
   SheetContent,
-  SheetTrigger,
   SheetTitle,
 } from '@/components/ui/sheet';
 import ProfileModal from '../ProfileModal';
@@ -21,7 +20,6 @@ import {
   BarChart3,
   FileText,
   Award,
-  Menu,
   Home,
   LogOut,
   ChevronLeft,
@@ -32,6 +30,8 @@ import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
 
 interface AdminSidebarProps {
   userName?: string;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 const adminRoutes = [
@@ -85,7 +85,7 @@ const adminRoutes = [
   },
 ];
 
-export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
+export function AdminSidebar({ userName = 'Admin', isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
@@ -206,16 +206,7 @@ export function AdminSidebar({ userName = 'Admin' }: AdminSidebarProps) {
       </div>
 
       {/* Mobile Sidebar */}
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden fixed top-4 left-4 z-40 bg-gray-900 dark:bg-gray-950 text-white hover:bg-gray-800 dark:hover:bg-gray-900"
-          >
-            <Menu className="w-6 h-6" />
-          </Button>
-        </SheetTrigger>
+      <Sheet open={isOpen} onOpenChange={onClose}>
         <SheetContent side="left" className="w-64 p-0 bg-gradient-to-b from-gray-900 to-gray-800 dark:from-gray-950 dark:to-gray-900 text-white border-gray-700 dark:border-gray-800">
           {/* Header */}
           <div className="p-6 border-b border-gray-700 dark:border-gray-800">

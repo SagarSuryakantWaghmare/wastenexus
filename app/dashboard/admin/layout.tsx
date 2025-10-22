@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { AdminNavbar } from '@/components/admin/AdminNavbar';
 import { Loader2 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -13,6 +14,7 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const router = useRouter();
   const { user, isLoading } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -37,8 +39,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-      <AdminSidebar userName={user.name} />
-      <main className="md:pl-64 transition-all duration-300">
+      <AdminNavbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+      <AdminSidebar userName={user.name} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <main className="pt-16 md:pl-64 transition-all duration-300">
         {children}
       </main>
     </div>

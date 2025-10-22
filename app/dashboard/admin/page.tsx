@@ -26,30 +26,51 @@ interface Activity {
   timestamp: string;
 }
 
+interface DashboardStats {
+  totalUsers: { count: number; growth: number; isPositive: boolean };
+  newReports: { count: number; growth: number; isPositive: boolean };
+  pendingActions: { count: number; urgent: number };
+  totalEvents: { count: number; growth: number; isPositive: boolean };
+}
+
 export default function AdminDashboard() {
   const { user, token } = useAuth();
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchRecentActivities = useCallback(async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/activities?limit=5', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      setError(null);
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch activities');
+      // Fetch stats and activities in parallel
+      const [statsResponse, activitiesResponse] = await Promise.all([
+        fetch('/api/admin/dashboard-stats', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch('/api/admin/activities?limit=5', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+      ]);
+
+      if (statsResponse.ok) {
+        const statsData = await statsResponse.json();
+        setStats(statsData.data);
       }
 
-      const data = await response.json();
-      setActivities(data.data);
+      if (activitiesResponse.ok) {
+        const activitiesData = await activitiesResponse.json();
+        setActivities(activitiesData.data);
+      }
+
+      if (!statsResponse.ok && !activitiesResponse.ok) {
+        throw new Error('Failed to fetch dashboard data');
+      }
     } catch (err) {
-      console.error('Error fetching activities:', err);
-      setError('Failed to load activities');
+      console.error('Error fetching dashboard data:', err);
+      setError('Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
@@ -57,9 +78,9 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (token) {
-      fetchRecentActivities();
+      fetchDashboardData();
     }
-  }, [token, fetchRecentActivities]);
+  }, [token, fetchDashboardData]);
 
   // Removed unused getActivityIcon function
 
@@ -159,65 +180,94 @@ export default function AdminDashboard() {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Users</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">2,547</p>
-                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">↑ 12% from last month</p>
-                </div>
-                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-                  <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {loading && !stats ? (
+            <>
+              {[1, 2, 3, 4].map((i) => (
+                <Card key={i} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2 flex-1">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20"></div>
+                        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-16"></div>
+                        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24"></div>
+                      </div>
+                      <div className="p-3 bg-gray-100 dark:bg-gray-700 rounded-full animate-pulse">
+                        <div className="w-6 h-6"></div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </>
+          ) : (
+            <>
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Users</p>
+                      <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.totalUsers.count.toLocaleString() || 0}</p>
+                      <p className={`text-xs mt-1 ${stats?.totalUsers.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats?.totalUsers.isPositive ? '↑' : '↓'} {Math.abs(stats?.totalUsers.growth || 0)}% from last month
+                      </p>
+                    </div>
+                    <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
+                      <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">New Reports</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">87</p>
-                  <p className="text-xs text-red-600 dark:text-red-400 mt-1">↓ 3% from last week</p>
-                </div>
-                <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
-                  <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Reports</p>
+                      <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.newReports.count.toLocaleString() || 0}</p>
+                      <p className={`text-xs mt-1 ${stats?.newReports.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats?.newReports.isPositive ? '↑' : '↓'} {Math.abs(stats?.newReports.growth || 0)}% from last week
+                      </p>
+                    </div>
+                    <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
+                      <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Pending Actions</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">24</p>
-                  <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">5 require attention</p>
-                </div>
-                <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
-                  <AlertCircle className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Pending Actions</p>
+                      <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.pendingActions.count || 0}</p>
+                      <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">{stats?.pendingActions.urgent || 0} require attention</p>
+                    </div>
+                    <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
+                      <AlertCircle className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Events</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">89</p>
-                  <p className="text-xs text-green-600 dark:text-green-400 mt-1">↑ 5% from last month</p>
-                </div>
-                <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-                  <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Events</p>
+                      <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.totalEvents.count || 0}</p>
+                      <p className={`text-xs mt-1 ${stats?.totalEvents.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats?.totalEvents.isPositive ? '↑' : '↓'} {Math.abs(stats?.totalEvents.growth || 0)}% from last month
+                      </p>
+                    </div>
+                    <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                      <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
         </div>
 
         {/* Admin Modules */}
@@ -298,7 +348,7 @@ export default function AdminDashboard() {
                       variant="outline" 
                       size="sm" 
                       className="mt-2"
-                      onClick={fetchRecentActivities}
+                      onClick={fetchDashboardData}
                     >
                       Retry
                     </Button>
