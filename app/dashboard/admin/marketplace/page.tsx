@@ -266,7 +266,8 @@ export default function AdminMarketplaceDashboard() {
 
         {/* Statistics Cards */}
         {stats && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+          <div className="overflow-x-auto mb-8">
+            <div className="grid grid-cols-2 min-w-[500px] sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 flex-nowrap" style={{ display: 'grid' }}>
             <Card className="bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
               <CardContent className="p-4 sm:p-5">
                 <div className="flex items-start justify-between">
@@ -422,12 +423,13 @@ export default function AdminMarketplaceDashboard() {
                 </div>
               </CardContent>
             </Card>
+            </div>
           </div>
         )}
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <div className="overflow-x-auto horizontal-scroll pb-2 mb-6">
+          <div className="overflow-x-auto pb-2 mb-6">
             <TabsList className="inline-flex items-center gap-2 rounded-lg p-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm min-w-max">
               <TabsTrigger
                 value="pending"
@@ -451,8 +453,8 @@ export default function AdminMarketplaceDashboard() {
           </div>
 
           {/* Pending Items Tab */}
-          <div className="mb-6 flex justify-between items-center">
-            <div className="flex items-center space-x-2">
+          <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div className="flex items-center space-x-2 w-full overflow-x-auto">
               <h3 className="text-lg font-medium">
                 {activeTab === 'pending' && 'Pending Approvals'}
                 {activeTab === 'allItems' && 'All Listings'}
@@ -464,24 +466,24 @@ export default function AdminMarketplaceDashboard() {
                 {activeTab === 'stats' && 'View'}
               </Badge>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 w-full overflow-x-auto">
               {activeTab !== 'stats' && (
-                <div className="relative">
+                <div className="relative min-w-[200px] max-w-xs w-full">
                   <input
                     type="text"
                     placeholder="Search items..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white text-sm w-64"
+                    className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:bg-gray-700 dark:text-white text-sm w-full"
                   />
                   <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
                 </div>
               )}
-              <div className="relative">
+              <div className="relative min-w-[100px]">
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="border-gray-300 dark:border-gray-600 min-w-[100px]"
+                  className="border-gray-300 dark:border-gray-600 w-full"
                   onClick={() => fetchData(true)}
                   disabled={refreshing}
                 >
@@ -513,7 +515,7 @@ export default function AdminMarketplaceDashboard() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {pendingItems.map((item) => (
                   <Card key={item._id} className="overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
                     <div className="md:flex">
@@ -625,26 +627,30 @@ export default function AdminMarketplaceDashboard() {
               <CardHeader className="p-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <CardTitle className="text-base font-medium text-gray-900 dark:text-white">Filter by Status</CardTitle>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { value: 'all', label: 'All' },
-                      { value: 'pending', label: 'Pending' },
-                      { value: 'approved', label: 'Approved' },
-                      { value: 'rejected', label: 'Rejected' },
-                      { value: 'sold', label: 'Sold' }
-                    ].map((filter) => (
-                      <button
-                        key={filter.value}
-                        onClick={() => setItemsFilter(filter.value as string)}
-                        className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                          itemsFilter === filter.value
-                            ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400'
-                            : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600'
-                        }`}
-                      >
-                        {filter.label}
-                      </button>
-                    ))}
+                  <div className="w-full overflow-x-auto pb-2 relative" style={{ WebkitOverflowScrolling: 'touch', overflowX: 'auto', msOverflowStyle: 'scrollbar', scrollbarWidth: 'auto' }}>
+                    {/* Gradient fade for scroll indicator */}
+                    <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-gray-50 dark:from-gray-800 to-transparent z-10" />
+                    <div className="flex flex-nowrap gap-2 min-w-[400px] pr-8" style={{ width: 'max-content' }}>
+                      {[
+                        // { value: 'all', label: 'All' },
+                        { value: 'pending', label: 'Pending' },
+                        { value: 'approved', label: 'Approved' },
+                        { value: 'rejected', label: 'Rejected' },
+                        { value: 'sold', label: 'Sold' }
+                      ].map((filter) => (
+                        <button
+                          key={filter.value}
+                          onClick={() => setItemsFilter(filter.value as string)}
+                          className={`px-3 py-1.5 text-sm rounded-md transition-colors min-w-[80px] ${
+                            itemsFilter === filter.value
+                              ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400'
+                              : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600'
+                          }`}
+                        >
+                          {filter.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -661,7 +667,7 @@ export default function AdminMarketplaceDashboard() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredAllItems.map((item) => (
                   <Card key={item._id} className="overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
                     {/* Image */}

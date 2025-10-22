@@ -520,17 +520,21 @@ export default function EventsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 bg-white dark:bg-gray-800 rounded-b-lg">
-              <div className="flex flex-wrap gap-3">
-                {locations.map((location, index) => (
-                  <Badge 
-                    key={index} 
-                    variant="outline" 
-                    className="px-3 py-2 bg-white dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <MapPin className="w-4 h-4 mr-1.5 text-emerald-600 dark:text-emerald-400" />
-                    {location}
-                  </Badge>
-                ))}
+              <div className="relative w-full">
+                {/* Gradient fade for scroll indicator */}
+                <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white dark:from-gray-800 to-transparent z-10" />
+                <div className="flex gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 pr-8" style={{ WebkitOverflowScrolling: 'touch' }}>
+                  {locations.map((location, index) => (
+                    <Badge 
+                      key={index} 
+                      variant="outline" 
+                      className="px-3 py-2 bg-white dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+                    >
+                      <MapPin className="w-4 h-4 mr-1.5 text-emerald-600 dark:text-emerald-400" />
+                      {location}
+                    </Badge>
+                  ))}
+                </div>
               </div>
             </CardContent>
           </Card>
