@@ -293,115 +293,117 @@ export default function WorkerDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col transition-colors duration-300">
       <Navbar />
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
-        <div className="mb-6 bg-white dark:bg-gray-800 border-b dark:border-gray-700 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-            <Truck className="w-8 h-8 text-green-600 dark:text-green-400" />
+        <div className="mb-4 sm:mb-6 bg-white dark:bg-gray-800 border-b dark:border-gray-700 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 sm:gap-3">
+            <Truck className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 dark:text-green-400" />
             Worker Dashboard
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
             Welcome back, {user?.name}! Manage your waste collection tasks.
           </p>
         </div>
 
         {/* View Switcher */}
-        <div className="mb-6 flex flex-wrap gap-3">
-          <Button
-            onClick={() => setActiveView('tasks')}
-            variant={activeView === 'tasks' ? 'default' : 'outline'}
-            className={activeView === 'tasks' ? 'bg-green-600 hover:bg-green-700' : 'dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'}
-          >
-            <Truck className="w-4 h-4 mr-2" />
-            Collection Tasks
-          </Button>
-          <Button
-            onClick={() => setActiveView('available-jobs')}
-            variant={activeView === 'available-jobs' ? 'default' : 'outline'}
-            className={activeView === 'available-jobs' ? 'bg-green-600 hover:bg-green-700' : 'dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'}
-          >
-            <Briefcase className="w-4 h-4 mr-2" />
-            Available Jobs ({jobs.length})
-          </Button>
-          <Button
-            onClick={() => setActiveView('my-jobs')}
-            variant={activeView === 'my-jobs' ? 'default' : 'outline'}
-            className={activeView === 'my-jobs' ? 'bg-green-600 hover:bg-green-700' : 'dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'}
-          >
-            <Package className="w-4 h-4 mr-2" />
-            My Jobs ({myJobs.length})
-          </Button>
+        <div className="mb-4 sm:mb-6 overflow-x-auto pb-2">
+          <div className="flex gap-2 sm:gap-3 min-w-max">
+            <Button
+              onClick={() => setActiveView('tasks')}
+              variant={activeView === 'tasks' ? 'default' : 'outline'}
+              className={`text-xs sm:text-sm ${activeView === 'tasks' ? 'bg-green-600 hover:bg-green-700' : 'dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+            >
+              <Truck className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              Collection Tasks
+            </Button>
+            <Button
+              onClick={() => setActiveView('available-jobs')}
+              variant={activeView === 'available-jobs' ? 'default' : 'outline'}
+              className={`text-xs sm:text-sm ${activeView === 'available-jobs' ? 'bg-green-600 hover:bg-green-700' : 'dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+            >
+              <Briefcase className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              Available Jobs ({jobs.length})
+            </Button>
+            <Button
+              onClick={() => setActiveView('my-jobs')}
+              variant={activeView === 'my-jobs' ? 'default' : 'outline'}
+              className={`text-xs sm:text-sm ${activeView === 'my-jobs' ? 'bg-green-600 hover:bg-green-700' : 'dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+            >
+              <Package className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              My Jobs ({myJobs.length})
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
         {activeView === 'tasks' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Tasks</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.totalAssigned}</p>
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div className="w-full">
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Total Tasks</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.totalAssigned}</p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
-                  <Package className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center ml-auto">
+                  <Package className="w-4 h-4 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Pending</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.pending}</p>
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div className="w-full">
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Pending</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.pending}</p>
                 </div>
-                <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">In Progress</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.inProgress}</p>
-                </div>
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
-                  <Navigation className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-orange-100 dark:bg-orange-900/20 rounded-lg flex items-center justify-center ml-auto">
+                  <Clock className="w-4 h-4 sm:w-6 sm:h-6 text-orange-600 dark:text-orange-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Completed</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.completed}</p>
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div className="w-full">
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">In Progress</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.inProgress}</p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center ml-auto">
+                  <Navigation className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Weight</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.totalWeight.toFixed(1)}</p>
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div className="w-full">
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Completed</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.completed}</p>
+                </div>
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center ml-auto">
+                  <CheckCircle className="w-4 h-4 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 col-span-2 sm:col-span-2 lg:col-span-1">
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div className="w-full">
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Total Weight</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.totalWeight.toFixed(1)}</p>
                   <p className="text-gray-500 dark:text-gray-400 text-xs">kg collected</p>
                 </div>
-                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-100 dark:bg-purple-900/20 rounded-lg flex items-center justify-center ml-auto">
+                  <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
                 </div>
               </div>
             </CardContent>
@@ -418,51 +420,51 @@ export default function WorkerDashboard() {
           </CardHeader>
           <CardContent>
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
               <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                <div className="absolute top-4 right-4 w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-10 h-10 sm:w-12 sm:h-12 bg-green-100 dark:bg-green-900/20 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
                 </div>
-                <CardContent className="p-6">
-                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Reports</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{reportsStats.total || 0}</p>
+                <CardContent className="p-4 sm:p-6">
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Total Reports</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{reportsStats.total || 0}</p>
                 </CardContent>
               </Card>
 
               <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                <div className="absolute top-4 right-4 w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
                 </div>
-                <CardContent className="p-6">
-                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Weight</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{reportsStats.totalWeight.toFixed(1)}</p>
+                <CardContent className="p-4 sm:p-6">
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Total Weight</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{reportsStats.totalWeight.toFixed(1)}</p>
                   <p className="text-xs text-gray-600 dark:text-gray-400">kg collected</p>
                 </CardContent>
               </Card>
 
               <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-                <div className="absolute top-4 right-4 w-12 h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
-                  <Award className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg flex items-center justify-center">
+                  <Award className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <CardContent className="p-6">
-                  <p className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">Total Points</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{reportsStats.totalPoints || 0}</p>
+                <CardContent className="p-4 sm:p-6">
+                  <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">Total Points</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{reportsStats.totalPoints || 0}</p>
                 </CardContent>
               </Card>
             </div>
 
             {/* Tabs for filtering */}
             <Tabs value={typeFilter} onValueChange={setTypeFilter} className="w-full">
-              <div className="overflow-x-auto horizontal-scroll pb-2 mb-6">
+              <div className="overflow-x-auto horizontal-scroll pb-2 mb-4 sm:mb-6">
                 <TabsList className="h-auto bg-gray-100 dark:bg-gray-700/50 inline-flex min-w-max">
-                  <TabsTrigger value="all" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">All Reports</TabsTrigger>
-                  <TabsTrigger value="plastic" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Plastic</TabsTrigger>
-                  <TabsTrigger value="cardboard" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Cardboard</TabsTrigger>
-                  <TabsTrigger value="e-waste" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">E-Waste</TabsTrigger>
-                  <TabsTrigger value="metal" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Metal</TabsTrigger>
-                  <TabsTrigger value="glass" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Glass</TabsTrigger>
-                  <TabsTrigger value="organic" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Organic</TabsTrigger>
-                  <TabsTrigger value="paper" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3">Paper</TabsTrigger>
+                  <TabsTrigger value="all" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-1.5 sm:py-2">All Reports</TabsTrigger>
+                  <TabsTrigger value="plastic" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-1.5 sm:py-2">Plastic</TabsTrigger>
+                  <TabsTrigger value="cardboard" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-1.5 sm:py-2">Cardboard</TabsTrigger>
+                  <TabsTrigger value="e-waste" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-1.5 sm:py-2">E-Waste</TabsTrigger>
+                  <TabsTrigger value="metal" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-1.5 sm:py-2">Metal</TabsTrigger>
+                  <TabsTrigger value="glass" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-1.5 sm:py-2">Glass</TabsTrigger>
+                  <TabsTrigger value="organic" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-1.5 sm:py-2">Organic</TabsTrigger>
+                  <TabsTrigger value="paper" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3 py-1.5 sm:py-2">Paper</TabsTrigger>
                 </TabsList>
               </div>
 
