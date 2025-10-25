@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navbar } from '@/components/Navbar';
@@ -15,12 +15,50 @@ import {
   ShoppingBag, 
   TrendingUp, 
   Award,
-  ArrowRight 
+  ArrowRight,
+  Loader2,
+  TrendingDown
 } from 'lucide-react';
+
+interface DashboardStats {
+  totalPoints: { count: number; growth: number; isPositive: boolean };
+  userRank: { rank: number; total: number; change: number; isImproved: boolean };
+  totalReports: { count: number; verified: number; growth: number; isPositive: boolean };
+  activeJobs: { count: number; completed: number; growth: number; isPositive: boolean };
+  totalWasteCollected: number;
+}
 
 export default function ClientDashboard() {
   const router = useRouter();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, token } = useAuth();
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  const fetchDashboardStats = useCallback(async () => {
+    if (!token) return;
+
+    try {
+      setStatsLoading(true);
+      const response = await fetch('/api/client/dashboard-stats', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setStats(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+    } finally {
+      setStatsLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      fetchDashboardStats();
+    }
+  }, [token, fetchDashboardStats]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -94,77 +132,183 @@ export default function ClientDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col transition-colors duration-300">
       <Navbar />
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">
                 Welcome back, {user?.name?.split(' ')[0] || 'User'}! 👋
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-2">
                 Here&apos;s your environmental impact dashboard
               </p>
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <Card className="bg-gradient-to-br from-green-500 to-emerald-600 border-0 text-white">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium opacity-90">Total Points</p>
-                    <p className="text-3xl font-bold mt-1">{user?.totalPoints || 0}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+            {/* Total Points Card */}
+            {statsLoading ? (
+              <Card className="bg-gradient-to-br from-green-500 to-emerald-600 border-0 text-white">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2 flex-1">
+                      <div className="h-3 sm:h-4 bg-white/20 rounded animate-pulse w-16 sm:w-20"></div>
+                      <div className="h-6 sm:h-8 bg-white/20 rounded animate-pulse w-12 sm:w-16"></div>
+                      <div className="h-2 sm:h-3 bg-white/20 rounded animate-pulse w-20 sm:w-24"></div>
+                    </div>
+                    <div className="p-2 sm:p-3 bg-white/20 rounded-lg">
+                      <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6" />
+                    </div>
                   </div>
-                  <div className="p-3 bg-white/20 rounded-lg">
-                    <TrendingUp className="h-6 w-6" />
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="bg-gradient-to-br from-green-500 to-emerald-600 border-0 text-white">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs sm:text-sm font-medium opacity-90">Total Points</p>
+                      <p className="text-2xl sm:text-3xl font-bold mt-1">{stats?.totalPoints.count.toLocaleString() || 0}</p>
+                      <p className="text-xs mt-1 flex items-center gap-1">
+                        {stats?.totalPoints.isPositive ? (
+                          <>
+                            <TrendingUp className="w-3 h-3" />
+                            <span>↑ {Math.abs(stats?.totalPoints.growth || 0)}% from last week</span>
+                          </>
+                        ) : (
+                          <>
+                            <TrendingDown className="w-3 h-3" />
+                            <span>↓ {Math.abs(stats?.totalPoints.growth || 0)}% from last week</span>
+                          </>
+                        )}
+                      </p>
+                    </div>
+                    <div className="p-2 sm:p-3 bg-white/20 rounded-lg">
+                      <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6" />
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
-            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Your Rank</p>
-                    <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">#12</p>
+            {/* User Rank Card */}
+            {statsLoading ? (
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2 flex-1">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20"></div>
+                      <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-16"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24"></div>
+                    </div>
+                    <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg animate-pulse">
+                      <Award className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+                    </div>
                   </div>
-                  <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
-                    <Award className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Your Rank</p>
+                      <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                        #{stats?.userRank.rank || 0}
+                      </p>
+                      <p className={`text-xs mt-1 ${stats?.userRank.isImproved ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                        {stats?.userRank.isImproved ? (
+                          <>↑ Up {stats?.userRank.change} places</>
+                        ) : (stats?.userRank.change || 0) < 0 ? (
+                          <>↓ Down {Math.abs(stats?.userRank.change || 0)} places</>
+                        ) : (
+                          <>No change</>
+                        )}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
+                      <Award className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
-            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Reports</p>
-                    <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">24</p>
+            {/* Reports Card */}
+            {statsLoading ? (
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2 flex-1">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20"></div>
+                      <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-16"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24"></div>
+                    </div>
+                    <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg animate-pulse">
+                      <FilePlus2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                    </div>
                   </div>
-                  <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                    <FilePlus2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Reports</p>
+                      <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                        {stats?.totalReports.count || 0}
+                      </p>
+                      <p className={`text-xs mt-1 ${stats?.totalReports.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats?.totalReports.isPositive ? '↑' : '↓'} {Math.abs(stats?.totalReports.growth || 0)}% from last week
+                      </p>
+                    </div>
+                    <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                      <FilePlus2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
-            <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Jobs</p>
-                    <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">3</p>
+            {/* Active Jobs Card */}
+            {statsLoading ? (
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2 flex-1">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-20"></div>
+                      <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-16"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-24"></div>
+                    </div>
+                    <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg animate-pulse">
+                      <Briefcase className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                    </div>
                   </div>
-                  <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                    <Briefcase className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Jobs</p>
+                      <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                        {stats?.activeJobs.count || 0}
+                      </p>
+                      <p className={`text-xs mt-1 ${stats?.activeJobs.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        {stats?.activeJobs.isPositive ? '↑' : '↓'} {Math.abs(stats?.activeJobs.growth || 0)}% from last week
+                      </p>
+                    </div>
+                    <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                      <Briefcase className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
 
