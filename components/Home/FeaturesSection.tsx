@@ -1,18 +1,11 @@
 'use client';
 
-import { Award, TrendingUp, Users, MapPin, Shield, BarChart, Recycle, Briefcase, ShoppingBag } from 'lucide-react';
+import { TrendingUp, Users, BarChart, Recycle, Briefcase, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Marquee } from '@/components/ui/marquee';
 
 export default function FeaturesSection() {
   const features = [
-    {
-      icon: Award,
-      title: "Gamified Rewards System",
-      description: "Earn points for every verified waste report. Unlock badges and climb through 6 reward tiers - from Beginner to Diamond.",
-      color: "text-green-600 dark:text-green-400",
-      bgColor: "bg-green-100 dark:bg-green-900/20"
-    },
     {
       icon: TrendingUp,
       title: "Live Leaderboard",
@@ -33,20 +26,6 @@ export default function FeaturesSection() {
       description: "Join or organize local cleanup drives, workshops, and awareness campaigns. Connect with environmental champions in your area.",
       color: "text-emerald-600 dark:text-emerald-400",
       bgColor: "bg-emerald-100 dark:bg-emerald-900/20"
-    },
-    {
-      icon: MapPin,
-      title: "Location-Based Services",
-      description: "Find nearby collection points and events with integrated mapping. Report waste with precise GPS coordinates.",
-      color: "text-orange-600 dark:text-orange-400",
-      bgColor: "bg-orange-100 dark:bg-orange-900/20"
-    },
-    {
-      icon: Shield,
-      title: "Verified Champions",
-      description: "Work with authenticated NGOs and environmental organizations. Every report is reviewed for accuracy and impact.",
-      color: "text-indigo-600 dark:text-indigo-400",
-      bgColor: "bg-indigo-100 dark:bg-indigo-900/20"
     },
     {
       icon: Briefcase,

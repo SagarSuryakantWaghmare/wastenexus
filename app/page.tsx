@@ -8,7 +8,6 @@ import HowItWorksSection from "@/components/Home/HowItWorksSection";
 import RolesSection from "@/components/Home/RolesSection";
 import AIFeaturesSection from "@/components/Home/AIFeaturesSection";
 import RewardsSection from "@/components/Home/RewardsSection";
-import CTASection from "@/components/Home/CTASection";
 import { Footer } from "@/components/Footer";
 import { AppLoader } from "@/components/AppLoader";
 export default function Home() {
@@ -23,7 +22,6 @@ export default function Home() {
           <AIFeaturesSection />
           <RolesSection />
           <RewardsSection />
-          <CTASection />
         </main>
         <Footer />
       </div>

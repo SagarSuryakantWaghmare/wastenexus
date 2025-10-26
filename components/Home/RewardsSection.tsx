@@ -4,14 +4,6 @@ import { CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function RewardsSection() {
-  const tiers = [
-    { name: 'Beginner', points: '0-499', emoji: '🌱', color: 'text-gray-600 dark:text-gray-400', bgColor: 'bg-gray-100 dark:bg-gray-800' },
-    { name: 'Bronze', points: '500-999', emoji: '🥉', color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-100 dark:bg-orange-900/20' },
-    { name: 'Silver', points: '1K-2.5K', emoji: '🥈', color: 'text-gray-500 dark:text-gray-400', bgColor: 'bg-gray-200 dark:bg-gray-700' },
-    { name: 'Gold', points: '2.5K-5K', emoji: '🥇', color: 'text-yellow-600 dark:text-yellow-400', bgColor: 'bg-yellow-100 dark:bg-yellow-900/20' },
-    { name: 'Platinum', points: '5K-10K', emoji: '🏆', color: 'text-cyan-600 dark:text-cyan-400', bgColor: 'bg-cyan-100 dark:bg-cyan-900/20' },
-    { name: 'Diamond', points: '10K+', emoji: '💎', color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-100 dark:bg-purple-900/20' },
-  ];
 
   const pointsBreakdown = [
     { type: 'E-Waste', points: 20, color: 'text-red-600 dark:text-red-400' },
@@ -42,38 +34,6 @@ export default function RewardsSection() {
           </p>
         </motion.div>
 
-        {/* Reward Tiers */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-16"
-        >
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-            Unlock Badge Tiers
-          </h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {tiers.map((tier, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className={`${tier.bgColor} rounded-xl p-6 text-center hover:scale-105 transition-transform duration-300`}
-              >
-                <div className="text-4xl mb-3">{tier.emoji}</div>
-                <div className={`text-lg font-bold ${tier.color} mb-1`}>
-                  {tier.name}
-                </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  {tier.points} pts
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
 
         {/* Points Breakdown */}
         <motion.div
