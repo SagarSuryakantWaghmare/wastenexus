@@ -13,6 +13,14 @@ interface JWTPayload {
   role: string;
 }
 
+import { Types } from 'mongoose';
+
+interface UserDocument {
+  _id: Types.ObjectId | string;
+  totalPoints: number;
+  [key: string]: any; // Allow other properties
+}
+
 export async function GET(request: NextRequest) {
   try {
     // Get token from Authorization header
@@ -29,8 +37,13 @@ export async function GET(request: NextRequest) {
     // Verify token
     let decoded: JWTPayload;
     try {
-      decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
+      const payload = jwt.verify(token, JWT_SECRET);
+      if (typeof payload === 'string' || !('userId' in payload) || !('role' in payload)) {
+        throw new Error('Invalid token payload');
+      }
+      decoded = payload as JWTPayload;
     } catch (error) {
+      console.error('Token verification failed:', error);
       return NextResponse.json(
         { success: false, message: 'Unauthorized - Invalid token' },
         { status: 401 }
@@ -54,9 +67,7 @@ export async function GET(request: NextRequest) {
     // Calculate date ranges
     const now = new Date();
     const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
-    const twoMonthsAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
 
     // Total Points with growth
     const totalPoints = currentUser?.totalPoints || 0;
@@ -81,14 +92,14 @@ export async function GET(request: NextRequest) {
     const allUsers = await User.find({ role: 'client' })
       .select('_id totalPoints')
       .sort({ totalPoints: -1 })
-      .lean();
+      .lean<UserDocument[]>();
     
     const userRank = allUsers.findIndex(u => u._id.toString() === userId) + 1;
     
     // Calculate rank from last week
     const usersLastWeek = await User.find({ role: 'client' })
       .select('_id totalPoints')
-      .lean();
+      .lean<UserDocument[]>();
     
     const userRanksLastWeek = [...usersLastWeek].sort((a, b) => b.totalPoints - a.totalPoints);
     const rankLastWeek = userRanksLastWeek.findIndex(u => u._id.toString() === userId) + 1;
@@ -132,8 +143,9 @@ export async function GET(request: NextRequest) {
     const totalWasteCollected = await Report.aggregate([
       {
         $match: {
-          userId: userId,
-          status: 'verified'
+          userId: new Types.ObjectId(userId),
+          status: 'verified',
+          weightKg: { $exists: true, $ne: null }
         }
       },
       {
@@ -178,8 +190,13 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Error fetching client dashboard stats:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(
-      { success: false, message: 'Internal server error' },
+      { 
+        success: false, 
+        message: 'Failed to fetch dashboard stats',
+        error: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+      },
       { status: 500 }
     );
   }

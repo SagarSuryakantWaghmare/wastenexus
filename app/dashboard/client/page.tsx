@@ -16,7 +16,6 @@ import {
   TrendingUp, 
   Award,
   ArrowRight,
-  Loader2,
   TrendingDown
 } from 'lucide-react';
 
