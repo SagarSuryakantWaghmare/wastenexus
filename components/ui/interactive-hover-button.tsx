@@ -10,7 +10,12 @@ export function InteractiveHoverButton({
   return (
     <button
       className={cn(
-        "group bg-background relative w-auto cursor-pointer overflow-hidden rounded-full border p-2 px-6 text-center font-semibold",
+        `group bg-background relative w-auto cursor-pointer overflow-hidden rounded-full border
+        p-2 px-5 text-center font-semibold
+        text-base xs:text-base sm:text-lg
+        xs:p-2 xs:px-6
+        sm:p-2 sm:px-8
+        `,
         className
       )}
       {...props}
