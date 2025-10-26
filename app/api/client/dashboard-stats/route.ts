@@ -18,7 +18,10 @@ import { Types } from 'mongoose';
 interface UserDocument {
   _id: Types.ObjectId | string;
   totalPoints: number;
-  [key: string]: any; // Allow other properties
+  role?: string;
+  email?: string;
+  name?: string;
+  // Add other known properties here instead of using [key: string]: any
 }
 
 export async function GET(request: NextRequest) {
