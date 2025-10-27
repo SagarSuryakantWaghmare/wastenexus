@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
+import { LoaderOne } from "@/components/ui/loader";
+import { toast } from "sonner";
 
 export default function SignUpPage() {
     const router = useRouter();
@@ -52,20 +54,23 @@ export default function SignUpPage() {
         setLoading(true);
         try {
             await signup(formData.name, formData.email, formData.password, formData.role);
+            toast.success("Account created successfully!");
         } catch (err) {
-            setError(err instanceof Error ? err.message : "An error occurred");
+            const errorMessage = err instanceof Error ? err.message : "An error occurred";
+            setError(errorMessage);
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
-        }
-    };
-
     if (isLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-black/50">
                 <div className="text-center">
-                    <Leaf className="h-12 w-12 animate-pulse text-green-400 mx-auto" />
-                    <p className="mt-2 text-green-300">Loading...</p>
+                    <LoaderOne />
+                    <p className="mt-4 text-green-300 font-medium">Authenticating...</p>
                 </div>
+            </div>
+        );
+    }           </div>
             </div>
         );
     }
@@ -166,9 +171,10 @@ export default function SignUpPage() {
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5"
+                                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 flex items-center justify-center gap-2"
                             >
-                                {loading ? "Processing..." : "Sign Up"}
+                                {loading && <LoaderOne />}
+                                {loading ? "Creating account..." : "Sign Up"}
                             </Button>
 
                             <div className="text-center">

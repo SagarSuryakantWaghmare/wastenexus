@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { WasteReportForm } from "@/components/WasteReportForm";
 import { Navbar } from "@/components/Navbar";
 import { BackButton } from "@/components/ui/back-button";
+import { LoaderOne } from "@/components/ui/loader";
 
 export default function ReportWastePage() {
   const router = useRouter();
@@ -43,8 +44,8 @@ export default function ReportWastePage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
         <div className="text-center">
-          <span className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-green-400 dark:border-green-500 border-t-transparent"></span>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
+          <LoaderOne />
+          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading report form...</p>
         </div>
       </div>
     );

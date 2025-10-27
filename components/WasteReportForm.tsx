@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { LocationPicker } from '@/components/LocationPicker';
 import { Upload, Loader2, CheckCircle2, Camera, MapPin, Zap } from 'lucide-react';
 import Image from 'next/image';
+import { LoaderOne } from '@/components/ui/loader';
 
 interface WasteReportFormProps {
   onSuccess: () => void;
@@ -98,6 +99,7 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
 
     if (!type || !weightKg) {
       setError('Please fill in all required fields');
+      toast.error('Please fill in all required fields');
       return;
     }
 
@@ -123,13 +125,15 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
       setAiClassification(null);
       setLocation(null);
 
-      toast.success('Waste report submitted successfully!');
+      toast.success('🎉 Waste report submitted successfully!');
       onSuccess();
       setTimeout(() => {
         router.push('/');
       }, 1200);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to submit report');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to submit report';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

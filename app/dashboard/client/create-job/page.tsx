@@ -10,7 +10,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Briefcase, Loader2, Home, Building2, Package, MapPin, AlertCircle } from 'lucide-react';
+import { Briefcase, Home, Building2, Package, MapPin, AlertCircle } from 'lucide-react';
+import { LoaderOne } from '@/components/ui/loader';
+import { toast } from 'sonner';
 
 export default function CreateJobPage() {
   const router = useRouter();
@@ -45,6 +47,7 @@ export default function CreateJobPage() {
       // Validate required fields
       if (!formData.title || !formData.description || !formData.address || formData.wasteTypes.length === 0) {
         setError('Please fill in all required fields');
+        toast.error('Please fill in all required fields');
         setLoading(false);
         return;
       }
@@ -52,6 +55,7 @@ export default function CreateJobPage() {
       const token = localStorage.getItem('token');
       if (!token) {
         setError('Authentication required');
+        toast.error('Authentication required');
         setLoading(false);
         return;
       }
@@ -89,15 +93,14 @@ export default function CreateJobPage() {
       }
 
       setSuccess(true);
+      toast.success('Job created successfully!');
       setTimeout(() => {
         router.push('/dashboard/client');
       }, 2000);
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('An error occurred. Please try again.');
-      }
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred. Please try again.';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -115,7 +118,7 @@ export default function CreateJobPage() {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
-        <Loader2 className="w-8 h-8 animate-spin text-green-600 dark:text-green-400" />
+        <LoaderOne />
       </div>
     );
   }
@@ -401,17 +404,11 @@ export default function CreateJobPage() {
                 </Button>
                 <Button
                   type="submit"
-                  className="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600"
+                  className="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 flex items-center justify-center gap-2"
                   disabled={loading}
                 >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Posting Job...
-                    </>
-                  ) : (
-                    'Post Job'
-                  )}
+                  {loading && <LoaderOne />}
+                  {loading ? 'Posting Job...' : 'Post Job'}
                 </Button>
               </div>
 

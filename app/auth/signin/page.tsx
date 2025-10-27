@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
+import { LoaderOne } from "@/components/ui/loader";
+import { toast } from "sonner";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -48,8 +50,11 @@ export default function SignInPage() {
     setLoading(true);
     try {
       await login(formData.email, formData.password);
+      toast.success("Successfully signed in!");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      const errorMessage = err instanceof Error ? err.message : "An error occurred";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -59,8 +64,8 @@ export default function SignInPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-900/50">
         <div className="text-center">
-          <Leaf className="h-12 w-12 animate-pulse text-green-400 mx-auto" />
-          <p className="mt-2 text-green-300">Loading...</p>
+          <LoaderOne />
+          <p className="mt-4 text-green-300 font-medium">Authenticating...</p>
         </div>
       </div>
     );
@@ -127,9 +132,10 @@ export default function SignInPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-md"
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 rounded-md flex items-center justify-center gap-2"
               >
-                {loading ? "Processing..." : "Sign In"}
+                {loading && <LoaderOne />}
+                {loading ? "Signing in..." : "Sign In"}
               </Button>
               <div className="text-center">
                 <button

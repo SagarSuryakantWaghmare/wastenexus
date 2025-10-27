@@ -18,6 +18,7 @@ import {
   ArrowRight,
   TrendingDown
 } from 'lucide-react';
+import { LoaderOne } from '@/components/ui/loader';
 
 interface DashboardStats {
   totalPoints: { count: number; growth: number; isPositive: boolean };
@@ -71,8 +72,8 @@ export default function ClientDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
         <div className="text-center">
-          <Leaf className="h-12 w-12 text-green-600 dark:text-green-400 animate-pulse mx-auto" />
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
+          <LoaderOne />
+          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading your dashboard...</p>
         </div>
       </div>
     );
