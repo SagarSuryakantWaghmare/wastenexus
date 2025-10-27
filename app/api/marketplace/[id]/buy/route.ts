@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import MarketplaceItem from '@/models/MarketplaceItem';
+import User from '@/models/User';
 import { verifyToken } from '@/lib/auth';
 
 // POST /api/marketplace/[id]/buy - Mark item as sold
@@ -80,10 +81,26 @@ export async function POST(
 
     await item.save();
 
+    // Award points to seller for successful sale (15 points)
+    const sellerPoints = 15;
+    await User.findByIdAndUpdate(
+      item.sellerId,
+      { $inc: { totalPoints: sellerPoints } }
+    );
+
+    // Award points to buyer for sustainable purchase (10 points)
+    const buyerPoints = 10;
+    await User.findByIdAndUpdate(
+      decoded.userId,
+      { $inc: { totalPoints: buyerPoints } }
+    );
+
     return NextResponse.json(
       {
-        message: 'Purchase request successful! The seller will contact you soon.',
+        message: `Purchase successful! You earned +${buyerPoints} points for sustainable shopping. The seller will contact you soon.`,
         item,
+        pointsAwarded: buyerPoints,
+        sellerPointsAwarded: sellerPoints,
       },
       { status: 200 }
     );

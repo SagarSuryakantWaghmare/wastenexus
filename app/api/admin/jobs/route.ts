@@ -156,14 +156,27 @@ export async function PUT(request: NextRequest) {
     }
     await job.save();
 
+    // Award points to client when job is verified (25 points)
+    let pointsAwarded = 0;
+    if (status === 'verified') {
+      pointsAwarded = 25;
+      await User.findByIdAndUpdate(
+        job.clientId,
+        { $inc: { totalPoints: pointsAwarded } }
+      );
+    }
+
     const updatedJob = await Job.findById(jobId)
       .populate('clientId', 'name email phone')
       .populate('assignedWorkerId', 'name email phone');
 
     return NextResponse.json(
       {
-        message: `Job ${status} successfully`,
+        message: status === 'verified' 
+          ? `Job verified successfully! +${pointsAwarded} points awarded to client`
+          : `Job ${status} successfully`,
         job: updatedJob,
+        pointsAwarded,
       },
       { status: 200 }
     );

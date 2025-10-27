@@ -100,6 +100,15 @@ export default function ClientDashboard() {
       iconColor: 'text-blue-600 dark:text-blue-400',
     },
     {
+      title: 'My Rewards',
+      description: 'Track points & earn more',
+      icon: Award,
+      href: '/dashboard/client/rewards',
+      color: 'from-yellow-500 to-amber-600',
+      iconBg: 'bg-yellow-100 dark:bg-yellow-900/30',
+      iconColor: 'text-yellow-600 dark:text-yellow-400',
+    },
+    {
       title: 'Leaderboard',
       description: 'View top contributors',
       icon: Award,
@@ -109,8 +118,8 @@ export default function ClientDashboard() {
       iconColor: 'text-purple-600 dark:text-purple-400',
     },
     {
-      title: 'New Event',
-      description: 'Create community event',
+      title: 'Events',
+      description: 'Join community events',
       icon: CalendarDays,
       href: '/dashboard/client/events',
       color: 'from-orange-500 to-red-600',

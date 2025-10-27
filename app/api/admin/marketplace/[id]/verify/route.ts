@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import MarketplaceItem from '@/models/MarketplaceItem';
+import User from '@/models/User';
 import { verifyToken } from '@/lib/auth';
 
 // PUT /api/admin/marketplace/[id]/verify - Approve or reject item
@@ -69,17 +70,32 @@ export async function PUT(
       item.approvedAt = new Date();
       item.approvedBy = decoded.userId as never;
       item.rejectionReason = undefined;
+
+      // Award points to seller for approved marketplace item (30 points)
+      const pointsToAward = 30;
+      await User.findByIdAndUpdate(
+        item.sellerId,
+        { $inc: { totalPoints: pointsToAward } }
+      );
+
+      await item.save();
+
+      return NextResponse.json({
+        message: `Item approved successfully! +${pointsToAward} points awarded to seller`,
+        item,
+        pointsAwarded: pointsToAward,
+      });
     } else {
       item.status = 'rejected';
       item.rejectionReason = rejectionReason;
+      
+      await item.save();
+
+      return NextResponse.json({
+        message: `Item rejected successfully`,
+        item,
+      });
     }
-
-    await item.save();
-
-    return NextResponse.json({
-      message: `Item ${action}d successfully`,
-      item,
-    });
   } catch (error) {
     console.error('Error verifying item:', error);
     return NextResponse.json(
