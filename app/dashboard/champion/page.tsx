@@ -8,8 +8,9 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Calendar, Users } from 'lucide-react';
+import { Calendar, Users } from 'lucide-react';
 import { ChampionEventList } from '@/components/champion/ChampionEventList';
+import { LoaderOne } from '@/components/ui/loader';
 
 
 interface Event {
@@ -66,7 +67,10 @@ export default function ChampionDashboard() {
   if (isLoading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-green-50 dark:bg-gray-900 transition-colors duration-300">
-        <Loader2 className="h-12 w-12 animate-spin text-green-600 dark:text-green-400" />
+        <div className="text-center">
+          <LoaderOne />
+          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading dashboard...</p>
+        </div>
       </div>
     );
   }

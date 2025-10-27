@@ -12,6 +12,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ArrowLeft, Upload, X, Loader2, CheckCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { LoaderOne } from '@/components/ui/loader';
+import { toast } from 'sonner';
 
 const CATEGORIES = [
   'Electronics',
@@ -159,11 +161,14 @@ export default function AddItemPage() {
       }
 
       setSuccess(true);
+      toast.success('Item listed successfully!');
       setTimeout(() => {
         router.push('/marketplace/my-items');
       }, 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -172,7 +177,10 @@ export default function AddItemPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <Loader2 className="w-8 h-8 animate-spin text-green-600 dark:text-green-400" />
+        <div className="text-center">
+          <LoaderOne />
+          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading...</p>
+        </div>
       </div>
     );
   }

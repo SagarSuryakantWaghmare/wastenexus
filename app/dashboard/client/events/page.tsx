@@ -8,7 +8,7 @@ import { BackButton } from "@/components/ui/back-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Users, Loader2, Calendar as CalendarIcon } from "lucide-react";
+import { Calendar, MapPin, Users, Calendar as CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { LoaderOne } from "@/components/ui/loader";

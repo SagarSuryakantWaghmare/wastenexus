@@ -370,14 +370,10 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+              className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Submitting...
-                </>
-              ) : (
+              {isSubmitting && <LoaderOne />}
+              {isSubmitting ? 'Submitting...' : (
                 <>
                   <Camera className="h-4 w-4 mr-2" />
                   Submit Report

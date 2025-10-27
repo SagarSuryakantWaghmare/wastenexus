@@ -30,6 +30,7 @@ import {
   ArrowUpRight,
   ArrowDownRight
 } from 'lucide-react';
+import { LoaderOne } from '@/components/ui/loader';
 
 interface User {
   _id: string;
@@ -143,8 +144,8 @@ export default function UserManagementPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-green-600 dark:text-green-400 mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading users...</p>
+          <LoaderOne />
+          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading users...</p>
         </div>
       </div>
     );

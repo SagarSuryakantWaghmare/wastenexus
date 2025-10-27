@@ -61,6 +61,9 @@ export default function SignUpPage() {
             toast.error(errorMessage);
         } finally {
             setLoading(false);
+        }
+    };
+
     if (isLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-black/50">
@@ -68,9 +71,6 @@ export default function SignUpPage() {
                     <LoaderOne />
                     <p className="mt-4 text-green-300 font-medium">Authenticating...</p>
                 </div>
-            </div>
-        );
-    }           </div>
             </div>
         );
     }

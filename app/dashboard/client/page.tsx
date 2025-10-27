@@ -8,7 +8,6 @@ import { Footer } from '@/components/Footer';
 import UserAvatar from '@/components/UserAvatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { 
-  Leaf, 
   FilePlus2, 
   CalendarDays, 
   Briefcase, 
