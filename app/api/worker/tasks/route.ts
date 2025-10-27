@@ -166,6 +166,12 @@ export async function PUT(request: NextRequest) {
       updateData.startedDate = new Date();
     } else if (status === 'completed' && task.status === 'in-progress') {
       updateData.completedDate = new Date();
+      
+      // Award points to worker for completing waste collection (35 points)
+      await User.findByIdAndUpdate(
+        decoded.userId,
+        { $inc: { totalPoints: 35 } }
+      );
     }
 
     const updatedTask = await WorkerTask.findByIdAndUpdate(
@@ -183,7 +189,9 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(
       {
-        message: 'Task status updated successfully',
+        message: status === 'completed' && task.status === 'in-progress' 
+          ? 'Task completed successfully! +35 points earned' 
+          : 'Task status updated successfully',
         task: updatedTask,
       },
       { status: 200 }

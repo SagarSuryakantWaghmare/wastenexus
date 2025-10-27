@@ -50,7 +50,7 @@ const rewardActivities: RewardActivity[] = [
   },
   {
     icon: TrendingUp,
-    title: 'Job Verified',
+    title: 'Job Verified by Admin',
     points: 25,
     description: 'Admin approves your job posting',
     color: 'text-cyan-600 dark:text-cyan-400',
@@ -66,7 +66,7 @@ const rewardActivities: RewardActivity[] = [
   },
   {
     icon: Award,
-    title: 'Item Approved',
+    title: 'Item Approved by Admin',
     points: 30,
     description: 'Admin approves your marketplace listing',
     color: 'text-indigo-600 dark:text-indigo-400',
@@ -95,6 +95,38 @@ const rewardActivities: RewardActivity[] = [
     description: 'Participate in a community cleanup event',
     color: 'text-teal-600 dark:text-teal-400',
     bgColor: 'bg-teal-100 dark:bg-teal-900/30',
+  },
+  {
+    icon: Calendar,
+    title: 'Create Event (Champion)',
+    points: 50,
+    description: 'Organize a community cleanup event as a champion',
+    color: 'text-blue-600 dark:text-blue-400',
+    bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+  },
+  {
+    icon: CheckCircle,
+    title: 'Event Completed (Champion)',
+    points: 40,
+    description: 'Admin marks your event as completed',
+    color: 'text-violet-600 dark:text-violet-400',
+    bgColor: 'bg-violet-100 dark:bg-violet-900/30',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Complete Collection Task (Worker)',
+    points: 35,
+    description: 'Worker completes a waste collection task',
+    color: 'text-amber-600 dark:text-amber-400',
+    bgColor: 'bg-amber-100 dark:bg-amber-900/30',
+  },
+  {
+    icon: Briefcase,
+    title: 'Complete Job (Worker)',
+    points: 40,
+    description: 'Worker successfully completes a collection job',
+    color: 'text-rose-600 dark:text-rose-400',
+    bgColor: 'bg-rose-100 dark:bg-rose-900/30',
   },
 ];
 

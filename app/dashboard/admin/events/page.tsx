@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Award, Calendar, Users, MapPin, Loader2, Clock, CheckCircle, Trash2, Eye, ChevronLeft, ChevronRight, X, Download } from 'lucide-react';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 interface Event {
   _id: string;
@@ -119,10 +120,15 @@ export default function EventsPage() {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        toast.success(data.message || 'Event status updated successfully!');
         fetchEvents();
+      } else {
+        toast.error('Failed to update event status');
       }
     } catch (error) {
       console.error('Error updating event:', error);
+      toast.error('An error occurred while updating event');
     } finally {
       setProcessing(null);
     }
@@ -139,10 +145,14 @@ export default function EventsPage() {
       });
 
       if (response.ok) {
+        toast.success('Event deleted successfully!');
         fetchEvents();
+      } else {
+        toast.error('Failed to delete event');
       }
     } catch (error) {
       console.error('Error deleting event:', error);
+      toast.error('An error occurred while deleting event');
     } finally {
       setProcessing(null);
     }

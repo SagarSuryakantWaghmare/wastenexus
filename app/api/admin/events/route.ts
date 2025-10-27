@@ -106,22 +106,35 @@ export async function PUT(request: NextRequest) {
 
     await dbConnect();
 
-    // Import Event model
+    // Import Event and User models
     const Event = (await import('@/models/Event')).default;
+    const User = (await import('@/models/User')).default;
 
-    // Update event
-    const event = await Event.findByIdAndUpdate(
-      eventId,
-      { status },
-      { new: true }
-    ).populate('championId', 'name email');
-
+    // Find the event first to get champion info
+    const event = await Event.findById(eventId).populate('championId', 'name email');
+    
     if (!event) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 });
     }
 
+    const previousStatus = event.status;
+
+    // Update event status
+    event.status = status;
+    await event.save();
+
+    // Award points when admin changes status to 'completed' (40 points to champion)
+    if (status === 'completed' && previousStatus !== 'completed') {
+      await User.findByIdAndUpdate(
+        event.championId._id,
+        { $inc: { totalPoints: 40 } }
+      );
+    }
+
     return NextResponse.json({
-      message: 'Event status updated successfully',
+      message: status === 'completed' && previousStatus !== 'completed' 
+        ? 'Event marked as completed! Champion awarded 40 points.' 
+        : 'Event status updated successfully',
       event,
     });
   } catch (error) {

@@ -229,13 +229,19 @@ export async function PUT(request: NextRequest) {
       job.completedDate = new Date();
       await job.save();
 
+      // Award points to worker for completing the job (40 points)
+      await User.findByIdAndUpdate(
+        decoded.userId,
+        { $inc: { totalPoints: 40 } }
+      );
+
       const updatedJob = await Job.findById(jobId)
         .populate('clientId', 'name email phone')
         .populate('assignedWorkerId', 'name email phone');
 
       return NextResponse.json(
         {
-          message: 'Job completed successfully',
+          message: 'Job completed successfully! +40 points earned',
           job: updatedJob,
         },
         { status: 200 }
