@@ -11,15 +11,9 @@ require('dotenv').config({ path: '.env.local' });
 // Admin users to add
 const adminUsers = [
   {
-    name: 'Akash Sonar',
-    email: 'akashsonar.9113@gmail.com',
-    password: 'Akash@123',
-    role: 'admin',
-  },
-  {
-    name: 'Soham',
-    email: 'soham6218@gmail.com',
-    password: 'Soham@123',
+    name: 'Soham Pawar',
+    email: 'soham88@gmail.com',
+    password: 'Soham@1234',
     role: 'admin',
   },
 ];
