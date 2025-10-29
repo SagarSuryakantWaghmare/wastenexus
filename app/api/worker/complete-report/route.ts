@@ -92,19 +92,19 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Award bonus points to worker for completing the collection (10 points)
+    // Award bonus points to worker for completing the collection (15 points)
     await User.findByIdAndUpdate(
       decoded.userId,
-      { $inc: { totalPoints: 10 } }
+      { $inc: { totalPoints: 15 } }
     );
 
     // Note: Report status remains 'verified' - WorkerTask tracks collection completion
 
     return NextResponse.json({
       success: true,
-      message: 'Report marked as completed successfully. +10 points earned!',
+      message: 'Report marked as completed successfully. +15 points earned!',
       task: existingTask || { reportId, status: 'completed' },
-      pointsEarned: 10,
+      pointsEarned: 15,
     });
   } catch (error) {
     console.error('Error completing report:', error);

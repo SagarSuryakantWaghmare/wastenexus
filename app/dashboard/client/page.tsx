@@ -7,6 +7,7 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import UserAvatar from '@/components/UserAvatar';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { 
   FilePlus2, 
   CalendarDays, 
@@ -18,6 +19,7 @@ import {
   TrendingDown
 } from 'lucide-react';
 import { LoaderOne } from '@/components/ui/loader';
+import { getRewardTier } from '@/lib/helpers';
 
 interface DashboardStats {
   totalPoints: { count: number; growth: number; isPositive: boolean };
@@ -364,12 +366,20 @@ export default function ClientDashboard() {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{user?.name}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</p>
                 <div className="flex gap-2 mt-2">
-                  <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full">
+                  <Badge className="bg-green-600 hover:bg-green-700 text-white">
                     {user?.role}
-                  </span>
-                  <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-semibold rounded-full">
+                  </Badge>
+                  <Badge className="bg-blue-600 hover:bg-blue-700 text-white">
                     {user?.totalPoints || 0} points
-                  </span>
+                  </Badge>
+                  {(() => {
+                    const rewardTier = getRewardTier(user?.totalPoints || 0);
+                    return (
+                      <Badge className={`${rewardTier.color} bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold`}>
+                        {rewardTier.badge} {rewardTier.tier}
+                      </Badge>
+                    );
+                  })()}
                 </div>
               </div>
             </div>

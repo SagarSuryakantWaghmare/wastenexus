@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { LoaderOne } from '@/components/ui/loader';
+import { getRewardTier } from '@/lib/helpers';
 
 interface VerifiedReport {
   _id: string;
@@ -300,13 +301,30 @@ export default function WorkerDashboard() {
       <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <div className="mb-4 sm:mb-6 bg-white dark:bg-gray-800 border-b dark:border-gray-700 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 sm:gap-3">
-            <Truck className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 dark:text-green-400" />
-            Worker Dashboard
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
-            Welcome back, {user?.name}! Manage your waste collection tasks.
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 sm:gap-3">
+                <Truck className="w-6 h-6 sm:w-8 sm:h-8 text-green-600 dark:text-green-400" />
+                Worker Dashboard
+              </h1>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+                Welcome back, {user?.name}! Manage your waste collection tasks.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Badge className="bg-green-600 hover:bg-green-700 text-white text-sm py-2 px-3">
+                {user?.totalPoints || 0} pts
+              </Badge>
+              {(() => {
+                const rewardTier = getRewardTier(user?.totalPoints || 0);
+                return (
+                  <Badge className={`${rewardTier.color} bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold text-sm py-2 px-3`}>
+                    {rewardTier.badge} {rewardTier.tier}
+                  </Badge>
+                );
+              })()}
+            </div>
+          </div>
         </div>
 
         {/* View Switcher */}

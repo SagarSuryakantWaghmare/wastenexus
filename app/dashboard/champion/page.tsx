@@ -8,9 +8,11 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Calendar, Users } from 'lucide-react';
 import { ChampionEventList } from '@/components/champion/ChampionEventList';
 import { LoaderOne } from '@/components/ui/loader';
+import { getRewardTier } from '@/lib/helpers';
 
 
 interface Event {
@@ -81,8 +83,25 @@ export default function ChampionDashboard() {
       <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Champion Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-400 text-lg">Organize and manage community events</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Champion Dashboard</h1>
+              <p className="text-gray-600 dark:text-gray-400 text-lg">Organize and manage community events</p>
+            </div>
+            <div className="flex gap-2">
+              <Badge className="bg-green-600 hover:bg-green-700 text-white text-lg py-2 px-4">
+                {user?.totalPoints || 0} points
+              </Badge>
+              {(() => {
+                const rewardTier = getRewardTier(user?.totalPoints || 0);
+                return (
+                  <Badge className={`${rewardTier.color} bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold text-lg py-2 px-4`}>
+                    {rewardTier.badge} {rewardTier.tier}
+                  </Badge>
+                );
+              })()}
+            </div>
+          </div>
         </div>
 
         {/* Stats Cards */}
