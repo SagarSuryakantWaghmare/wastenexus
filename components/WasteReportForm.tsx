@@ -16,9 +16,9 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LocationPicker } from '@/components/LocationPicker';
-import { Upload, Loader2, CheckCircle2, Camera, MapPin, Zap } from 'lucide-react';
+import { Upload, CheckCircle2, Camera, MapPin, Zap } from 'lucide-react';
 import Image from 'next/image';
-import { LoaderOne } from '@/components/ui/loader';
+import { LoaderCircle } from '@/components/ui/loader';
 
 interface WasteReportFormProps {
   onSuccess: () => void;
@@ -187,7 +187,7 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
                 >
                   {isUploading ? (
                     <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <LoaderCircle size="sm" className="mr-2" />
                       Analyzing...
                     </>
                   ) : (
@@ -372,7 +372,7 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
               disabled={isSubmitting}
               className="flex-1 px-6 py-3 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 text-white font-semibold rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
             >
-              {isSubmitting && <LoaderOne />}
+              {isSubmitting && <LoaderCircle size="sm" className="mr-2" />}
               {isSubmitting ? 'Submitting...' : (
                 <>
                   <Camera className="h-4 w-4 mr-2" />

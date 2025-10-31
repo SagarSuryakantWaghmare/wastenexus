@@ -9,7 +9,7 @@ import { BackButton } from '@/components/ui/back-button';
 import { RewardsBreakdown } from '@/components/RewardsBreakdown';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Award, TrendingUp, Trophy, Gift, Target } from 'lucide-react';
-import { LoaderOne } from '@/components/ui/loader';
+import { PageLoader } from '@/components/ui/loader';
 
 interface UserStats {
   totalPoints: number;
@@ -65,10 +65,7 @@ export default function RewardsPage() {
   if (isLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-        <div className="text-center">
-          <LoaderOne />
-          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading rewards...</p>
-        </div>
+        <PageLoader message="Loading rewards..." />
       </div>
     );
   }

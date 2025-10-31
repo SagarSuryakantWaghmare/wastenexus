@@ -24,8 +24,8 @@ import {
   DollarSign,
   Weight,
   AlertCircle,
-  Loader2,
 } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 
 interface Job {
   _id: string;
@@ -167,7 +167,7 @@ export default function AdminJobsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 animate-spin text-green-600 dark:text-green-400" />
+        <LoaderCircle size="lg" />
       </div>
     );
   }
@@ -546,7 +546,7 @@ export default function AdminJobsPage() {
                                     className="flex-1 bg-green-600 hover:bg-green-700"
                                   >
                                     {actionLoading ? (
-                                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                      <LoaderCircle size="sm" className="mr-2" />
                                     ) : (
                                       <CheckCircle className="w-4 h-4 mr-2" />
                                     )}
@@ -559,7 +559,7 @@ export default function AdminJobsPage() {
                                     className="flex-1"
                                   >
                                     {actionLoading ? (
-                                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                      <LoaderCircle size="sm" className="mr-2" />
                                     ) : (
                                       <XCircle className="w-4 h-4 mr-2" />
                                     )}

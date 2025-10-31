@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileText, TrendingUp, MapPin, Loader2, CheckCircle, XCircle, Clock, Award } from 'lucide-react';
+import { FileText, TrendingUp, MapPin, CheckCircle, XCircle, Clock, Award } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import Image from 'next/image';
 
 interface Report {
@@ -70,7 +71,7 @@ export default function WasteReportsPage() {
     }
   };
 
-  const handleVerify = async (reportId: string, points?: number) => {
+  const handleVerifyReport = async (reportId: string) => {
     try {
       setProcessing(reportId);
       const response = await fetch('/api/admin/reports', {
@@ -82,12 +83,11 @@ export default function WasteReportsPage() {
         body: JSON.stringify({
           reportId,
           action: 'verify',
-          points,
         }),
       });
 
       if (response.ok) {
-        fetchReports();
+        await fetchReports();
       }
     } catch (error) {
       console.error('Error verifying report:', error);
@@ -129,7 +129,7 @@ export default function WasteReportsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-600" />
+        <LoaderCircle size="lg" />
       </div>
     );
   }
@@ -430,14 +430,14 @@ export default function WasteReportsPage() {
                             {report.status === 'pending' && (
                               <div className="flex gap-2 mt-4 flex-wrap">
                                 <Button
-                                  onClick={() => handleVerify(report._id)}
+                                  onClick={() => handleVerifyReport(report._id)}
                                   disabled={processing === report._id}
                                   className="bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
                                   size="sm"
                                 >
                                   {processing === report._id ? (
                                     <>
-                                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                      <LoaderCircle size="sm" className="mr-2" />
                                       Processing...
                                     </>
                                   ) : (

@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Briefcase, Home, Building2, Package, MapPin, AlertCircle } from 'lucide-react';
-import { LoaderOne } from '@/components/ui/loader';
+import { PageLoader, LoaderCircle } from '@/components/ui/loader';
 import { toast } from 'sonner';
 
 export default function CreateJobPage() {
@@ -118,7 +118,7 @@ export default function CreateJobPage() {
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
-        <LoaderOne />
+        <PageLoader />
       </div>
     );
   }
@@ -407,7 +407,7 @@ export default function CreateJobPage() {
                   className="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 flex items-center justify-center gap-2"
                   disabled={loading}
                 >
-                  {loading && <LoaderOne />}
+                  {loading && <LoaderCircle size="sm" />}
                   {loading ? 'Posting Job...' : 'Post Job'}
                 </Button>
               </div>

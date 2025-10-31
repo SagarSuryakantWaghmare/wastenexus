@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Loader2, Trash2, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { MapPin, Trash2, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import { GoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 
 interface Report {
@@ -107,7 +108,7 @@ export default function LocationsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <LoaderCircle size="lg" />
       </div>
     );
   }

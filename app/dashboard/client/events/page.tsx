@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Users, Calendar as CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
-import { LoaderOne } from "@/components/ui/loader";
+import { PageLoader } from "@/components/ui/loader";
 
 interface Event {
   id: string;
@@ -73,10 +73,7 @@ export default function EventsPage() {
   if (isLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
-        <div className="text-center">
-          <LoaderOne />
-          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading events...</p>
-        </div>
+        <PageLoader message="Loading events..." />
       </div>
     );
   }

@@ -23,14 +23,13 @@ import {
   Users,
   Search,
   Shield,
-  Loader2,
   Mail,
   Award,
   Trash2,
   ArrowUpRight,
   ArrowDownRight
 } from 'lucide-react';
-import { LoaderOne } from '@/components/ui/loader';
+import { PageLoader, LoaderCircle } from '@/components/ui/loader';
 
 interface User {
   _id: string;
@@ -143,10 +142,7 @@ export default function UserManagementPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-center">
-          <LoaderOne />
-          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading users...</p>
-        </div>
+        <PageLoader message="Loading users..." />
       </div>
     );
   }
@@ -563,7 +559,7 @@ export default function UserManagementPage() {
                             disabled={deletingUserId === user._id}
                           >
                             {deletingUserId === user._id ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <LoaderCircle size="sm" className="inline-block" />
                             ) : (
                               <Trash2 className="w-4 h-4" />
                             )}
@@ -603,7 +599,7 @@ export default function UserManagementPage() {
             >
               {deletingUserId ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <LoaderCircle size="sm" className="mr-2" />
                   Deleting...
                 </>
               ) : 'Delete'}

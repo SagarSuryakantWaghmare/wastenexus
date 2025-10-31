@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
-import { LoaderOne } from "@/components/ui/loader";
+import { PageLoader, LoaderCircle } from "@/components/ui/loader";
 import { toast } from "sonner";
 
 export default function SignUpPage() {
@@ -67,10 +67,7 @@ export default function SignUpPage() {
     if (isLoading) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-black/50">
-                <div className="text-center">
-                    <LoaderOne />
-                    <p className="mt-4 text-green-300 font-medium">Authenticating...</p>
-                </div>
+                <PageLoader message="Authenticating..." />
             </div>
         );
     }
@@ -173,7 +170,7 @@ export default function SignUpPage() {
                                 disabled={loading}
                                 className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2.5 flex items-center justify-center gap-2"
                             >
-                                {loading && <LoaderOne />}
+                                {loading && <LoaderCircle size="sm" className="mr-2" />}
                                 {loading ? "Creating account..." : "Sign Up"}
                             </Button>
 

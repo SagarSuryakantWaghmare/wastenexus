@@ -6,7 +6,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Plus, Loader2, Eye, Heart, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Plus, Eye, Heart, AlertCircle } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import Link from 'next/link';
 import ItemGrid from '@/components/Marketplace/ItemGrid';
 
@@ -124,7 +125,7 @@ export default function MyItemsPage() {
   if (isLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <Loader2 className="w-8 h-8 animate-spin text-green-600 dark:text-green-400" />
+        <LoaderCircle size="lg" />
       </div>
     );
   }

@@ -9,10 +9,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, Upload, X, Loader2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Upload, X, CheckCircle } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import Image from 'next/image';
 import Link from 'next/link';
-import { LoaderOne } from '@/components/ui/loader';
+import { PageLoader } from '@/components/ui/loader';
 import { toast } from 'sonner';
 
 const CATEGORIES = [
@@ -177,10 +178,7 @@ export default function AddItemPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <div className="text-center">
-          <LoaderOne />
-          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading...</p>
-        </div>
+        <PageLoader message="Loading..." />
       </div>
     );
   }
@@ -470,7 +468,7 @@ export default function AddItemPage() {
                 >
                   {submitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      <LoaderCircle size="sm" className="mr-2" />
                       Submitting...
                     </>
                   ) : (

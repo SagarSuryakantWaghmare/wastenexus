@@ -17,7 +17,6 @@ import {
   Package,
   TrendingUp,
   Navigation,
-  Loader2,
   Briefcase,
   Home,
   Building2,
@@ -25,7 +24,7 @@ import {
   Award,
 } from 'lucide-react';
 import Image from 'next/image';
-import { LoaderOne } from '@/components/ui/loader';
+import { PageLoader, LoaderCircle } from '@/components/ui/loader';
 import { getRewardTier } from '@/lib/helpers';
 
 interface VerifiedReport {
@@ -287,10 +286,7 @@ export default function WorkerDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-        <div className="text-center">
-          <LoaderOne />
-          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading worker dashboard...</p>
-        </div>
+        <PageLoader message="Loading worker dashboard..." />
       </div>
     );
   }
@@ -494,8 +490,7 @@ export default function WorkerDashboard() {
                 <div className="space-y-4">
                   {loading ? (
                     <div className="text-center py-12">
-                      <LoaderOne />
-                      <p className="mt-4 text-gray-600 dark:text-gray-400">Loading reports...</p>
+                      <PageLoader message="Loading reports..." />
                     </div>
                   ) : verifiedReports.filter(report => typeFilter === 'all' || report.type === typeFilter).length === 0 ? (
                     <div className="text-center py-12 text-gray-500">
@@ -605,7 +600,7 @@ export default function WorkerDashboard() {
                                 >
                                   {completingReports.has(report._id) ? (
                                     <>
-                                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                      <LoaderCircle size="sm" className="mr-2" />
                                       Completing...
                                     </>
                                   ) : (
@@ -644,7 +639,7 @@ export default function WorkerDashboard() {
             <CardContent>
               {jobsLoading ? (
                 <div className="text-center py-12">
-                  <Loader2 className="w-8 h-8 animate-spin text-green-600 dark:text-green-400 mx-auto" />
+                  <LoaderCircle size="lg" className="mx-auto" />
                 </div>
               ) : jobs.length === 0 ? (
                 <div className="text-center py-12 text-gray-500 dark:text-gray-400">

@@ -8,7 +8,7 @@ import { Navbar } from "@/components/Navbar";
 import { BackButton } from "@/components/ui/back-button";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Search, Zap, Crown } from "lucide-react";
-import { LoaderOne } from "@/components/ui/loader";
+import { PageLoader } from "@/components/ui/loader";
 
 export default function LeaderboardPage() {
   const router = useRouter();
@@ -52,10 +52,7 @@ export default function LeaderboardPage() {
   if (isLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-green-800 to-emerald-900 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
-        <div className="text-center">
-          <LoaderOne />
-          <p className="mt-4 text-green-300 dark:text-green-400 font-medium">Loading leaderboard...</p>
-        </div>
+        <PageLoader message="Loading leaderboard..." />
       </div>
     );
   }

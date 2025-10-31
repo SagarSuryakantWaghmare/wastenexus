@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3, Users, ShoppingBag, Trash2, Clock, CheckCircle, Calendar, ArrowUpRight, ArrowDownRight, MapPin, Loader2 } from 'lucide-react';
+import { BarChart3, Users, ShoppingBag, Trash2, Clock, CheckCircle, Calendar, ArrowUpRight, ArrowDownRight, MapPin } from 'lucide-react';
+import { PageLoader } from '@/components/ui/loader';
 
 interface MonthlyData {
   month: string;
@@ -98,10 +99,7 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-green-600 dark:text-green-400 mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading analytics...</p>
-        </div>
+        <PageLoader message="Loading analytics..." />
       </div>
     );
   }

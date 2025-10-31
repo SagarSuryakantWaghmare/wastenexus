@@ -9,10 +9,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import UserAvatar from "@/components/UserAvatar";
-import { Calendar, MapPin, Users, Loader2, Target, Edit, Trash2 } from "lucide-react";
+import { Calendar, MapPin, Users, Target, Edit, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { useApi } from "@/hooks/useApi";
+import { LoaderCircle } from '@/components/ui/loader';
 
 interface Participant {
   _id: string;
@@ -114,7 +115,7 @@ export default function ChampionEventDetailsPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-emerald-600 dark:text-emerald-400 mx-auto" />
+          <LoaderCircle size="xl" className="mx-auto" />
           <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading event details...</p>
         </div>
       </div>
@@ -188,7 +189,7 @@ export default function ChampionEventDetailsPage() {
                 >
                   {deleting ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <LoaderCircle size="sm" className="mr-2" />
                       Deleting...
                     </>
                   ) : (

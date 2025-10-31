@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Award, Calendar, Users, MapPin, Loader2, Clock, CheckCircle, Trash2, Eye, ChevronLeft, ChevronRight, X, Download } from 'lucide-react';
+import { Award, Calendar, Users, MapPin, Clock, CheckCircle, Trash2, Eye, ChevronLeft, ChevronRight, X, Download } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
@@ -197,7 +198,7 @@ export default function EventsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-pink-600" />
+        <LoaderCircle size="lg" />
       </div>
     );
   }

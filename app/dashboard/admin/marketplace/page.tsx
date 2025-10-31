@@ -10,7 +10,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { 
-  Loader2, 
   ShoppingBag, 
   Clock, 
   CheckCircle, 
@@ -22,6 +21,7 @@ import {
   RefreshCw,
   Search
 } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import { normalizeMarketplaceList } from '@/lib/marketplace';
 import Image from 'next/image';
 
@@ -250,7 +250,7 @@ export default function AdminMarketplaceDashboard() {
               >
                 {refreshing ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <LoaderCircle size="sm" className="mr-2" />
                     Refreshing...
                   </>
                 ) : (
@@ -489,7 +489,7 @@ export default function AdminMarketplaceDashboard() {
                 >
                   {refreshing ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      <LoaderCircle size="sm" className="mr-2" />
                       Refreshing...
                     </>
                   ) : (
@@ -960,7 +960,7 @@ export default function AdminMarketplaceDashboard() {
               >
                 {processing ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    <LoaderCircle size="sm" className="mr-2" />
                     Processing...
                   </>
                 ) : (

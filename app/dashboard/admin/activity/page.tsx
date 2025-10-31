@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clock, Trash2, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Clock, Trash2, AlertCircle } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import Link from 'next/link';
 
 interface Activity {
@@ -140,7 +141,7 @@ export default function ActivityLog() {
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {loading ? (
                 <div className="flex justify-center items-center p-8">
-                  <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                  <LoaderCircle size="lg" />
                 </div>
               ) : error ? (
                 <div className="p-8 text-center text-red-500">

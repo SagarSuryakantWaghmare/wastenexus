@@ -13,7 +13,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Upload, X, User, Eye, EyeOff } from 'lucide-react';
+import { Upload, X, User, Eye, EyeOff } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'sonner';
 
@@ -282,7 +283,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <input {...getInputProps()} />
                 {uploading ? (
                   <div className="flex items-center justify-center gap-2 text-gray-600 dark:text-gray-400">
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <LoaderCircle size="md" />
                     <span className="text-sm">Uploading...</span>
                   </div>
                 ) : (
@@ -472,7 +473,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <LoaderCircle size="sm" className="mr-2" />
                 Saving...
               </>
             ) : (

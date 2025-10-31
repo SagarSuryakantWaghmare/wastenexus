@@ -11,7 +11,7 @@ import { normalizeMarketplaceList, type NormalizedMarketplaceItem } from '@/lib/
 import ItemFilters, { FilterValues } from '@/components/Marketplace/ItemFilters';
 import SearchBar from '@/components/Marketplace/SearchBar';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { LoaderOne } from '@/components/ui/loader';
+import { PageLoader } from '@/components/ui/loader';
 
 export default function MarketplacePage() {
   const { user, token } = useAuth();
@@ -187,8 +187,7 @@ export default function MarketplacePage() {
           <div className="flex-1">
             {loading ? (
               <div className="text-center py-16">
-                <LoaderOne />
-                <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading items...</p>
+                <PageLoader message="Loading items..." />
               </div>
             ) : (
               <>

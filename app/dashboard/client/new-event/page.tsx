@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Search, Clock, Users, ArrowRight } from "lucide-react";
-import { LoaderOne } from "@/components/ui/loader";
+import { PageLoader } from "@/components/ui/loader";
 
 export default function NewEventPage() {
   const router = useRouter();
@@ -53,10 +53,7 @@ export default function NewEventPage() {
   if (isLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-900 via-green-800 to-emerald-900 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
-        <div className="text-center">
-          <LoaderOne />
-          <p className="mt-4 text-green-300 dark:text-green-400 font-medium">Loading events...</p>
-        </div>
+        <PageLoader message="Loading events..." />
       </div>
     );
   }

@@ -86,7 +86,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Loader2, Plus, Calendar, MapPin } from 'lucide-react';
+import { Plus, Calendar, MapPin } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import { toast } from 'sonner';
 
 interface ChampionEventCreatorProps {
@@ -283,7 +284,7 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                                         }}
                                         className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-semibold"
                                     >
-                                        {detectingLocation ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Auto-detect'}
+                                        {detectingLocation ? <LoaderCircle size="sm" className="inline-block" /> : 'Auto-detect'}
                                     </button>
                                 </div>
                                 {location.name && (
@@ -373,7 +374,7 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                         >
                             {isSubmitting ? (
                                 <>
-                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    <LoaderCircle size="sm" className="inline-block" />
                                     Creating...
                                 </>
                             ) : (

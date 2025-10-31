@@ -33,7 +33,8 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Edit, Trash2, Calendar, MapPin, Users, Target } from 'lucide-react';
+import { Edit, Trash2, Calendar, MapPin, Users, Target } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import { toast } from 'sonner';
 import Image from 'next/image';
 
@@ -161,7 +162,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
     return (
       <Card>
         <CardContent className="flex justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-600 dark:text-emerald-400" />
+          <LoaderCircle size="lg" />
         </CardContent>
       </Card>
     );
@@ -382,7 +383,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
               disabled={isSubmitting}
               className="bg-emerald-600 hover:bg-emerald-700 text-white"
             >
-              {isSubmitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Saving...</> : 'Save Changes'}
+              {isSubmitting ? <><LoaderCircle size="sm" className="mr-2" />Saving...</> : 'Save Changes'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -404,7 +405,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
               disabled={isSubmitting}
               className="bg-red-600 hover:bg-red-700"
             >
-              {isSubmitting ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Deleting...</> : 'Delete Event'}
+              {isSubmitting ? <><LoaderCircle size="sm" className="mr-2" />Deleting...</> : 'Delete Event'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

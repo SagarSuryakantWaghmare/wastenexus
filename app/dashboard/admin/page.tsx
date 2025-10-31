@@ -11,9 +11,9 @@ import {
   FileText,
   Award,
   Briefcase,
-  AlertCircle,
-  Loader2
+  AlertCircle
 } from 'lucide-react';
+import { LoaderCircle } from '@/components/ui/loader';
 import Link from 'next/link';
 
 interface Activity {
@@ -339,7 +339,7 @@ export default function AdminDashboard() {
               <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {loading ? (
                   <div className="flex justify-center items-center p-6">
-                    <Loader2 className="w-5 h-5 animate-spin text-gray-500" />
+                    <LoaderCircle size="md" />
                   </div>
                 ) : error ? (
                   <div className="p-6 text-center text-red-500">

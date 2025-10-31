@@ -18,7 +18,7 @@ import {
   ArrowRight,
   TrendingDown
 } from 'lucide-react';
-import { LoaderOne } from '@/components/ui/loader';
+import { PageLoader } from '@/components/ui/loader';
 import { getRewardTier } from '@/lib/helpers';
 
 interface DashboardStats {
@@ -72,10 +72,7 @@ export default function ClientDashboard() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-        <div className="text-center">
-          <LoaderOne />
-          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading your dashboard...</p>
-        </div>
+        <PageLoader message="Loading your dashboard..." />
       </div>
     );
   }

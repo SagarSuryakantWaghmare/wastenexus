@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Users } from 'lucide-react';
 import { ChampionEventList } from '@/components/champion/ChampionEventList';
-import { LoaderOne } from '@/components/ui/loader';
+import { PageLoader } from '@/components/ui/loader';
 import { getRewardTier } from '@/lib/helpers';
 
 
@@ -69,10 +69,7 @@ export default function ChampionDashboard() {
   if (isLoading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-green-50 dark:bg-gray-900 transition-colors duration-300">
-        <div className="text-center">
-          <LoaderOne />
-          <p className="mt-4 text-gray-600 dark:text-gray-400 font-medium">Loading dashboard...</p>
-        </div>
+        <PageLoader message="Loading dashboard..." />
       </div>
     );
   }
