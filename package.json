@@ -9,7 +9,10 @@
     "lint": "eslint",
     "migrate-coordinates": "node scripts/migrate-report-coordinates.js",
     "add-admins": "node scripts/add-admins.js",
-    "test:email": "tsx scripts/test-email.ts"
+    "test:email": "tsx scripts/test-email.ts",
+    "seo:validate": "node scripts/validate-seo.js",
+    "lighthouse": "lhci autorun",
+    "analyze": "ANALYZE=true npm run build"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

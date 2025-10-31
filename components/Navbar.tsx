@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
@@ -9,8 +9,10 @@ import { Badge } from '@/components/ui/badge';
 import { Leaf, LogOut, Trophy, ChevronDown, Menu, X, User, LayoutDashboard } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import UserAvatar from './UserAvatar';
-import ProfileModal from './ProfileModal';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
+
+// Dynamic import for ProfileModal (code splitting)
+const ProfileModal = lazy(() => import('./ProfileModal'));
 
 // Dropdown menu using Radix UI primitives (or fallback to custom if not available)
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
@@ -314,11 +316,13 @@ export function Navbar() {
       </div>
 
       {/* Profile Modal */}
-      {user && (
-        <ProfileModal 
-          isOpen={showProfileModal} 
-          onClose={() => setShowProfileModal(false)} 
-        />
+      {user && showProfileModal && (
+        <Suspense fallback={null}>
+          <ProfileModal 
+            isOpen={showProfileModal} 
+            onClose={() => setShowProfileModal(false)} 
+          />
+        </Suspense>
       )}
     </nav>
   );

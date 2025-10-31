@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -11,9 +11,11 @@ import {
   SheetContent,
   SheetTitle,
 } from '@/components/ui/sheet';
-import ProfileModal from '../ProfileModal';
 import UserAvatar from '../UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
+
+// Dynamic import for ProfileModal
+const ProfileModal = lazy(() => import('../ProfileModal'));
 import {
   ShoppingBag,
   Users,
@@ -275,10 +277,14 @@ export function AdminSidebar({ userName = 'Admin', isOpen = false, onClose }: Ad
         </SheetContent>
       </Sheet>
       {/* Profile Modal (shared for desktop & mobile) */}
-      <ProfileModal
-        isOpen={showProfileModal}
-        onClose={() => setShowProfileModal(false)}
-      />
+      {showProfileModal && (
+        <Suspense fallback={null}>
+          <ProfileModal
+            isOpen={showProfileModal}
+            onClose={() => setShowProfileModal(false)}
+          />
+        </Suspense>
+      )}
     </>
   );
 }
