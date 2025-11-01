@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import { PageLoader, LoaderCircle } from "@/components/ui/loader";
 import { toast } from "sonner";
@@ -83,7 +83,13 @@ export default function SignUpPage() {
                     <CardHeader className="pb-4 space-y-2">
                         <div className="flex items-center gap-2 mb-1">
                             <div className="p-1.5 bg-green-500/30 dark:bg-green-500/20 rounded-lg backdrop-blur-sm border border-green-500/30">
-                                <Leaf className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                <Image 
+                                  src="/assets/logo/recycle-symbol.png" 
+                                  alt="WasteNexus Logo" 
+                                  width={20} 
+                                  height={20}
+                                  className="h-5 w-5 object-contain"
+                                />
                             </div>
                             <span className="text-lg font-bold text-gray-900 dark:text-white drop-shadow-lg">Waste Nexus</span>
                         </div>
