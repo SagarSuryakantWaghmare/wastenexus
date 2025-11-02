@@ -1,6 +1,6 @@
 'use client';
 
-import { Leaf } from 'lucide-react';
+import Image from 'next/image';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,7 +12,13 @@ export function Footer() {
         {/* Top Section */}
         <div className="flex items-center justify-between mb-8 pb-8 border-b border-green-200 dark:border-gray-700">
           <div className="flex items-center gap-2">
-            <Leaf className="h-6 w-6 text-green-600 dark:text-green-400" />
+            <Image 
+              src="/assets/logo/recycle-symbol.png" 
+              alt="WasteNexus Logo" 
+              width={24} 
+              height={24}
+              className="h-6 w-6 object-contain"
+            />
             <span className="text-lg font-bold text-green-700 dark:text-green-400">Waste Nexus</span>
           </div>
           <p className="text-gray-600 dark:text-gray-400 text-sm max-w-md">

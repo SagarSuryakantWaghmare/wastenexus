@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu } from 'lucide-react';
 
 interface AdminNavbarProps {
@@ -25,9 +26,15 @@ export function AdminNavbar({ onMenuClick }: AdminNavbarProps) {
 
         {/* Right side - Logo and Brand */}
         <div className="flex items-center gap-3">
-          <Link href="/dashboard/admin" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">W</span>
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/30 dark:to-green-900/30 flex items-center justify-center p-1">
+              <Image 
+                src="/assets/logo/recycle-symbol.png" 
+                alt="WasteNexus Logo" 
+                width={28} 
+                height={28}
+                className="w-full h-full object-contain"
+              />
             </div>
             <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight select-none">
               WasteNexus
