@@ -201,67 +201,105 @@ export default function AdminDashboard() {
             </>
           ) : (
             <>
-              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+                <div className="absolute top-4 right-4 w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                  <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Users</p>
-                      <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.totalUsers.count.toLocaleString() || 0}</p>
-                      <p className={`text-xs mt-1 ${stats?.totalUsers.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                        {stats?.totalUsers.isPositive ? '↑' : '↓'} {Math.abs(stats?.totalUsers.growth || 0)}% from last month
-                      </p>
+                  <div className="flex flex-col">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Total Users</p>
+                    <div className="flex items-end justify-between">
+                      <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.totalUsers.count.toLocaleString() || 0}</p>
+                      <div className={`flex items-center text-sm font-medium ${stats?.totalUsers.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        <span className="mr-1">{stats?.totalUsers.isPositive ? '+' : '-'}{Math.abs(stats?.totalUsers.growth || 0)}%</span>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d={stats?.totalUsers.isPositive ? "M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" : "M12 13a1 1 0 01-.707-.293l-4-4a1 1 0 011.414-1.414L12 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4A1 1 0 0112 13z"} clipRule="evenodd" />
+                        </svg>
+                      </div>
                     </div>
-                    <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
-                      <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className={`font-medium ${stats?.totalUsers.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                          {stats?.totalUsers.isPositive ? '+' : '-'}{Math.floor((stats?.totalUsers.count || 0) * (stats?.totalUsers.growth || 0) / 100)}
+                        </span> from last month
+                      </p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+                <div className="absolute top-4 right-4 w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                  <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Reports</p>
-                      <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.newReports.count.toLocaleString() || 0}</p>
-                      <p className={`text-xs mt-1 ${stats?.newReports.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                        {stats?.newReports.isPositive ? '↑' : '↓'} {Math.abs(stats?.newReports.growth || 0)}% from last week
-                      </p>
+                  <div className="flex flex-col">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Total Reports</p>
+                    <div className="flex items-end justify-between">
+                      <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.newReports.count.toLocaleString() || 0}</p>
+                      <div className={`flex items-center text-sm font-medium ${stats?.newReports.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        <span className="mr-1">{stats?.newReports.isPositive ? '+' : '-'}{Math.abs(stats?.newReports.growth || 0)}%</span>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d={stats?.newReports.isPositive ? "M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" : "M12 13a1 1 0 01-.707-.293l-4-4a1 1 0 011.414-1.414L12 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4A1 1 0 0112 13z"} clipRule="evenodd" />
+                        </svg>
+                      </div>
                     </div>
-                    <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
-                      <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className={`font-medium ${stats?.newReports.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                          {stats?.newReports.isPositive ? '+' : '-'}{Math.floor((stats?.newReports.count || 0) * (stats?.newReports.growth || 0) / 100)}
+                        </span> from last week
+                      </p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+                <div className="absolute top-4 right-4 w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                  <AlertCircle className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                </div>
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Pending Actions</p>
-                      <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.pendingActions.count || 0}</p>
-                      <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">{stats?.pendingActions.urgent || 0} require attention</p>
+                  <div className="flex flex-col">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Pending Actions</p>
+                    <div className="flex items-end justify-between">
+                      <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.pendingActions.count || 0}</p>
+                      <div className="flex items-center text-sm text-yellow-600 dark:text-yellow-400 font-medium">
+                        <span className="mr-1">⚠</span>
+                        <span>{stats?.pendingActions.urgent || 0} urgent</span>
+                      </div>
                     </div>
-                    <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-full">
-                      <AlertCircle className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className="text-yellow-600 dark:text-yellow-400 font-medium">{stats?.pendingActions.urgent || 0}</span> require immediate attention
+                      </p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+              <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+                <div className="absolute top-4 right-4 w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                  <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                </div>
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Events</p>
-                      <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.totalEvents.count || 0}</p>
-                      <p className={`text-xs mt-1 ${stats?.totalEvents.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                        {stats?.totalEvents.isPositive ? '↑' : '↓'} {Math.abs(stats?.totalEvents.growth || 0)}% from last month
-                      </p>
+                  <div className="flex flex-col">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Total Events</p>
+                    <div className="flex items-end justify-between">
+                      <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats?.totalEvents.count || 0}</p>
+                      <div className={`flex items-center text-sm font-medium ${stats?.totalEvents.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                        <span className="mr-1">{stats?.totalEvents.isPositive ? '+' : '-'}{Math.abs(stats?.totalEvents.growth || 0)}%</span>
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d={stats?.totalEvents.isPositive ? "M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" : "M12 13a1 1 0 01-.707-.293l-4-4a1 1 0 011.414-1.414L12 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4A1 1 0 0112 13z"} clipRule="evenodd" />
+                        </svg>
+                      </div>
                     </div>
-                    <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-                      <Award className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <span className={`font-medium ${stats?.totalEvents.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                          {stats?.totalEvents.isPositive ? '+' : '-'}{Math.floor((stats?.totalEvents.count || 0) * (stats?.totalEvents.growth || 0) / 100)}
+                        </span> from last month
+                      </p>
                     </div>
                   </div>
                 </CardContent>

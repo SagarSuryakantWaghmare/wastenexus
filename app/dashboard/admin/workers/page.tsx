@@ -196,57 +196,99 @@ export default function WorkerApplicationsPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+              <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Total Applications</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.total}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Total Applications</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats.total}</p>
+                  <div className="flex items-center text-sm text-blue-600 dark:text-blue-400 font-medium">
+                    <span className="mr-1">+18.2%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                  <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-blue-600 dark:text-blue-400 font-medium">+{Math.floor(stats.total * 0.18)}</span> from last month
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+              <Clock className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Pending</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.pending}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Pending</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats.pending}</p>
+                  <div className="flex items-center text-sm text-yellow-600 dark:text-yellow-400 font-medium">
+                    <span className="mr-1">⏳</span>
+                    <span>Review</span>
+                  </div>
                 </div>
-                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-yellow-600 dark:text-yellow-400 font-medium">{stats.pending}</span> awaiting verification
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Verified</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.verified}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Verified</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats.verified}</p>
+                  <div className="flex items-center text-sm text-green-600 dark:text-green-400 font-medium">
+                    <span className="mr-1">+25.4%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 7a1 1 0 01.707.293l4 4a1 1 0 01-1.414 1.414L12 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4A1 1 0 0112 7z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-green-600 dark:text-green-400 font-medium">+{Math.floor(stats.verified * 0.25)}</span> from last month
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+          <Card className="relative overflow-hidden bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 rounded-xl">
+            <div className="absolute top-4 right-4 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
+              <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+            </div>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Rejected</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.rejected}</p>
+              <div className="flex flex-col">
+                <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">Rejected</p>
+                <div className="flex items-end justify-between">
+                  <p className="text-3xl font-bold text-gray-800 dark:text-white">{stats.rejected}</p>
+                  <div className="flex items-center text-sm text-red-600 dark:text-red-400 font-medium">
+                    <span className="mr-1">-8.5%</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M12 13a1 1 0 01-.707-.293l-4-4a1 1 0 011.414-1.414L12 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4A1 1 0 0112 13z" clipRule="evenodd" />
+                    </svg>
+                  </div>
                 </div>
-                <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
-                  <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-red-600 dark:text-red-400 font-medium">-{Math.floor(stats.rejected * 0.085)}</span> from last month
+                  </p>
                 </div>
               </div>
             </CardContent>

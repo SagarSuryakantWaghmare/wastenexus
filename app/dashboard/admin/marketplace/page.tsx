@@ -98,6 +98,14 @@ export default function AdminMarketplaceDashboard() {
   const [processing, setProcessing] = useState(false);
   const [activeTab, setActiveTab] = useState('pending');
   const [itemsFilter, setItemsFilter] = useState('all');
+
+  // Helper function to format price with 'k' suffix for desktop
+  const formatPrice = (price: number) => {
+    if (price >= 1000) {
+      return `${(price / 1000).toFixed(price % 1000 === 0 ? 0 : 1)}k`;
+    }
+    return price.toString();
+  };
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -555,7 +563,8 @@ export default function AdminMarketplaceDashboard() {
                             <div className="text-right ml-4">
                               <div className="flex items-center text-2xl font-bold text-green-600">
                                 <IndianRupee className="w-5 h-5" />
-                                {item.price ? item.price.toLocaleString('en-IN') : '0'}
+                                <span className="lg:hidden">{item.price ? item.price.toLocaleString('en-IN') : '0'}</span>
+                                <span className="hidden lg:inline">{item.price ? formatPrice(item.price) : '0'}</span>
                               </div>
                             </div>
                           </div>
@@ -713,7 +722,8 @@ export default function AdminMarketplaceDashboard() {
                           <span className="text-sm text-gray-600">Price</span>
                           <div className="flex items-center text-xl font-bold text-green-600">
                             <IndianRupee className="w-4 h-4" />
-                            {item.price ? item.price.toLocaleString('en-IN') : '0'}
+                            <span className="lg:hidden">{item.price ? item.price.toLocaleString('en-IN') : '0'}</span>
+                            <span className="hidden lg:inline">{item.price ? formatPrice(item.price) : '0'}</span>
                           </div>
                         </div>
 
@@ -873,7 +883,8 @@ export default function AdminMarketplaceDashboard() {
                             {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
                           </Badge>
                           <p className="font-semibold text-gray-900 dark:text-white">
-                            ₹{item.price ? item.price.toLocaleString('en-IN') : '0'}
+                            ₹<span className="lg:hidden">{item.price ? item.price.toLocaleString('en-IN') : '0'}</span>
+                            <span className="hidden lg:inline">{item.price ? formatPrice(item.price) : '0'}</span>
                           </p>
                         </div>
                       </div>
@@ -975,20 +986,26 @@ export default function AdminMarketplaceDashboard() {
 
         {/* Item Details Dialog */}
         <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Item Details</DialogTitle>
+          <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700">
+            <DialogHeader className="border-b border-gray-200 dark:border-gray-700 pb-4">
+              <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <ShoppingBag className="w-6 h-6 text-green-600 dark:text-green-400" />
+                Item Details
+              </DialogTitle>
             </DialogHeader>
 
             {selectedItem && (
-              <div className="space-y-6">
+              <div className="space-y-6 py-4">
                 {/* Images Gallery */}
                 {selectedItem.images && selectedItem.images.length > 0 && (
-                  <div className="space-y-4">
-                    <h3 className="font-semibold text-lg">Images</h3>
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                      <span className="w-1 h-6 bg-green-600 dark:bg-green-400 rounded-full"></span>
+                      Images
+                    </h3>
                     <div className="grid grid-cols-2 gap-4">
                       {selectedItem.images.map((img, index) => (
-                        <div key={index} className="relative h-64 bg-gray-100 rounded-lg overflow-hidden">
+                        <div key={index} className="relative h-64 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
                           <Image
                             src={img}
                             alt={`${selectedItem.title || 'Item'} - Image ${index + 1}`}
@@ -1001,45 +1018,51 @@ export default function AdminMarketplaceDashboard() {
                   </div>
                 )}
 
-                {/* Item Information */}
-                <div className="space-y-4">
+                {/* Item Information Card */}
+                <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700 space-y-5">
                   <div>
-                    <h3 className="font-semibold text-lg mb-2">Title</h3>
-                    <p>{selectedItem.title}</p>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2 mb-3">
+                      <span className="w-1 h-6 bg-green-600 dark:bg-green-400 rounded-full"></span>
+                      Title
+                    </h3>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{selectedItem.title}</p>
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-lg mb-2">Description</h3>
-                    <p className="text-gray-700">{selectedItem.description}</p>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2 mb-3">
+                      <span className="w-1 h-6 bg-green-600 dark:bg-green-400 rounded-full"></span>
+                      Description
+                    </h3>
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{selectedItem.description}</p>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div>
-                      <h4 className="font-semibold mb-1">Price</h4>
-                      <div className="flex items-center text-green-600 font-bold">
-                        <IndianRupee className="w-4 h-4" />
-                        {selectedItem.price ? selectedItem.price.toLocaleString('en-IN') : '0'}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm">
+                      <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Price</h4>
+                      <div className="flex items-center text-green-600 dark:text-green-400 text-xl font-bold">
+                        ₹<span className="lg:hidden">{selectedItem.price ? selectedItem.price.toLocaleString('en-IN') : '0'}</span>
+                        <span className="hidden lg:inline">{selectedItem.price ? formatPrice(selectedItem.price) : '0'}</span>
                       </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Category</h4>
-                      <Badge variant="outline">{selectedItem.category}</Badge>
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm">
+                      <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Category</h4>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{selectedItem.category}</p>
                     </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Condition</h4>
-                      <Badge variant="outline">{selectedItem.condition}</Badge>
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm">
+                      <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Condition</h4>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{selectedItem.condition}</p>
                     </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Status</h4>
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm">
+                      <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">Status</h4>
                       <Badge
                         className={
                           selectedItem.status === 'pending'
-                            ? 'bg-yellow-500'
+                            ? 'bg-yellow-500 hover:bg-yellow-600 text-white border-0'
                             : selectedItem.status === 'approved'
-                            ? 'bg-green-500'
+                            ? 'bg-green-500 hover:bg-green-600 text-white border-0'
                             : selectedItem.status === 'rejected'
-                            ? 'bg-red-500'
-                            : 'bg-purple-500'
+                            ? 'bg-red-500 hover:bg-red-600 text-white border-0'
+                            : 'bg-purple-500 hover:bg-purple-600 text-white border-0'
                         }
                       >
                         {selectedItem.status}
@@ -1048,39 +1071,45 @@ export default function AdminMarketplaceDashboard() {
                   </div>
                 </div>
 
-                {/* Seller Information */}
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="font-semibold text-lg mb-3">Seller Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <span className="text-gray-600">Name:</span>
-                      <p className="font-medium">{selectedItem.sellerName || 'Unknown'}</p>
+                {/* Seller Information Card */}
+                <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2 mb-4">
+                    <span className="w-1 h-6 bg-blue-600 dark:bg-blue-400 rounded-full"></span>
+                    Seller Information
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm">
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Name</span>
+                      <p className="font-semibold text-gray-900 dark:text-white mt-1">{selectedItem.sellerName || 'Unknown'}</p>
                     </div>
-                    <div>
-                      <span className="text-gray-600">Email:</span>
-                      <p className="font-medium">{selectedItem.seller?.email || 'N/A'}</p>
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm">
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Email</span>
+                      <p className="font-semibold text-gray-900 dark:text-white mt-1 break-all">{selectedItem.seller?.email || 'N/A'}</p>
                     </div>
-                    <div>
-                      <span className="text-gray-600">Contact:</span>
-                      <p className="font-medium">{selectedItem.sellerContact || 'N/A'}</p>
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm">
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Contact</span>
+                      <p className="font-semibold text-gray-900 dark:text-white mt-1">{selectedItem.sellerContact || 'N/A'}</p>
                     </div>
-                    <div>
-                      <span className="text-gray-600">Views:</span>
-                      <div className="flex items-center gap-1 font-medium">
-                        <Eye className="w-4 h-4" />
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm">
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Views</span>
+                      <div className="flex items-center gap-2 font-semibold text-gray-900 dark:text-white mt-1">
+                        <Eye className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                         {selectedItem.views || 0}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Location */}
+                {/* Location Card */}
                 {selectedItem.location && (
-                  <div>
-                    <h3 className="font-semibold text-lg mb-2">Location</h3>
-                    <div className="flex items-start gap-2">
-                      <MapPin className="w-5 h-5 text-gray-600 mt-0.5" />
-                      <p className="text-gray-700">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2 mb-3">
+                      <span className="w-1 h-6 bg-purple-600 dark:bg-purple-400 rounded-full"></span>
+                      Location
+                    </h3>
+                    <div className="flex items-start gap-3 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm">
+                      <MapPin className="w-6 h-6 text-purple-600 dark:text-purple-400 mt-0.5 flex-shrink-0" />
+                      <p className="text-gray-900 dark:text-white font-medium">
                         {selectedItem.location.address || 'N/A'}, {selectedItem.location.city || ''}, {selectedItem.location.state || ''}
                       </p>
                     </div>
@@ -1089,28 +1118,34 @@ export default function AdminMarketplaceDashboard() {
 
                 {/* Rejection Reason (if applicable) */}
                 {selectedItem.status === 'rejected' && selectedItem.rejectionReason && (
-                  <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
-                    <h3 className="font-semibold text-lg text-red-900 mb-2">Rejection Reason</h3>
-                    <p className="text-red-800">{selectedItem.rejectionReason}</p>
+                  <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-300 dark:border-red-700 p-6 rounded-xl">
+                    <h3 className="text-lg font-semibold text-red-700 dark:text-red-400 flex items-center gap-2 mb-3">
+                      <XCircle className="w-6 h-6" />
+                      Rejection Reason
+                    </h3>
+                    <p className="text-red-900 dark:text-red-200 bg-white dark:bg-gray-800 p-4 rounded-lg border border-red-300 dark:border-red-700 font-medium">
+                      {selectedItem.rejectionReason}
+                    </p>
                   </div>
                 )}
 
                 {/* Metadata */}
-                <div className="text-sm text-gray-600 border-t pt-4">
-                  <p>Listed on: {new Date(selectedItem.createdAt).toLocaleString()}</p>
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-4">
+                  <Clock className="w-4 h-4" />
+                  <p>Listed on: <span className="font-medium text-gray-900 dark:text-white">{new Date(selectedItem.createdAt).toLocaleString()}</span></p>
                 </div>
 
                 {/* Actions for pending items */}
                 {selectedItem.status === 'pending' && (
-                  <div className="flex gap-3 pt-4 border-t">
+                  <div className="flex gap-3 pt-4 border-t-2 border-gray-200 dark:border-gray-700">
                     <Button
                       onClick={() => {
                         setShowDetailsDialog(false);
                         openVerifyDialog(selectedItem, 'approve');
                       }}
-                      className="flex-1 bg-green-600 hover:bg-green-700"
+                      className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-6 text-lg shadow-lg hover:shadow-xl transition-all"
                     >
-                      <CheckCircle className="w-4 h-4 mr-2" />
+                      <CheckCircle className="w-5 h-5 mr-2" />
                       Approve Item
                     </Button>
                     <Button
@@ -1119,9 +1154,9 @@ export default function AdminMarketplaceDashboard() {
                         openVerifyDialog(selectedItem, 'reject');
                       }}
                       variant="destructive"
-                      className="flex-1"
+                      className="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 font-semibold py-6 text-lg shadow-lg hover:shadow-xl transition-all"
                     >
-                      <XCircle className="w-4 h-4 mr-2" />
+                      <XCircle className="w-5 h-5 mr-2" />
                       Reject Item
                     </Button>
                   </div>
@@ -1129,10 +1164,11 @@ export default function AdminMarketplaceDashboard() {
               </div>
             )}
 
-            <DialogFooter>
+            <DialogFooter className="border-t border-gray-200 dark:border-gray-700 pt-4">
               <Button
                 variant="outline"
                 onClick={() => setShowDetailsDialog(false)}
+                className="border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900 dark:text-white font-medium px-6"
               >
                 Close
               </Button>
