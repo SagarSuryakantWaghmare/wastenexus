@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart3, Users, ShoppingBag, Trash2, Clock, CheckCircle, Calendar, ArrowUpRight, ArrowDownRight, MapPin } from 'lucide-react';
+import { BarChart3, Users, ShoppingBag, Trash2, Clock, CheckCircle, Calendar, ArrowUpRight, MapPin } from 'lucide-react';
 import { PageLoader } from '@/components/ui/loader';
 
 interface MonthlyData {
@@ -158,98 +158,130 @@ export default function AnalyticsPage() {
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all rounded-xl overflow-hidden">
             <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Waste Collected</p>
                   <div className="flex items-baseline gap-2">
                     <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.totalWaste.toLocaleString()}</p>
                     <span className="text-sm text-gray-500 dark:text-gray-400">kg</span>
                   </div>
-                  <div className="flex items-center mt-2 text-sm">
-                    <span className="flex items-center text-green-600 dark:text-green-400 font-medium">
-                      <ArrowUpRight className="w-4 h-4 mr-1" />
-                      {Math.floor(Math.random() * 20) + 5}% from last {timeRange}
-                    </span>
-                  </div>
                 </div>
-                <div className="p-3 bg-green-600 dark:bg-green-400 rounded-lg">
-                  <Trash2 className="w-6 h-6 text-white dark:text-gray-100" />
+                <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                  <Trash2 className="w-6 h-6 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+              <div className="pt-3 border-t border-gray-100 dark:border-gray-700">
+                <div className="flex items-center justify-between text-sm">
+                  <span className={`flex items-center font-medium ${stats.wasteGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                    {stats.wasteGrowth >= 0 ? (
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clipRule="evenodd"/>
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1v-5a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clipRule="evenodd"/>
+                      </svg>
+                    )}
+                    {Math.abs(stats.wasteGrowth)}%
+                  </span>
+                  <span className="text-gray-500 dark:text-gray-400">vs last {timeRange}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all rounded-xl overflow-hidden">
             <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Active Users</p>
                   <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.totalUsers.toLocaleString()}</p>
-                  <div className="flex items-center mt-2 text-sm">
-                    <span className={`flex items-center ${stats.userGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} font-medium`}>
-                      {stats.userGrowth >= 0 ? (
-                        <ArrowUpRight className="w-4 h-4 mr-1" />
-                      ) : (
-                        <ArrowDownRight className="w-4 h-4 mr-1" />
-                      )}
-                      {Math.abs(stats.userGrowth)}% {stats.userGrowth >= 0 ? 'growth' : 'decline'}
-                    </span>
-                  </div>
                 </div>
-                <div className="p-3 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                   <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                </div>
+              </div>
+              <div className="pt-3 border-t border-gray-100 dark:border-gray-700">
+                <div className="flex items-center justify-between text-sm">
+                  <span className={`flex items-center font-medium ${stats.userGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                    {stats.userGrowth >= 0 ? (
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clipRule="evenodd"/>
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1v-5a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clipRule="evenodd"/>
+                      </svg>
+                    )}
+                    {Math.abs(stats.userGrowth)}%
+                  </span>
+                  <span className="text-gray-500 dark:text-gray-400">{stats.userGrowth >= 0 ? 'growth' : 'decline'}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all rounded-xl overflow-hidden">
             <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Revenue</p>
                   <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
                     ₹{stats.totalRevenue.toLocaleString('en-IN')}
                   </p>
-                  <div className="flex items-center mt-2 text-sm">
-                    <span className={`flex items-center ${stats.revenueGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} font-medium`}>
-                      {stats.revenueGrowth >= 0 ? (
-                        <ArrowUpRight className="w-4 h-4 mr-1" />
-                      ) : (
-                        <ArrowDownRight className="w-4 h-4 mr-1" />
-                      )}
-                      {Math.abs(stats.revenueGrowth)}% {stats.revenueGrowth >= 0 ? 'growth' : 'decline'}
-                    </span>
-                  </div>
                 </div>
-                <div className="p-3 bg-purple-100 dark:bg-purple-900/50 rounded-lg">
+                <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
                   <ShoppingBag className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                </div>
+              </div>
+              <div className="pt-3 border-t border-gray-100 dark:border-gray-700">
+                <div className="flex items-center justify-between text-sm">
+                  <span className={`flex items-center font-medium ${stats.revenueGrowth >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                    {stats.revenueGrowth >= 0 ? (
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clipRule="evenodd"/>
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1v-5a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clipRule="evenodd"/>
+                      </svg>
+                    )}
+                    {Math.abs(stats.revenueGrowth)}%
+                  </span>
+                  <span className="text-gray-500 dark:text-gray-400">{stats.revenueGrowth >= 0 ? 'growth' : 'decline'}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-all rounded-xl overflow-hidden">
             <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-3">
                 <div>
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Avg. Collection Time</p>
                   <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{stats.avgCollectionTime} <span className="text-sm font-normal">hrs</span></p>
-                  <div className="flex items-center mt-2 text-sm">
-                    <span className={`flex items-center ${stats.timeImprovement >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} font-medium`}>
-                      {stats.timeImprovement >= 0 ? (
-                        <ArrowDownRight className="w-4 h-4 mr-1" />
-                      ) : (
-                        <ArrowUpRight className="w-4 h-4 mr-1" />
-                      )}
-                      {Math.abs(stats.timeImprovement)}% {stats.timeImprovement >= 0 ? 'faster' : 'slower'}
-                    </span>
-                  </div>
                 </div>
-                <div className="p-3 bg-amber-100 dark:bg-amber-900/50 rounded-lg">
+                <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
                   <Clock className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                </div>
+              </div>
+              <div className="pt-3 border-t border-gray-100 dark:border-gray-700">
+                <div className="flex items-center justify-between text-sm">
+                  <span className={`flex items-center font-medium ${stats.timeImprovement >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                    {stats.timeImprovement >= 0 ? (
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1v-5a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clipRule="evenodd"/>
+                      </svg>
+                    ) : (
+                      <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clipRule="evenodd"/>
+                      </svg>
+                    )}
+                    {Math.abs(stats.timeImprovement)}%
+                  </span>
+                  <span className="text-gray-500 dark:text-gray-400">{stats.timeImprovement >= 0 ? 'faster' : 'slower'}</span>
                 </div>
               </div>
             </CardContent>

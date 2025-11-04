@@ -564,20 +564,24 @@ export default function EventsPage() {
             {selectedEvent && (
               <div className="space-y-6">
                 {/* Event Info Card */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 w-full">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-5 h-5 text-emerald-600" />
-                      <div>
-                        <span className="text-gray-600 text-sm">Organized by</span>
-                        <p className="font-semibold text-gray-900 dark:text-gray-100">{selectedEvent.championId?.name || 'Unknown'}</p>
+                <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-800/50 p-6 rounded-xl border border-gray-200 dark:border-gray-700 w-full">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex-shrink-0">
+                        <Users className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Organized by</span>
+                        <p className="font-semibold text-gray-900 dark:text-gray-100 truncate">{selectedEvent.championId?.name || 'Unknown'}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                      <div>
-                        <span className="text-gray-600 text-sm">Event Date</span>
-                        <p className="font-semibold text-gray-900 dark:text-gray-100">{new Date(selectedEvent.date).toLocaleDateString('en-US', { 
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex-shrink-0">
+                        <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Event Date</span>
+                        <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm leading-tight">{new Date(selectedEvent.date).toLocaleDateString('en-US', { 
                           weekday: 'short', 
                           year: 'numeric', 
                           month: 'short', 
@@ -585,33 +589,42 @@ export default function EventsPage() {
                         })}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-5 h-5 text-emerald-600" />
-                      <div>
-                        <span className="text-gray-600 text-sm">Participants</span>
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex-shrink-0">
+                        <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Participants</span>
                         <p className="font-semibold text-gray-900 dark:text-white">{selectedEvent.participants?.length || 0} people joined</p>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2 mb-3">
-                    <MapPin className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <span className="text-gray-600 text-sm">Location</span>
-                      <p className="font-semibold text-gray-900 dark:text-white">{selectedEvent.locationName || selectedEvent.location}</p>
+                  <div className="flex items-start gap-3 mb-4 p-4 bg-white dark:bg-gray-700/50 rounded-lg">
+                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg flex-shrink-0">
+                      <MapPin className="w-5 h-5 text-red-600 dark:text-red-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-gray-600 dark:text-gray-400 text-sm block mb-1">Location</span>
+                      <p className="font-semibold text-gray-900 dark:text-white break-words">{selectedEvent.locationName || selectedEvent.location}</p>
                     </div>
                   </div>
                   {selectedEvent.wasteFocus && (
-                    <div className="flex items-center gap-2">
-                      <Award className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
-                      <Badge variant="outline" className="border-emerald-500 text-emerald-700 dark:border-emerald-500 dark:text-emerald-300 bg-white dark:bg-gray-700">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex-shrink-0">
+                        <Award className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      <Badge variant="outline" className="border-emerald-500 text-emerald-700 dark:border-emerald-400 dark:text-emerald-300 bg-white dark:bg-gray-700/50 px-4 py-1">
                         {selectedEvent.wasteFocus}
                       </Badge>
                     </div>
                   )}
                   {selectedEvent.description && (
-                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <span className="text-emerald-600 dark:text-emerald-400 text-sm font-medium">Description</span>
-                      <p className="text-gray-700 dark:text-gray-200 mt-2 leading-relaxed">{selectedEvent.description}</p>
+                    <div className="mt-4 pt-4 border-t border-gray-300 dark:border-gray-600">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-1 h-6 bg-emerald-600 dark:bg-emerald-400 rounded-full"></div>
+                        <span className="text-emerald-600 dark:text-emerald-400 text-sm font-semibold uppercase tracking-wide">Description</span>
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-200 mt-2 leading-relaxed pl-3">{selectedEvent.description}</p>
                     </div>
                   )}
                 </div>
@@ -636,20 +649,22 @@ export default function EventsPage() {
                   const currentImage = validImages[Math.min(currentImageIndex, validImages.length - 1)];
 
                   return (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-bold text-xl flex items-center gap-2">
-                        <Eye className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                  <div className="space-y-5">
+                    <div className="flex items-center justify-between flex-wrap gap-3 pb-2 border-b border-gray-200 dark:border-gray-700">
+                      <h3 className="font-bold text-xl flex items-center gap-2 text-gray-900 dark:text-white">
+                        <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
+                          <Eye className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                        </div>
                         Event Photos ({validImages.length})
                       </h3>
-                      <Badge variant="outline" className="text-sm border-emerald-300 text-emerald-700 dark:border-emerald-400 dark:text-emerald-300">
-                        {Math.min(currentImageIndex, validImages.length - 1) + 1} of {validImages.length}
+                      <Badge variant="outline" className="text-sm border-emerald-500 text-emerald-700 dark:border-emerald-400 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-1.5">
+                        Photo {Math.min(currentImageIndex, validImages.length - 1) + 1} of {validImages.length}
                       </Badge>
                     </div>
 
                     {/* Main Image Viewer with Navigation */}
-                    <div className="relative bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden group border border-gray-200 dark:border-gray-700">
-                      <div className="relative w-full h-[500px] bg-white dark:bg-gray-800 rounded-lg">
+                    <div className="relative bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-xl overflow-hidden group border-2 border-gray-300 dark:border-gray-700 shadow-lg">
+                      <div className="relative w-full h-[500px] bg-white dark:bg-gray-800 rounded-lg p-2">
                         <Image
                           src={currentImage}
                           alt={`${selectedEvent.title} - Image ${Math.min(currentImageIndex, validImages.length - 1) + 1}`}
@@ -680,13 +695,16 @@ export default function EventsPage() {
                         )}
 
                         {/* Image Info Overlay */}
-                        <div className="absolute bottom-0 left-0 right-0 bg-gray-900/80 dark:bg-gray-900/90 text-white p-4 backdrop-blur-sm">
-                          <div className="flex items-center justify-between">
-                            <p className="font-medium">Photo {Math.min(currentImageIndex, validImages.length - 1) + 1} of {validImages.length}</p>
+                        <div className="absolute bottom-2 left-2 right-2 bg-gradient-to-r from-gray-900/95 to-gray-800/95 dark:bg-gradient-to-r dark:from-gray-900/95 dark:to-black/95 text-white p-4 backdrop-blur-md rounded-lg border border-white/10">
+                          <div className="flex items-center justify-between flex-wrap gap-3">
+                            <p className="font-semibold text-sm flex items-center gap-2">
+                              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                              Photo {Math.min(currentImageIndex, validImages.length - 1) + 1} of {validImages.length}
+                            </p>
                             <div className="flex gap-2">
                               <button
                                 onClick={openFullscreen}
-                                className="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-sm flex items-center gap-1 transition-colors"
+                                className="px-3 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm flex items-center gap-2 transition-all hover:scale-105 font-medium"
                               >
                                 <Eye className="w-4 h-4" />
                                 View Full Size
@@ -695,7 +713,7 @@ export default function EventsPage() {
                                 href={currentImage}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-lg text-sm flex items-center gap-1 transition-colors"
+                                className="px-3 py-2 bg-emerald-600/80 hover:bg-emerald-600 rounded-lg text-sm flex items-center gap-2 transition-all hover:scale-105 font-medium"
                               >
                                 <Download className="w-4 h-4" />
                                 Download
