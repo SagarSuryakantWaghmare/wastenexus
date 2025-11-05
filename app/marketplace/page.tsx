@@ -10,10 +10,13 @@ import ItemGrid from '@/components/Marketplace/ItemGrid';
 import { normalizeMarketplaceList, type NormalizedMarketplaceItem } from '@/lib/marketplace';
 import ItemFilters, { FilterValues } from '@/components/Marketplace/ItemFilters';
 import SearchBar from '@/components/Marketplace/SearchBar';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { PageLoader } from '@/components/ui/loader';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function MarketplacePage() {
+  const router = useRouter();
   const { user, token } = useAuth();
   const [items, setItems] = useState<NormalizedMarketplaceItem[]>([] as NormalizedMarketplaceItem[]);
   const [loading, setLoading] = useState(true);
@@ -80,6 +83,7 @@ export default function MarketplacePage() {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
         },
       });
 
@@ -87,12 +91,18 @@ export default function MarketplacePage() {
         const data = await response.json();
         if (data.isFavorited) {
           setFavoritedItems([...favoritedItems, itemId]);
+          toast.success('Added to favorites');
         } else {
           setFavoritedItems(favoritedItems.filter((id) => id !== itemId));
+          toast.success('Removed from favorites');
         }
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.error || 'Failed to update favorites');
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
+      toast.error('Failed to update favorites');
     }
   };
 
@@ -112,20 +122,34 @@ export default function MarketplacePage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b dark:border-gray-700 transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          {/* Back to Dashboard Button */}
+          {user && (
+            <div className="mb-4">
+              <Button
+                variant="ghost"
+                onClick={() => router.back()}
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 -ml-2"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Dashboard
+              </Button>
+            </div>
+          )}
+
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Marketplace</h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">Buy and sell second-hand items sustainably</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">Marketplace</h1>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">Buy and sell second-hand items sustainably</p>
             </div>
             {user && (
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 <Link href="/marketplace/my-items">
-                  <Button variant="outline">My Items</Button>
+                  <Button variant="outline" size="sm" className="text-xs sm:text-sm">My Items</Button>
                 </Link>
                 <Link href="/marketplace/add">
-                  <Button className="bg-green-600 hover:bg-green-700">
-                    <Plus className="w-4 h-4 mr-2" />
+                  <Button className="bg-green-600 hover:bg-green-700 text-xs sm:text-sm" size="sm">
+                    <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                     Sell Item
                   </Button>
                 </Link>
@@ -156,10 +180,10 @@ export default function MarketplacePage() {
             />
           </aside>
 
-          {/* Filters Sheet (Mobile) */}
+          {/* Filters Modal (Mobile) */}
           <div className="lg:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
+            <Dialog>
+              <DialogTrigger asChild>
                 <Button
                   variant="outline"
                   className="w-full dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -167,20 +191,20 @@ export default function MarketplacePage() {
                   <SlidersHorizontal className="w-4 h-4 mr-2" />
                   Filters
                 </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-80">
-                <SheetHeader>
-                  <SheetTitle>Filters</SheetTitle>
-                </SheetHeader>
-                <div className="mt-6">
+              </DialogTrigger>
+              <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Filter Items</DialogTitle>
+                </DialogHeader>
+                <div className="mt-4">
                   <ItemFilters
                     filters={filters}
                     onFilterChange={setFilters}
                     onReset={handleResetFilters}
                   />
                 </div>
-              </SheetContent>
-            </Sheet>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Items Grid */}
@@ -191,7 +215,7 @@ export default function MarketplacePage() {
               </div>
             ) : (
               <>
-                <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                <div className="mb-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                   {pagination.total} items found
                 </div>
                 <ItemGrid
@@ -203,21 +227,25 @@ export default function MarketplacePage() {
 
                 {/* Pagination */}
                 {pagination.pages > 1 && (
-                  <div className="mt-8 flex justify-center gap-2">
+                  <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-2">
                     <Button
                       variant="outline"
+                      size="sm"
                       disabled={pagination.page === 1}
                       onClick={() => setPagination({ ...pagination, page: pagination.page - 1 })}
+                      className="w-full sm:w-auto"
                     >
                       Previous
                     </Button>
-                    <span className="flex items-center px-4 text-sm text-gray-600">
+                    <span className="flex items-center px-3 sm:px-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                       Page {pagination.page} of {pagination.pages}
                     </span>
                     <Button
                       variant="outline"
+                      size="sm"
                       disabled={pagination.page === pagination.pages}
                       onClick={() => setPagination({ ...pagination, page: pagination.page + 1 })}
+                      className="w-full sm:w-auto"
                     >
                       Next
                     </Button>

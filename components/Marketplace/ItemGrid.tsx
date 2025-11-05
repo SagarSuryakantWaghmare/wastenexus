@@ -26,21 +26,21 @@ interface ItemGridProps {
 
 export default function ItemGrid({ 
   items, 
-  onFavorite, 
-  favoritedItems = [], 
+  onFavorite,
+  favoritedItems = [],
   showStatus = false,
   emptyMessage = 'No items found'
 }: ItemGridProps) {
   if (items.length === 0) {
     return (
-      <div className="text-center py-16">
-        <p className="text-gray-500 dark:text-gray-400 text-lg">{emptyMessage}</p>
+      <div className="text-center py-12 sm:py-16">
+        <p className="text-gray-500 dark:text-gray-400 text-base sm:text-lg">{emptyMessage}</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
       {items.map((item) => (
         <ItemCard
           key={item._id}

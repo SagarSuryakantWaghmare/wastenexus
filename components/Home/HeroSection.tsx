@@ -33,9 +33,13 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: 'easeOut' }}
-          className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white dark:text-gray-100 mb-4 sm:mb-6 leading-tight"
+          className="text-4xl xs:text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-extrabold text-white dark:text-gray-100 mb-4 sm:mb-6 leading-tight drop-shadow-2xl"
         >
-          Transform Waste Into Opportunity
+          <span className="bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent">
+            Transform Waste
+          </span>
+          <br />
+          <span className="text-white">Into Opportunity</span>
         </motion.h1>
 
         {/* Subheading */}
@@ -56,32 +60,59 @@ export default function HeroSection() {
           className="flex flex-col gap-3 xs:gap-4 w-full max-w-xl mx-auto
             sm:flex-row sm:gap-4 sm:justify-center sm:items-center"
         >
-          {/* Primary CTA - Client Signup */}
-          <InteractiveHoverButton
-            className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 text-lg font-semibold flex items-center gap-2 border-0"
-            onClick={() => window.location.href = '/auth/signup'}
-          >
-            <CheckCircle className="w-5 h-5" />
-            Start as Client
-          </InteractiveHoverButton>
+          {/* Mobile Buttons - Regular */}
+          <div className="flex flex-col gap-3 w-full md:hidden">
+            <button
+              onClick={() => window.location.href = '/auth/signup'}
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl text-base font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
+            >
+              <CheckCircle className="w-5 h-5" />
+              Start as Client
+            </button>
 
-          {/* Secondary CTA - Champion/NGO Info */}
-          <InteractiveHoverButton
-            className="bg-white/20 hover:bg-white/30 text-white border-2 border-white px-8 py-6 text-lg font-semibold flex items-center gap-2"
-            onClick={() => window.location.href = '/auth/signup'}
-          >
-            <Users className="w-5 h-5" />
-            Join as Champion
-          </InteractiveHoverButton>
+            <button
+              onClick={() => window.location.href = '/auth/signup'}
+              className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white border-2 border-white px-8 py-4 rounded-xl text-base font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
+            >
+              <Users className="w-5 h-5" />
+              Join as Champion
+            </button>
 
-          {/* Tertiary CTA - Worker Application */}
-          <InteractiveHoverButton
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg font-semibold flex items-center gap-2 border-0"
-            onClick={() => window.location.href = '/worker/apply'}
-          >
-            <Briefcase className="w-5 h-5" />
-            Join as Worker
-          </InteractiveHoverButton>
+            <button
+              onClick={() => window.location.href = '/worker/apply'}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-xl text-base font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95"
+            >
+              <Briefcase className="w-5 h-5" />
+              Join as Worker
+            </button>
+          </div>
+
+          {/* Desktop Buttons - Interactive */}
+          <div className="hidden md:flex md:flex-row md:gap-4 md:justify-center md:items-center w-full">
+            <InteractiveHoverButton
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 text-lg font-semibold flex items-center gap-2 border-0"
+              onClick={() => window.location.href = '/auth/signup'}
+            >
+              <CheckCircle className="w-5 h-5" />
+              Start as Client
+            </InteractiveHoverButton>
+
+            <InteractiveHoverButton
+              className="bg-white/20 hover:bg-white/30 text-white border-2 border-white px-8 py-6 text-lg font-semibold flex items-center gap-2"
+              onClick={() => window.location.href = '/auth/signup'}
+            >
+              <Users className="w-5 h-5" />
+              Join as Champion
+            </InteractiveHoverButton>
+
+            <InteractiveHoverButton
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg font-semibold flex items-center gap-2 border-0"
+              onClick={() => window.location.href = '/worker/apply'}
+            >
+              <Briefcase className="w-5 h-5" />
+              Join as Worker
+            </InteractiveHoverButton>
+          </div>
         </motion.div>
       </div>
     </section>

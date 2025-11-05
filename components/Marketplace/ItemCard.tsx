@@ -55,64 +55,67 @@ export default function ItemCard({ item, onFavorite, isFavorited, showStatus }: 
     <Link href={`/marketplace/${item._id}`}>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         {/* Image */}
-        <div className="relative h-48 w-full bg-gray-100 dark:bg-gray-800">
+        <div className="relative h-40 sm:h-48 w-full bg-gray-100 dark:bg-gray-800">
           <Image
             src={imageSrc}
             alt={item.title}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             className="object-cover"
+            priority={false}
           />
-          
+
           {/* Favorite Button */}
           {onFavorite && (
             <button
               onClick={handleFavoriteClick}
-              className="absolute top-2 right-2 p-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-full shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="absolute top-2 right-2 p-1.5 sm:p-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-full shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors z-10"
+              aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
             >
               <Heart
-                className={`w-5 h-5 ${isFavorited ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                className={`w-4 h-4 sm:w-5 sm:h-5 ${isFavorited ? 'fill-red-500 text-red-500' : 'text-gray-600 dark:text-gray-300'}`}
               />
             </button>
           )}
 
           {/* Status Badge (for seller view) */}
           {showStatus && item.status && (
-            <Badge className={`absolute top-2 left-2 ${statusColors[item.status as keyof typeof statusColors]}`}>
+            <Badge className={`absolute top-2 left-2 text-xs ${statusColors[item.status as keyof typeof statusColors]}`}>
               {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
             </Badge>
           )}
 
           {/* Category Badge */}
-          <Badge className="absolute bottom-2 left-2 bg-gray-900/70 text-white">
+          <Badge className="absolute bottom-2 left-2 bg-gray-900/70 text-white text-xs">
             {item.category}
           </Badge>
         </div>
 
-        <CardContent className="p-4 flex-1">
+        <CardContent className="p-3 sm:p-4 flex-1">
           {/* Title */}
-          <h3 className="font-semibold text-lg line-clamp-2 mb-2 text-gray-900 dark:text-gray-100">{item.title}</h3>
+          <h3 className="font-semibold text-sm sm:text-base lg:text-lg line-clamp-2 mb-2 text-gray-900 dark:text-gray-100">{item.title}</h3>
 
           {/* Condition */}
-          <div className="mb-3">
+          <div className="mb-2 sm:mb-3">
             <ConditionBadge condition={item.condition} />
           </div>
 
           {/* Location */}
-          <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm mb-3">
-            <MapPin className="w-4 h-4 mr-1" />
-            <span>{locationText}</span>
+          <div className="flex items-center text-gray-600 dark:text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3">
+            <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
+            <span className="truncate">{locationText}</span>
           </div>
 
           {/* Views */}
           {item.views !== undefined && (
-            <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm">
-              <Eye className="w-4 h-4 mr-1" />
+            <div className="flex items-center text-gray-500 dark:text-gray-400 text-xs sm:text-sm">
+              <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
               <span>{item.views} views</span>
             </div>
           )}
         </CardContent>
 
-        <CardFooter className="p-4 pt-0">
+        <CardFooter className="p-3 sm:p-4 pt-0">
           <PriceDisplay price={item.price} isNegotiable={item.isNegotiable} />
         </CardFooter>
       </Card>

@@ -264,7 +264,14 @@ export function AdminSidebar({ userName = 'Admin', isOpen = false, onClose }: Ad
           </ScrollArea>
 
           {/* Mobile Footer */}
-          <div className="absolute bottom-0 w-full p-3 border-t border-gray-700 dark:border-gray-800">
+          <div className="absolute bottom-0 w-full p-3 border-t border-gray-700 dark:border-gray-800 space-y-2">
+            <div className="flex items-center justify-between px-3 py-2.5 bg-gray-700/50 dark:bg-gray-800/50 rounded-lg">
+              <span className="text-sm font-medium text-gray-300">Theme</span>
+              <AnimatedThemeToggler
+                className="text-gray-300 hover:text-white transition-colors h-5 w-5"
+                aria-label="Toggle theme"
+              />
+            </div>
             <button
               type="button"
               className="flex items-center gap-3 w-full px-3 py-3 rounded-lg bg-red-600 hover:bg-red-700 focus:ring-2 focus:ring-red-400 text-white transition-colors"
