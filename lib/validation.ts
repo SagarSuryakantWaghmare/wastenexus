@@ -5,9 +5,16 @@
 
 /**
  * Validates email format
+ * Uses a more efficient regex pattern to prevent ReDoS attacks
  */
 export function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // More restrictive pattern that prevents ReDoS
+  // Matches: local-part@domain.tld
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  
+  // Additional length check for safety
+  if (!email || email.length > 254) return false;
+  
   return emailRegex.test(email);
 }
 
