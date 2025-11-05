@@ -8,6 +8,7 @@ import { Footer } from '@/components/Footer';
 import { BackButton } from '@/components/ui/back-button';
 import { RewardsBreakdown } from '@/components/RewardsBreakdown';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Award, TrendingUp, Trophy, Gift, Target } from 'lucide-react';
 import { PageLoader } from '@/components/ui/loader';
 
@@ -23,9 +24,10 @@ interface UserStats {
 
 export default function RewardsPage() {
   const router = useRouter();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, token } = useAuth();
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -36,41 +38,77 @@ export default function RewardsPage() {
   }, [user, isLoading, router]);
 
   const fetchUserStats = async () => {
+    if (!token) return;
+
     try {
       setLoading(true);
-      // Fetch user stats - you can create a dedicated API for this
-      setStats({
-        totalPoints: user?.totalPoints || 0,
-        rank: 1,
-        totalUsers: 100,
-        reportsCount: 0,
-        jobsCount: 0,
-        marketplaceItemsCount: 0,
-        eventsJoined: 0,
+      setError('');
+      
+      const response = await fetch('/api/client/rewards-stats', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
-    } catch (error) {
-      console.error('Error fetching stats:', error);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch rewards stats');
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setStats(result.data);
+      } else {
+        setError(result.message || 'Failed to load stats');
+      }
+    } catch (err) {
+      console.error('Error fetching stats:', err);
+      setError('Failed to load rewards data');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && token) {
       fetchUserStats();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, token]);
 
   if (isLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
         <PageLoader message="Loading rewards..." />
       </div>
     );
   }
 
   if (!user) return null;
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col transition-colors duration-300">
+        <Navbar />
+        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+          <BackButton href="/dashboard/client" label="Back to Dashboard" />
+          <Card className="mt-8 bg-white dark:bg-gray-800 border border-red-200 dark:border-red-800">
+            <CardContent className="p-8 text-center">
+              <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
+              <Button 
+                onClick={fetchUserStats}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                Try Again
+              </Button>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const getNextMilestone = (points: number) => {
     const milestones = [100, 250, 500, 1000, 2500, 5000, 10000];

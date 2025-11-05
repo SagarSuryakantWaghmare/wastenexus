@@ -67,7 +67,7 @@ export function Navbar() {
                 {/* Points for all roles */}
                 {user.totalPoints !== undefined && user.role !== 'admin' && (
                   <Link 
-                    href="/rewards"
+                    href="/dashboard/client/rewards"
                     className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-100 to-yellow-100 dark:from-amber-900/40 dark:to-yellow-900/40 px-4 py-2 border-2 border-amber-300 dark:border-amber-700 shadow-md hover:shadow-lg hover:scale-105 transition-all duration-200 cursor-pointer"
                   >
                     <Trophy className="h-5 w-5 text-amber-600 dark:text-amber-400" />
@@ -193,7 +193,7 @@ export function Navbar() {
                       {user.totalPoints !== undefined && user.role !== 'admin' && (
                         <SheetClose asChild>
                           <Link
-                            href="/rewards"
+                            href="/dashboard/client/rewards"
                             className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-100 to-yellow-100 dark:from-amber-900/40 dark:to-yellow-900/40 hover:from-amber-200 hover:to-yellow-200 dark:hover:from-amber-900/60 dark:hover:to-yellow-900/60 border-2 border-amber-300 dark:border-amber-700 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 font-semibold"
                           >
                             <div className="flex items-center gap-3">
