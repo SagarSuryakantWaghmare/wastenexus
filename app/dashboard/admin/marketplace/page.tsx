@@ -523,105 +523,109 @@ export default function AdminMarketplaceDashboard() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                 {pendingItems.map((item) => (
-                  <Card key={item._id} className="overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="md:flex">
-                      {/* Image Section */}
-                      <div className="md:w-1/3 bg-gray-100 dark:bg-gray-700 relative h-64 md:h-auto">
-                        <Image
-                          src={(item.images && item.images[0]) || '/placeholder-image.jpg'}
-                          alt={item.title || 'Item'}
-                          fill
-                          className="object-cover"
-                        />
-                        <Badge 
-                          className={`absolute top-4 left-4 ${
-                            item.status === 'approved' 
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                              : item.status === 'rejected'
-                              ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                              : item.status === 'sold'
-                              ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
-                              : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-                          }`}
-                        >
-                          {item.status?.charAt(0).toUpperCase() + item.status?.slice(1) || 'Pending Review'}
+                  <Card key={item._id} className="overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300">
+                    {/* Image Section */}
+                    <div className="relative h-48 sm:h-56 bg-gray-100 dark:bg-gray-700">
+                      <Image
+                        src={(item.images && item.images[0]) || '/placeholder-image.jpg'}
+                        alt={item.title || 'Item'}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover"
+                        priority={false}
+                      />
+                      <Badge 
+                        className="absolute top-2 left-2 text-xs bg-yellow-500 hover:bg-yellow-600 text-white"
+                      >
+                        Pending
+                      </Badge>
+                      {item.images && item.images.length > 1 && (
+                        <Badge className="absolute top-2 right-2 text-xs bg-black/70 text-white">
+                          +{item.images.length - 1}
                         </Badge>
+                      )}
+                    </div>
+
+                    {/* Content Section */}
+                    <div className="p-4 sm:p-5">
+                      <div className="mb-3 sm:mb-4">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white line-clamp-2 flex-1">
+                            {item.title}
+                          </h3>
+                          <div className="flex items-center text-lg sm:text-xl font-bold text-green-600 dark:text-green-400 flex-shrink-0">
+                            <IndianRupee className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="sm:hidden">{item.price ? formatPrice(item.price) : '0'}</span>
+                            <span className="hidden sm:inline">{item.price ? item.price.toLocaleString('en-IN') : '0'}</span>
+                          </div>
+                        </div>
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                          {item.description}
+                        </p>
                       </div>
 
-                      {/* Content Section */}
-                      <div className="md:w-2/3 p-6">
-                        <CardHeader className="p-0 mb-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <CardTitle className="text-2xl mb-2">{item.title}</CardTitle>
-                              <CardDescription className="text-base">
-                                {item.description}
-                              </CardDescription>
-                            </div>
-                            <div className="text-right ml-4">
-                              <div className="flex items-center text-2xl font-bold text-green-600">
-                                <IndianRupee className="w-5 h-5" />
-                                <span className="lg:hidden">{item.price ? item.price.toLocaleString('en-IN') : '0'}</span>
-                                <span className="hidden lg:inline">{item.price ? formatPrice(item.price) : '0'}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </CardHeader>
+                      {/* Item Details */}
+                      <div className="grid grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
+                        <div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Category</p>
+                          <Badge variant="outline" className="text-xs">{item.category}</Badge>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Condition</p>
+                          <Badge variant="outline" className="text-xs">{item.condition}</Badge>
+                        </div>
+                      </div>
 
-                        <CardContent className="p-0 space-y-4">
-                          {/* Item Details */}
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <p className="text-sm text-gray-600">Category</p>
-                              <Badge variant="outline">{item.category}</Badge>
-                            </div>
-                            <div>
-                              <p className="text-sm text-gray-600">Condition</p>
-                              <Badge variant="outline">{item.condition}</Badge>
-                            </div>
-                          </div>
+                      {/* Seller Info */}
+                      <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg mb-3 sm:mb-4">
+                        <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mb-2">Seller Information</p>
+                        <div className="space-y-1 text-xs">
+                          <p className="flex items-start">
+                            <span className="font-medium text-gray-700 dark:text-gray-300 min-w-[60px]">Name:</span> 
+                            <span className="text-gray-600 dark:text-gray-400 break-all">{item.sellerName || item.seller?.name || 'Unknown'}</span>
+                          </p>
+                          <p className="flex items-start">
+                            <span className="font-medium text-gray-700 dark:text-gray-300 min-w-[60px]">Email:</span> 
+                            <span className="text-gray-600 dark:text-gray-400 break-all">{item.seller?.email || 'N/A'}</span>
+                          </p>
+                          <p className="flex items-start">
+                            <span className="font-medium text-gray-700 dark:text-gray-300 min-w-[60px]">Contact:</span> 
+                            <span className="text-gray-600 dark:text-gray-400">{item.sellerContact || 'N/A'}</span>
+                          </p>
+                        </div>
+                      </div>
 
-                          {/* Seller Info */}
-                          <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                            <p className="text-sm font-semibold text-gray-900 mb-2">Seller Information</p>
-                            <div className="space-y-1 text-sm">
-                              <p><span className="font-medium">Name:</span> {item.sellerName || 'Unknown'}</p>
-                              <p><span className="font-medium">Email:</span> {item.seller?.email || 'N/A'}</p>
-                              <p><span className="font-medium">Contact:</span> {item.sellerContact || 'N/A'}</p>
-                            </div>
-                          </div>
+                      {/* Location */}
+                      {item.location && (
+                        <div className="flex items-start gap-2 mb-3 sm:mb-4">
+                          <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" />
+                          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                            {[item.location.address, item.location.city, item.location.state].filter(Boolean).join(', ') || 'Location not provided'}
+                          </p>
+                        </div>
+                      )}
 
-                          {/* Location */}
-                          {item.location && (
-                            <div className="flex items-start gap-2">
-                              <MapPin className="w-4 h-4 text-gray-600 mt-0.5" />
-                              <p className="text-sm text-gray-700">
-                                {item.location.address || 'N/A'}, {item.location.city || ''}, {item.location.state || ''}
-                              </p>
-                            </div>
-                          )}
-
-                          {/* Action Buttons */}
-                          <div className="flex gap-3 pt-4">
-                            <Button
-                              onClick={() => openVerifyDialog(item, 'approve')}
-                              className="flex-1 bg-green-600 hover:bg-green-700"
-                            >
-                              <CheckCircle className="w-4 h-4 mr-2" />
-                              Approve
-                            </Button>
-                            <Button
-                              onClick={() => openVerifyDialog(item, 'reject')}
-                              variant="destructive"
-                              className="flex-1"
-                            >
-                              <XCircle className="w-4 h-4 mr-2" />
-                              Reject
-                            </Button>
-                          </div>
-                        </CardContent>
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 sm:gap-3">
+                        <Button
+                          onClick={() => openVerifyDialog(item, 'approve')}
+                          size="sm"
+                          className="flex-1 bg-green-600 hover:bg-green-700 text-xs sm:text-sm"
+                        >
+                          <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                          Approve
+                        </Button>
+                        <Button
+                          onClick={() => openVerifyDialog(item, 'reject')}
+                          size="sm"
+                          variant="destructive"
+                          className="flex-1 text-xs sm:text-sm"
+                        >
+                          <XCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                          Reject
+                        </Button>
                       </div>
                     </div>
                   </Card>
@@ -676,75 +680,77 @@ export default function AdminMarketplaceDashboard() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {filteredAllItems.map((item) => (
-                  <Card key={item._id} className="overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
+                  <Card key={item._id} className="overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300">
                     {/* Image */}
-                    <div className="relative h-48 bg-gray-100">
+                    <div className="relative h-44 sm:h-48 bg-gray-100 dark:bg-gray-700">
                       <Image
                         src={(item.images && item.images[0]) || '/placeholder-image.jpg'}
                         alt={item.title || 'Item'}
                         fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                         className="object-cover"
+                        priority={false}
                       />
                       <Badge
-                        className={`absolute top-4 left-4 ${
+                        className={`absolute top-2 left-2 text-xs ${
                           item.status === 'pending'
-                            ? 'bg-yellow-500'
+                            ? 'bg-yellow-500 hover:bg-yellow-600'
                             : item.status === 'approved'
-                            ? 'bg-green-500'
+                            ? 'bg-green-500 hover:bg-green-600'
                             : item.status === 'rejected'
-                            ? 'bg-red-500'
-                            : 'bg-purple-500'
-                        }`}
+                            ? 'bg-red-500 hover:bg-red-600'
+                            : 'bg-purple-500 hover:bg-purple-600'
+                        } text-white`}
                       >
                         {item.status}
                       </Badge>
                       {item.images && item.images.length > 1 && (
-                        <Badge className="absolute top-4 right-4 bg-black/70">
+                        <Badge className="absolute top-2 right-2 text-xs bg-black/70 text-white hover:bg-black/80">
                           +{item.images.length - 1}
                         </Badge>
                       )}
                     </div>
 
                     {/* Content */}
-                    <CardHeader>
-                      <CardTitle className="text-lg line-clamp-1">{item.title || 'Untitled'}</CardTitle>
-                      <CardDescription className="line-clamp-2">
+                    <div className="p-3 sm:p-4">
+                      <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white line-clamp-1 mb-1 sm:mb-2">
+                        {item.title || 'Untitled'}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
                         {item.description || 'No description'}
-                      </CardDescription>
-                    </CardHeader>
+                      </p>
 
-                    <CardContent>
-                      <div className="space-y-3">
+                      <div className="space-y-2 sm:space-y-3">
                         {/* Price */}
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600">Price</span>
-                          <div className="flex items-center text-xl font-bold text-green-600">
-                            <IndianRupee className="w-4 h-4" />
-                            <span className="lg:hidden">{item.price ? item.price.toLocaleString('en-IN') : '0'}</span>
-                            <span className="hidden lg:inline">{item.price ? formatPrice(item.price) : '0'}</span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">Price</span>
+                          <div className="flex items-center text-base sm:text-lg font-bold text-green-600 dark:text-green-400">
+                            <IndianRupee className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span className="sm:hidden">{item.price ? formatPrice(item.price) : '0'}</span>
+                            <span className="hidden sm:inline">{item.price ? item.price.toLocaleString('en-IN') : '0'}</span>
                           </div>
                         </div>
 
                         {/* Details */}
-                        <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="grid grid-cols-2 gap-2 text-xs">
                           <div>
-                            <span className="text-gray-600">Category</span>
-                            <p className="font-medium">{item.category || 'N/A'}</p>
+                            <span className="text-gray-500 dark:text-gray-400 block mb-1">Category</span>
+                            <p className="font-medium text-gray-900 dark:text-gray-100 truncate">{item.category || 'N/A'}</p>
                           </div>
                           <div>
-                            <span className="text-gray-600">Condition</span>
-                            <p className="font-medium">{item.condition || 'N/A'}</p>
+                            <span className="text-gray-500 dark:text-gray-400 block mb-1">Condition</span>
+                            <p className="font-medium text-gray-900 dark:text-gray-100 truncate">{item.condition || 'N/A'}</p>
                           </div>
                         </div>
 
                         {/* Seller & Views */}
-                        <div className="flex items-center justify-between text-sm pt-2 border-t">
-                          <span className="text-gray-600">{item.sellerName || 'Unknown'}</span>
-                          <div className="flex items-center gap-1 text-gray-600">
-                            <Eye className="w-4 h-4" />
-                            {item.views || 0}
+                        <div className="flex items-center justify-between text-xs pt-2 border-t border-gray-200 dark:border-gray-700">
+                          <span className="text-gray-600 dark:text-gray-400 truncate flex-1 mr-2">{item.sellerName || item.seller?.name || 'Unknown'}</span>
+                          <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 flex-shrink-0">
+                            <Eye className="w-3 h-3" />
+                            <span>{item.views || 0}</span>
                           </div>
                         </div>
 
@@ -752,12 +758,13 @@ export default function AdminMarketplaceDashboard() {
                         <Button
                           onClick={() => openDetailsDialog(item)}
                           variant="outline"
-                          className="w-full"
+                          size="sm"
+                          className="w-full text-xs sm:text-sm"
                         >
                           View Details
                         </Button>
                       </div>
-                    </CardContent>
+                    </div>
                   </Card>
                 ))}
               </div>
