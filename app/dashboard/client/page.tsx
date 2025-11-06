@@ -143,18 +143,33 @@ export default function ClientDashboard() {
         {/* Profile Section - Moved to top */}
         <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 mb-6 sm:mb-8">
           <CardContent className="p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4">Your Profile</h2>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+            <div className="flex items-start justify-between mb-3 sm:mb-4">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Your Profile</h2>
+            </div>
+            <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
               <UserAvatar
                 name={user?.name || 'User'}
                 profileImage={user?.profileImage}
                 size="lg"
-                className="ring-2 ring-green-500"
+                className="ring-2 ring-green-500 flex-shrink-0"
               />
-              <div className="flex-1">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">{user?.name}</h3>
-                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 break-all">{user?.email}</p>
-                <div className="flex flex-wrap gap-2 mt-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">{user?.name}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 break-all">{user?.email}</p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 px-3 sm:px-4 py-2 rounded-lg border border-green-200 dark:border-green-700">
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Account Status</p>
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span className="text-sm font-semibold text-green-700 dark:text-green-400">Active</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
                   <Badge className="bg-green-600 hover:bg-green-700 text-white text-xs">
                     {user?.role}
                   </Badge>

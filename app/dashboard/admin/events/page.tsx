@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Award, Calendar, Users, MapPin, Clock, CheckCircle, Trash2, Eye, ChevronLeft, ChevronRight, X, Download } from 'lucide-react';
-import { LoaderCircle } from '@/components/ui/loader';
+import { PageLoader } from '@/components/ui/loader';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
@@ -197,8 +197,8 @@ export default function EventsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoaderCircle size="lg" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <PageLoader message="Loading events..." />
       </div>
     );
   }

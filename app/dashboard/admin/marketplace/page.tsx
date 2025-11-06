@@ -21,7 +21,7 @@ import {
   RefreshCw,
   Search
 } from 'lucide-react';
-import { LoaderCircle } from '@/components/ui/loader';
+import { LoaderCircle, PageLoader } from '@/components/ui/loader';
 import { normalizeMarketplaceList } from '@/lib/marketplace';
 import Image from 'next/image';
 
@@ -231,7 +231,8 @@ export default function AdminMarketplaceDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <PageLoader message="Loading marketplace..." />
       </div>
     );
   }
@@ -905,12 +906,12 @@ export default function AdminMarketplaceDashboard() {
 
         {/* Verification Dialog */}
         <Dialog open={showDialog} onOpenChange={setShowDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
+          <DialogContent className="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700">
+            <DialogHeader className="border-b border-gray-200 dark:border-gray-700 pb-4">
+              <DialogTitle className="text-xl font-bold text-gray-900 dark:text-white">
                 {action === 'approve' ? 'Approve Item' : 'Reject Item'}
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="text-gray-600 dark:text-gray-400">
                 {action === 'approve'
                   ? 'This item will be published to the marketplace.'
                   : 'This item will be rejected and removed from pending.'}
@@ -918,15 +919,15 @@ export default function AdminMarketplaceDashboard() {
             </DialogHeader>
 
             {selectedItem && (
-              <div className="space-y-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="font-semibold text-lg">{selectedItem.title}</p>
-                  <p className="text-sm text-gray-600">by {selectedItem.sellerName}</p>
+              <div className="space-y-4 py-2">
+                <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <p className="font-semibold text-lg text-gray-900 dark:text-white">{selectedItem.title}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">by {selectedItem.sellerName}</p>
                 </div>
 
                 {action === 'reject' && (
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
                       Rejection Reason *
                     </label>
                     <Textarea
@@ -934,14 +935,14 @@ export default function AdminMarketplaceDashboard() {
                       onChange={(e) => setRejectionReason(e.target.value)}
                       placeholder="Please provide a clear reason for rejection..."
                       rows={4}
-                      className="w-full"
+                      className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     />
                   </div>
                 )}
 
                 {action === 'approve' && (
                   <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-4 rounded-lg flex items-start gap-3">
-                    <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                    <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                     <p className="text-sm text-green-800 dark:text-green-300">
                       The seller will be notified and the item will appear in marketplace listings.
                     </p>
@@ -950,7 +951,7 @@ export default function AdminMarketplaceDashboard() {
 
                 {action === 'reject' && (
                   <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 rounded-lg flex items-start gap-3">
-                    <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+                    <XCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
                     <p className="text-sm text-red-800 dark:text-red-300">
                       The seller will be notified with your rejection reason.
                     </p>
@@ -959,7 +960,7 @@ export default function AdminMarketplaceDashboard() {
               </div>
             )}
 
-            <DialogFooter>
+            <DialogFooter className="border-t border-gray-200 dark:border-gray-700 pt-4">
               <Button
                 variant="outline"
                 onClick={() => {
@@ -967,14 +968,14 @@ export default function AdminMarketplaceDashboard() {
                   setRejectionReason('');
                 }}
                 disabled={processing}
+                className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleVerify}
                 disabled={processing}
-                className={action === 'approve' ? 'bg-green-600 hover:bg-green-700' : ''}
-                variant={action === 'reject' ? 'destructive' : 'default'}
+                className={action === 'approve' ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-red-600 hover:bg-red-700 text-white'}
               >
                 {processing ? (
                   <>

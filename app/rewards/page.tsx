@@ -254,11 +254,19 @@ export default function RewardsPage() {
                 <div className="w-10 h-10 bg-green-600 dark:bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
                   <Trophy className="w-5 h-5 text-white" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Report Waste</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Earn 10-50 points per kg based on waste type
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    Earn points per kg based on waste type (when verified by admin)
                   </p>
+                  <ul className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                    <li>• E-waste: 50 pts/kg</li>
+                    <li>• Metal: 20 pts/kg</li>
+                    <li>• Plastic: 15 pts/kg</li>
+                    <li>• Glass: 12 pts/kg</li>
+                    <li>• Cardboard/Paper: 10 pts/kg</li>
+                    <li>• Organic: 8 pts/kg</li>
+                  </ul>
                 </div>
               </div>
 
@@ -266,37 +274,55 @@ export default function RewardsPage() {
                 <div className="w-10 h-10 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                   <CheckCircle className="w-5 h-5 text-white" />
                 </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Post Jobs</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                    Earn 25-40 points when your job is verified by admin
+                  </p>
+                  <ul className="text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                    <li>• Base: 25 pts</li>
+                    <li>• Industry jobs: +10 pts</li>
+                    <li>• Home jobs: +5 pts</li>
+                    <li>• High urgency: +10 pts</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                <div className="w-10 h-10 bg-purple-600 dark:bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Gift className="w-5 h-5 text-white" />
+                </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Get Verified</h4>
+                  <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Marketplace Listings</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Points are awarded when reports are verified
+                    Earn 30 points when your item is approved by admin
                   </p>
                 </div>
               </div>
 
               {user.role === 'worker' && (
-                <div className="flex items-start gap-3 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-                  <div className="w-10 h-10 bg-purple-600 dark:bg-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="flex items-start gap-3 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                  <div className="w-10 h-10 bg-orange-600 dark:bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
                     <Zap className="w-5 h-5 text-white" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Complete Tasks</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Earn bonus points for completing collection tasks
+                      Earn 20 points for completing collection tasks
                     </p>
                   </div>
                 </div>
               )}
 
               {user.role === 'champion' && (
-                <div className="flex items-start gap-3 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                  <div className="w-10 h-10 bg-orange-600 dark:bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="flex items-start gap-3 p-4 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg">
+                  <div className="w-10 h-10 bg-cyan-600 dark:bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
                     <Star className="w-5 h-5 text-white" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Organize Events</h4>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Earn points for creating and managing events
+                      Earn 15 points for each participant joining your events
                     </p>
                   </div>
                 </div>

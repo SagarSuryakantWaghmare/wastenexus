@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Users, Clock, CheckCircle, XCircle, Eye, Package, Award, MapPin, User } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
+import { PageLoader } from "@/components/ui/loader";
 
 interface WorkerApplication {
   _id: string;
@@ -176,7 +177,7 @@ export default function WorkerApplicationsPage() {
   if (isLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
+        <PageLoader message="Loading worker applications..." />
       </div>
     );
   }

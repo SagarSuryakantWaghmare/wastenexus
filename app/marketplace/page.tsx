@@ -186,15 +186,15 @@ export default function MarketplacePage() {
               <DialogTrigger asChild>
                 <Button
                   variant="outline"
-                  className="w-full dark:border-gray-600 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
                 >
                   <SlidersHorizontal className="w-4 h-4 mr-2" />
                   Filters
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Filter Items</DialogTitle>
+              <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700">
+                <DialogHeader className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                  <DialogTitle className="text-xl font-bold text-gray-900 dark:text-white">Filter Items</DialogTitle>
                 </DialogHeader>
                 <div className="mt-4">
                   <ItemFilters

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileText, TrendingUp, MapPin, CheckCircle, XCircle, Clock, Award } from 'lucide-react';
-import { LoaderCircle } from '@/components/ui/loader';
+import { LoaderCircle, PageLoader } from '@/components/ui/loader';
 import Image from 'next/image';
 
 interface Report {
@@ -128,8 +128,8 @@ export default function WasteReportsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoaderCircle size="lg" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <PageLoader message="Loading waste reports..." />
       </div>
     );
   }

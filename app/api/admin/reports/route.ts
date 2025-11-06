@@ -3,6 +3,7 @@ import dbConnect from '@/lib/mongodb';
 import { verifyToken } from '@/lib/auth';
 import Report from '@/models/Report';
 import User from '@/models/User';
+import { awardPoints, calculateReportPoints } from '@/lib/rewards';
 
 export async function GET(request: NextRequest) {
   try {
@@ -101,21 +102,35 @@ export async function PUT(request: NextRequest) {
     }
 
     if (action === 'verify') {
-      const pointsToAward = points || Math.floor(report.weightKg * 10); // 10 points per kg by default
+      // Calculate points based on weight and waste type
+      const pointsToAward = points || calculateReportPoints(report.weightKg, report.type);
       
       report.status = 'verified';
       report.pointsAwarded = pointsToAward;
       await report.save();
 
-      // Update user points
-      await User.findByIdAndUpdate(report.userId, {
-        $inc: { totalPoints: pointsToAward },
+      // Award points and create transaction record
+      const rewardResult = await awardPoints({
+        userId: report.userId,
+        type: 'report_verified',
+        amount: pointsToAward,
+        description: `Waste report verified: ${report.weightKg}kg of ${report.type}`,
+        referenceId: report._id,
+        referenceModel: 'Report',
+        adminId: decoded.userId,
+        metadata: {
+          weightKg: report.weightKg,
+          wasteType: report.type,
+          reportDate: report.date,
+        },
       });
 
       return NextResponse.json({
         message: 'Report verified successfully',
         report,
         pointsAwarded: pointsToAward,
+        transaction: rewardResult.transaction,
+        newTotalPoints: rewardResult.newTotalPoints,
       });
     } else if (action === 'reject') {
       report.status = 'rejected';

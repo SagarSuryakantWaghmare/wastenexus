@@ -4,6 +4,7 @@ import Report from '@/models/Report';
 import WorkerTask from '@/models/WorkerTask';
 import User from '@/models/User';
 import jwt from 'jsonwebtoken';
+import { awardPoints, REWARD_CONFIG } from '@/lib/rewards';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
@@ -76,14 +77,16 @@ export async function POST(request: NextRequest) {
       workerId: decoded.userId,
     });
 
+    let task;
     if (existingTask) {
       // Update existing task to completed
       existingTask.status = 'completed';
       existingTask.completedDate = new Date();
       await existingTask.save();
+      task = existingTask;
     } else {
       // Create new completed task
-      await WorkerTask.create({
+      task = await WorkerTask.create({
         reportId: reportId,
         workerId: decoded.userId,
         status: 'completed',
@@ -92,19 +95,32 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Award bonus points to worker for completing the collection (15 points)
-    await User.findByIdAndUpdate(
-      decoded.userId,
-      { $inc: { totalPoints: 15 } }
-    );
+    // Award bonus points to worker for completing the collection
+    const pointsToAward = REWARD_CONFIG.TASK_COMPLETED.BASE_POINTS;
+    
+    const rewardResult = await awardPoints({
+      userId: decoded.userId,
+      type: 'task_completed',
+      amount: pointsToAward,
+      description: `Completed waste collection task for ${report.type} waste`,
+      referenceId: task._id,
+      referenceModel: 'WorkerTask',
+      metadata: {
+        reportId: report._id,
+        wasteType: report.type,
+        weightKg: report.weightKg,
+      },
+    });
 
     // Note: Report status remains 'verified' - WorkerTask tracks collection completion
 
     return NextResponse.json({
       success: true,
-      message: 'Report marked as completed successfully. +15 points earned!',
-      task: existingTask || { reportId, status: 'completed' },
-      pointsEarned: 15,
+      message: `Report marked as completed successfully. +${pointsToAward} points earned!`,
+      task,
+      pointsEarned: pointsToAward,
+      transaction: rewardResult.transaction,
+      newTotalPoints: rewardResult.newTotalPoints,
     });
   } catch (error) {
     console.error('Error completing report:', error);

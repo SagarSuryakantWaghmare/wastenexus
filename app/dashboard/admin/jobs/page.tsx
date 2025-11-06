@@ -25,7 +25,7 @@ import {
   Weight,
   AlertCircle,
 } from 'lucide-react';
-import { LoaderCircle } from '@/components/ui/loader';
+import { LoaderCircle, PageLoader } from '@/components/ui/loader';
 
 interface Job {
   _id: string;
@@ -167,7 +167,7 @@ export default function AdminJobsPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <LoaderCircle size="lg" />
+        <PageLoader message="Loading jobs..." />
       </div>
     );
   }
@@ -385,83 +385,81 @@ export default function AdminJobsPage() {
                     filteredJobs.map((job) => (
                       <div
                         key={job._id}
-                        className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
+                        className="p-4 sm:p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow"
                       >
                         {/* Job Header */}
-                        <div className="flex items-start justify-between mb-4">
+                        <div className="flex flex-col gap-3 mb-4">
                           <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <h3 className="font-bold text-xl text-gray-900 dark:text-white">{job.title}</h3>
-                              <div className="flex items-center gap-2">
-                                {/* Category Badge */}
-                                {job.category === 'home' && (
-                                  <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40">
-                                    <Home className="w-3 h-3 mr-1" /> Home
-                                  </Badge>
-                                )}
-                                {job.category === 'industry' && (
-                                  <Badge className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40">
-                                    <Building2 className="w-3 h-3 mr-1" /> Industry
-                                  </Badge>
-                                )}
-                                {job.category === 'other' && (
-                                  <Badge className="bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/40">
-                                    <Package className="w-3 h-3 mr-1" /> Other
-                                  </Badge>
-                                )}
-                                
-                                {/* Status Badge */}
-                                <Badge
-                                  className={
-                                    job.status === 'pending'
-                                      ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400'
-                                      : job.status === 'verified'
-                                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                                      : job.status === 'rejected'
-                                      ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                                      : job.status === 'assigned'
-                                      ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
-                                      : job.status === 'in-progress'
-                                      ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400'
-                                      : 'bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300'
-                                  }
-                                >
-                                  {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+                            <h3 className="font-bold text-lg sm:text-xl text-gray-900 dark:text-white mb-2 break-words">{job.title}</h3>
+                            <div className="flex flex-wrap items-center gap-2 mb-3">
+                              {/* Category Badge */}
+                              {job.category === 'home' && (
+                                <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 text-xs">
+                                  <Home className="w-3 h-3 mr-1" /> Home
                                 </Badge>
+                              )}
+                              {job.category === 'industry' && (
+                                <Badge className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/40 text-xs">
+                                  <Building2 className="w-3 h-3 mr-1" /> Industry
+                                </Badge>
+                              )}
+                              {job.category === 'other' && (
+                                <Badge className="bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/40 text-xs">
+                                  <Package className="w-3 h-3 mr-1" /> Other
+                                </Badge>
+                              )}
+                              
+                              {/* Status Badge */}
+                              <Badge
+                                className={`text-xs ${
+                                  job.status === 'pending'
+                                    ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400'
+                                    : job.status === 'verified'
+                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                                    : job.status === 'rejected'
+                                    ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
+                                    : job.status === 'assigned'
+                                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
+                                    : job.status === 'in-progress'
+                                    ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400'
+                                    : 'bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300'
+                                }`}
+                              >
+                                {job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+                              </Badge>
 
-                                {/* Urgency Badge */}
-                                {job.urgency === 'high' && (
-                                  <Badge className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40">
-                                    <AlertCircle className="w-3 h-3 mr-1" /> Urgent
-                                  </Badge>
-                                )}
-                              </div>
+                              {/* Urgency Badge */}
+                              {job.urgency === 'high' && (
+                                <Badge className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 text-xs">
+                                  <AlertCircle className="w-3 h-3 mr-1" /> Urgent
+                                </Badge>
+                              )}
                             </div>
-                            <p className="text-gray-600 dark:text-gray-300 mb-4">{job.description}</p>
+                            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-4 break-words">{job.description}</p>
 
                             {/* Job Details Grid */}
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-4">
                               <div className="flex items-start gap-2">
-                                <User className="w-4 h-4 text-gray-500 mt-0.5" />
-                                <div>
-                                  <p className="text-xs text-gray-500">Client</p>
-                                  <p className="font-medium text-gray-900 dark:text-white">{job.clientId.name}</p>
+                                <User className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">Client</p>
+                                  <p className="font-medium text-sm text-gray-900 dark:text-white truncate">{job.clientId.name}</p>
                                 </div>
                               </div>
 
                               <div className="flex items-start gap-2">
-                                <MapPin className="w-4 h-4 text-gray-500 mt-0.5" />
-                                <div>
-                                  <p className="text-xs text-gray-500">Location</p>
-                                  <p className="font-medium text-gray-900 dark:text-white text-sm">{job.location.address}</p>
+                                <MapPin className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">Location</p>
+                                  <p className="font-medium text-sm text-gray-900 dark:text-white break-words">{job.location.address}</p>
                                 </div>
                               </div>
 
                               <div className="flex items-start gap-2">
-                                <Package className="w-4 h-4 text-gray-500 mt-0.5" />
-                                <div>
-                                  <p className="text-xs text-gray-500">Waste Types</p>
-                                  <p className="font-medium text-gray-900 dark:text-white capitalize text-sm">
+                                <Package className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">Waste Types</p>
+                                  <p className="font-medium text-sm text-gray-900 dark:text-white capitalize break-words">
                                     {job.wasteType.join(', ')}
                                   </p>
                                 </div>
@@ -469,30 +467,30 @@ export default function AdminJobsPage() {
 
                               {job.estimatedWeight && (
                                 <div className="flex items-start gap-2">
-                                  <Weight className="w-4 h-4 text-gray-500 mt-0.5" />
-                                  <div>
-                                    <p className="text-xs text-gray-500">Est. Weight</p>
-                                    <p className="font-medium text-gray-900 dark:text-white">{job.estimatedWeight} kg</p>
+                                  <Weight className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Est. Weight</p>
+                                    <p className="font-medium text-sm text-gray-900 dark:text-white">{job.estimatedWeight} kg</p>
                                   </div>
                                 </div>
                               )}
 
                               {job.budget && (
                                 <div className="flex items-start gap-2">
-                                  <DollarSign className="w-4 h-4 text-gray-500 mt-0.5" />
-                                  <div>
-                                    <p className="text-xs text-gray-500">Budget</p>
-                                    <p className="font-medium text-green-600 dark:text-green-400">₹{job.budget}</p>
+                                  <DollarSign className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Budget</p>
+                                    <p className="font-medium text-sm text-green-600 dark:text-green-400">₹{job.budget.toLocaleString()}</p>
                                   </div>
                                 </div>
                               )}
 
                               {job.scheduledDate && (
                                 <div className="flex items-start gap-2">
-                                  <Calendar className="w-4 h-4 text-gray-500 mt-0.5" />
-                                  <div>
-                                    <p className="text-xs text-gray-500">Scheduled</p>
-                                    <p className="font-medium text-gray-900 dark:text-white text-sm">
+                                  <Calendar className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">Scheduled</p>
+                                    <p className="font-medium text-sm text-gray-900 dark:text-white">
                                       {new Date(job.scheduledDate).toLocaleDateString()}
                                     </p>
                                   </div>
@@ -502,22 +500,22 @@ export default function AdminJobsPage() {
 
                             {/* Contact Info */}
                             {job.clientContact && (
-                              <div className="bg-gray-50 dark:bg-gray-700/30 p-4 rounded-lg mb-4">
+                              <div className="bg-gray-50 dark:bg-gray-700/30 p-3 sm:p-4 rounded-lg mb-4">
                                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Contact Information:</p>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                                  <div className="flex items-center gap-2">
-                                    <User className="w-4 h-4 text-gray-500" />
-                                    <span className="text-gray-900 dark:text-white">{job.clientContact.name}</span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 text-sm">
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <User className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                                    <span className="text-gray-900 dark:text-white truncate">{job.clientContact.name}</span>
                                   </div>
                                   {job.clientContact.phone && (
-                                    <div className="flex items-center gap-2">
-                                      <Phone className="w-4 h-4 text-gray-500" />
-                                      <span className="text-gray-900 dark:text-white">{job.clientContact.phone}</span>
+                                    <div className="flex items-center gap-2 min-w-0">
+                                      <Phone className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                                      <span className="text-gray-900 dark:text-white truncate">{job.clientContact.phone}</span>
                                     </div>
                                   )}
-                                  <div className="flex items-center gap-2">
-                                    <Mail className="w-4 h-4 text-gray-500" />
-                                    <span className="text-gray-900 dark:text-white">{job.clientContact.email}</span>
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <Mail className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                                    <span className="text-gray-900 dark:text-white truncate break-all">{job.clientContact.email}</span>
                                   </div>
                                 </div>
                               </div>
@@ -540,7 +538,7 @@ export default function AdminJobsPage() {
 
                         {/* Action Buttons for Pending Jobs */}
                         {job.status === 'pending' && (
-                          <div className="border-t pt-4">
+                          <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
                             {selectedJob?._id === job._id ? (
                               <div className="space-y-3">
                                 <Textarea
@@ -548,17 +546,18 @@ export default function AdminJobsPage() {
                                   value={adminNotes}
                                   onChange={(e) => setAdminNotes(e.target.value)}
                                   rows={3}
+                                  className="text-sm"
                                 />
-                                <div className="flex gap-3">
+                                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                                   <Button
                                     onClick={() => handleJobAction(job._id, 'verified')}
                                     disabled={actionLoading}
-                                    className="flex-1 bg-green-600 hover:bg-green-700"
+                                    className="flex-1 bg-green-600 hover:bg-green-700 text-xs sm:text-sm py-3 sm:py-2 h-auto min-h-[44px] sm:min-h-[36px]"
                                   >
                                     {actionLoading ? (
                                       <LoaderCircle size="sm" className="mr-2" />
                                     ) : (
-                                      <CheckCircle className="w-4 h-4 mr-2" />
+                                      <CheckCircle className="w-4 h-4 sm:w-4 sm:h-4 mr-2" />
                                     )}
                                     Verify Job
                                   </Button>
@@ -566,12 +565,12 @@ export default function AdminJobsPage() {
                                     onClick={() => handleJobAction(job._id, 'rejected')}
                                     disabled={actionLoading}
                                     variant="destructive"
-                                    className="flex-1"
+                                    className="flex-1 text-xs sm:text-sm py-3 sm:py-2 h-auto min-h-[44px] sm:min-h-[36px]"
                                   >
                                     {actionLoading ? (
                                       <LoaderCircle size="sm" className="mr-2" />
                                     ) : (
-                                      <XCircle className="w-4 h-4 mr-2" />
+                                      <XCircle className="w-4 h-4 sm:w-4 sm:h-4 mr-2" />
                                     )}
                                     Reject Job
                                   </Button>
@@ -581,6 +580,7 @@ export default function AdminJobsPage() {
                                       setAdminNotes('');
                                     }}
                                     variant="outline"
+                                    className="sm:flex-initial text-xs sm:text-sm py-3 sm:py-2 h-auto min-h-[44px] sm:min-h-[36px]"
                                   >
                                     Cancel
                                   </Button>
@@ -589,7 +589,8 @@ export default function AdminJobsPage() {
                             ) : (
                               <Button
                                 onClick={() => setSelectedJob(job)}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white dark:text-white"
+                                size="sm"
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white dark:text-white text-xs sm:text-sm"
                               >
                                 Review Job
                               </Button>

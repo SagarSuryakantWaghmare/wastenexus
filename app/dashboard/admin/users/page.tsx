@@ -111,12 +111,19 @@ export default function UserManagementPage() {
     }
   };
 
-  const filteredUsers = users.filter(
-    (user) =>
-      (activeTab === 'all' || user.role === activeTab) &&
-      (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  // First filter by search query across all users
+  const searchFilteredUsers = searchQuery.trim() === '' 
+    ? users 
+    : users.filter((user) =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.role.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+  // Then filter by active tab
+  const filteredUsers = activeTab === 'all'
+    ? searchFilteredUsers
+    : searchFilteredUsers.filter((user) => user.role === activeTab);
 
   const roleStats = {
     all: users.length,
@@ -148,29 +155,36 @@ export default function UserManagementPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto">
-        {/* Header with Time Range Selector */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col gap-4 mb-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2 sm:gap-3">
-                <Users className="w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-green-600 dark:text-green-400" />
-                User Management
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1 sm:mt-2 text-xs sm:text-sm lg:text-base">
-                Manage users, roles, and permissions
-              </p>
-            </div>
-            <div className="flex items-center gap-1 sm:gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 w-full sm:w-auto">
-              {['all', 'today', 'week', 'month'].map((period) => (
-                <button
-                  key={period}
-                  onClick={() => setTimeRange(period)}
-                  className={`flex-1 sm:flex-none px-2 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors whitespace-nowrap ${
-                    timeRange === period
-                      ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400'
-                      : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8">
+        {/* Modern Header Card */}
+        <div className="mb-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="p-6 sm:p-8 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1">
+                    User Management
+                  </h1>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Manage users, roles, and permissions across the platform
+                  </p>
+                </div>
+              </div>
+              
+              {/* Time Range Filter */}
+              <div className="flex items-center gap-1 bg-white dark:bg-gray-800 p-1 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                {['all', 'today', 'week', 'month'].map((period) => (
+                  <button
+                    key={period}
+                    onClick={() => setTimeRange(period)}
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap ${
+                      timeRange === period
+                        ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-md'
+                        : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
                   }`}
                 >
                   {period.charAt(0).toUpperCase() + period.slice(1)}
@@ -179,101 +193,105 @@ export default function UserManagementPage() {
             </div>
           </div>
         </div>
+      </div>
 
-
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-4 sm:p-6">
+        {/* Stats Overview - Modern Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all duration-200 rounded-xl overflow-hidden">
+            <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Users</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{roleStats.all.toLocaleString()}</p>
-                  <div className="flex items-center mt-2 text-sm">
-                    <span className={`flex items-center ${growthData.all.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} font-medium`}>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Total Users</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{roleStats.all.toLocaleString()}</p>
+                  <div className="flex items-center text-xs">
+                    <span className={`flex items-center font-semibold ${growthData.all.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                       {growthData.all.isPositive ? (
-                        <ArrowUpRight className="w-4 h-4 mr-1" />
+                        <ArrowUpRight className="w-3.5 h-3.5 mr-0.5" />
                       ) : (
-                        <ArrowDownRight className="w-4 h-4 mr-1" />
+                        <ArrowDownRight className="w-3.5 h-3.5 mr-0.5" />
                       )}
-                      {growthData.all.value}% {growthData.all.isPositive ? 'growth' : 'decline'} from last {timeRange}
+                      {growthData.all.value}%
                     </span>
+                    <span className="ml-1 text-gray-500 dark:text-gray-400">from last {timeRange}</span>
                   </div>
                 </div>
-                <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                  <Users className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <div className="p-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg">
+                  <Users className="w-7 h-7 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-4 sm:p-6">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all duration-200 rounded-xl overflow-hidden">
+            <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Active Clients</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{roleStats.client.toLocaleString()}</p>
-                  <div className="flex items-center mt-2 text-sm">
-                    <span className={`flex items-center ${growthData.client.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'} font-medium`}>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Active Clients</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{roleStats.client.toLocaleString()}</p>
+                  <div className="flex items-center text-xs">
+                    <span className={`flex items-center font-semibold ${growthData.client.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                       {growthData.client.isPositive ? (
-                        <ArrowUpRight className="w-4 h-4 mr-1" />
+                        <ArrowUpRight className="w-3.5 h-3.5 mr-0.5" />
                       ) : (
-                        <ArrowDownRight className="w-4 h-4 mr-1" />
+                        <ArrowDownRight className="w-3.5 h-3.5 mr-0.5" />
                       )}
-                      {growthData.client.value}% {growthData.client.isPositive ? 'growth' : 'decline'}
+                      {growthData.client.value}%
                     </span>
+                    <span className="ml-1 text-gray-500 dark:text-gray-400">from last {timeRange}</span>
                   </div>
                 </div>
-                <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                  <Mail className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <div className="p-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
+                  <Mail className="w-7 h-7 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-4 sm:p-6">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all duration-200 rounded-xl overflow-hidden">
+            <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Champions</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{roleStats.champion.toLocaleString()}</p>
-                  <div className="flex items-center mt-2 text-sm">
-                    <span className={`flex items-center ${growthData.champion.isPositive ? 'text-amber-500 dark:text-amber-400' : 'text-red-600 dark:text-red-400'} font-medium`}>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Champions</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{roleStats.champion.toLocaleString()}</p>
+                  <div className="flex items-center text-xs">
+                    <span className={`flex items-center font-semibold ${growthData.champion.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                       {growthData.champion.isPositive ? (
-                        <ArrowUpRight className="w-4 h-4 mr-1" />
+                        <ArrowUpRight className="w-3.5 h-3.5 mr-0.5" />
                       ) : (
-                        <ArrowDownRight className="w-4 h-4 mr-1" />
+                        <ArrowDownRight className="w-3.5 h-3.5 mr-0.5" />
                       )}
-                      {growthData.champion.value}% {growthData.champion.isPositive ? 'growth' : 'decline'}
+                      {growthData.champion.value}%
                     </span>
+                    <span className="ml-1 text-gray-500 dark:text-gray-400">from last {timeRange}</span>
                   </div>
                 </div>
-                <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
-                  <Award className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                <div className="p-4 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg">
+                  <Award className="w-7 h-7 text-white" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow">
-            <CardContent className="p-4 sm:p-6">
+          <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-xl transition-all duration-200 rounded-xl overflow-hidden">
+            <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Admin Users</p>
-                  <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{roleStats.admin.toLocaleString()}</p>
-                  <div className="flex items-center mt-2 text-sm">
-                    <span className={`flex items-center ${growthData.admin.isPositive ? 'text-purple-600 dark:text-purple-400' : 'text-red-600 dark:text-red-400'} font-medium`}>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Admin Users</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{roleStats.admin.toLocaleString()}</p>
+                  <div className="flex items-center text-xs">
+                    <span className={`flex items-center font-semibold ${growthData.admin.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                       {growthData.admin.isPositive ? (
-                        <ArrowUpRight className="w-4 h-4 mr-1" />
+                        <ArrowUpRight className="w-3.5 h-3.5 mr-0.5" />
                       ) : (
-                        <ArrowDownRight className="w-4 h-4 mr-1" />
+                        <ArrowDownRight className="w-3.5 h-3.5 mr-0.5" />
                       )}
-                      {growthData.admin.value}% {growthData.admin.isPositive ? 'growth' : 'decline'}
+                      {growthData.admin.value}%
                     </span>
+                    <span className="ml-1 text-gray-500 dark:text-gray-400">from last {timeRange}</span>
                   </div>
                 </div>
-                <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                  <Shield className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                <div className="p-4 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
+                  <Shield className="w-7 h-7 text-white" />
                 </div>
               </div>
             </CardContent>
@@ -281,34 +299,13 @@ export default function UserManagementPage() {
         </div>
 
         {/* User Distribution */}
-        <Card className="mb-6 sm:mb-8 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm">
-          <CardHeader className="pb-2 p-4 sm:p-6">
-            <div className="flex flex-col gap-3">
-              <div>
-                <CardTitle className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">User Distribution</CardTitle>
-                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">Overview of user roles and their distribution</p>
-              </div>
-              <div className="overflow-x-auto horizontal-scroll pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-                <div className="flex items-center gap-1 sm:gap-2 bg-white dark:bg-gray-800 p-1 rounded-lg border border-gray-200 dark:border-gray-700 min-w-max">
-                  {['all', 'today', 'week', 'month'].map((period) => (
-                    <button
-                      key={period}
-                      onClick={() => setTimeRange(period)}
-                      className={`px-2 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md transition-colors whitespace-nowrap ${
-                        timeRange === period
-                          ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400'
-                          : 'text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700'
-                      }`}
-                    >
-                      {period.charAt(0).toUpperCase() + period.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+        <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md rounded-xl">
+          <CardHeader className="pb-4 p-6">
+            <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">User Distribution</CardTitle>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Overview of user roles and their distribution</p>
           </CardHeader>
-          <CardContent className="p-4 sm:p-6">
-            <div className="h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden mb-6">
+          <CardContent className="p-6">
+            <div className="h-4 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden mb-4 shadow-inner">
               <div className="h-full flex">
                 <div 
                   className="bg-blue-500 transition-all duration-500" 
@@ -386,191 +383,267 @@ export default function UserManagementPage() {
           </CardContent>
         </Card>
 
-        {/* Search and Filter */}
-        <div className="flex flex-col gap-4 mb-6">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              type="text"
-              placeholder="Search users..."
-              className="pl-10 w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          
-          <div className="overflow-x-auto horizontal-scroll pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full min-w-max sm:min-w-0">
-              <TabsList className="inline-flex w-auto min-w-full sm:grid sm:w-full sm:grid-cols-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-1">
-                <TabsTrigger 
-                  value="all"
-                  className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 dark:data-[state=active]:bg-green-900/50 dark:data-[state=active]:text-green-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
-                >
-                  All
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="client"
-                  className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 dark:data-[state=active]:bg-blue-900/50 dark:data-[state=active]:text-blue-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
-                >
-                  Clients
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="champion"
-                  className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-700 dark:data-[state=active]:bg-amber-900/50 dark:data-[state=active]:text-amber-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
-                >
-                  Champions
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="admin"
-                  className="data-[state=active]:bg-purple-100 data-[state=active]:text-purple-700 dark:data-[state=active]:bg-purple-900/50 dark:data-[state=active]:text-purple-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
-                >
-                  Admins
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-        </div>
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Clients Card */}
-          <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded-full bg-blue-500 mr-3"></div>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Clients</span>
-            </div>
-            <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-              {roleStats.all > 0 ? ((roleStats.client / roleStats.all) * 100).toFixed(1) : 0}%
-            </span>
-          </div>
-          
-          {/* Champions Card */}
-          <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded-full bg-amber-500 mr-3"></div>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Champions</span>
-            </div>
-            <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">
-              {roleStats.all > 0 ? ((roleStats.champion / roleStats.all) * 100).toFixed(1) : 0}%
-            </span>
-          </div>
-          
-          {/* Admins Card */}
-          <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded-full bg-purple-500 mr-3"></div>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Admins</span>
-            </div>
-            <span className="text-sm font-semibold text-purple-600 dark:text-purple-400">
-              {roleStats.all > 0 ? ((roleStats.admin / roleStats.all) * 100).toFixed(1) : 0}%
-            </span>
-          </div>
-        </div>
-
-        {/* Users Table */}
-        <Card className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm">
-          <CardHeader className="pb-2 p-4 sm:p-6">
-            <CardTitle className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">All Users</CardTitle>
-            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Manage user accounts and permissions</p>
-          </CardHeader>
-          <CardContent className="p-4 sm:p-6">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <div className="overflow-x-auto horizontal-scroll pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 mb-4 sm:mb-6">
-                <TabsList className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-1 inline-flex min-w-max">
-                  <TabsTrigger 
-                    value="all"
-                    className="data-[state=active]:bg-green-100 data-[state=active]:text-green-700 dark:data-[state=active]:bg-green-900/50 dark:data-[state=active]:text-green-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
+        {/* Search and Filters */}
+        <Card className="mb-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md rounded-xl">
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 z-10" />
+                <Input
+                  type="text"
+                  placeholder="Search by name, email, or role..."
+                  className="pl-12 pr-12 h-12 w-full bg-gray-50 dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:ring-green-400 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 shadow-sm"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+                    aria-label="Clear search"
                   >
-                    All ({roleStats.all})
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="client"
-                    className="data-[state=active]:bg-blue-100 data-[state=active]:text-blue-700 dark:data-[state=active]:bg-blue-900/50 dark:data-[state=active]:text-blue-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
-                  >
-                    Clients ({roleStats.client})
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="champion"
-                    className="data-[state=active]:bg-amber-100 data-[state=active]:text-amber-700 dark:data-[state=active]:bg-amber-900/50 dark:data-[state=active]:text-amber-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
-                  >
-                    Champions ({roleStats.champion})
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="admin"
-                    className="data-[state=active]:bg-purple-100 data-[state=active]:text-purple-700 dark:data-[state=active]:bg-purple-900/50 dark:data-[state=active]:text-purple-400 text-xs sm:text-sm whitespace-nowrap px-2 sm:px-3"
-                  >
-                    Admins ({roleStats.admin})
-                  </TabsTrigger>
-                </TabsList>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+              
+              {/* Filter Tabs - Fully Responsive */}
+              <div className="grid w-full grid-cols-2 sm:grid-cols-4 bg-gray-100 dark:bg-gray-700/50 p-1.5 rounded-xl border border-gray-200 dark:border-gray-600 gap-1.5">
+                <button
+                  onClick={() => setActiveTab('all')}
+                  className={`${
+                    activeTab === 'all'
+                      ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  } text-xs sm:text-sm font-semibold px-2 sm:px-4 py-2.5 rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 min-w-0`}
+                >
+                  <span className="truncate">All Users</span>
+                  <Badge variant="secondary" className="bg-white/90 dark:bg-gray-800/90 text-[10px] sm:text-xs px-1.5 py-0.5 min-w-[24px] justify-center">
+                    {roleStats.all}
+                  </Badge>
+                </button>
+                <button
+                  onClick={() => setActiveTab('client')}
+                  className={`${
+                    activeTab === 'client'
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  } text-xs sm:text-sm font-semibold px-2 sm:px-4 py-2.5 rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 min-w-0`}
+                >
+                  <span className="truncate">Clients</span>
+                  <Badge variant="secondary" className="bg-white/90 dark:bg-gray-800/90 text-[10px] sm:text-xs px-1.5 py-0.5 min-w-[24px] justify-center">
+                    {roleStats.client}
+                  </Badge>
+                </button>
+                <button
+                  onClick={() => setActiveTab('champion')}
+                  className={`${
+                    activeTab === 'champion'
+                      ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  } text-xs sm:text-sm font-semibold px-2 sm:px-4 py-2.5 rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 min-w-0`}
+                >
+                  <span className="truncate">Champions</span>
+                  <Badge variant="secondary" className="bg-white/90 dark:bg-gray-800/90 text-[10px] sm:text-xs px-1.5 py-0.5 min-w-[24px] justify-center">
+                    {roleStats.champion}
+                  </Badge>
+                </button>
+                <button
+                  onClick={() => setActiveTab('admin')}
+                  className={`${
+                    activeTab === 'admin'
+                      ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white shadow-lg'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                  } text-xs sm:text-sm font-semibold px-2 sm:px-4 py-2.5 rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 min-w-0`}
+                >
+                  <span className="truncate">Admins</span>
+                  <Badge variant="secondary" className="bg-white/90 dark:bg-gray-800/90 text-[10px] sm:text-xs px-1.5 py-0.5 min-w-[24px] justify-center">
+                    {roleStats.admin}
+                  </Badge>
+                </button>
               </div>
 
-              <TabsContent value={activeTab}>
-                <div className="space-y-3">
-                  {filteredUsers.length === 0 ? (
-                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                      <Users className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
-                      <p className="text-sm sm:text-base">No users found</p>
+              {/* Search Results Info */}
+              {searchQuery && (
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-700">
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="w-2 h-2 rounded-full bg-green-500 dark:bg-green-400 animate-pulse"></div>
+                    <span className="text-gray-700 dark:text-gray-300">
+                      Found <span className="font-bold text-green-700 dark:text-green-400">{filteredUsers.length}</span> {filteredUsers.length === 1 ? 'user' : 'users'} matching <span className="font-semibold text-gray-900 dark:text-white">&quot;{searchQuery}&quot;</span>
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSearchQuery('')}
+                    className="text-green-700 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg font-medium self-start sm:self-auto"
+                  >
+                    Clear search
+                  </Button>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-700">
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-md"></div>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Clients</span>
+                </div>
+                <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                  {clientPercentage.toFixed(1)}%
+                </span>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-700">
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 shadow-md"></div>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Champions</span>
+                </div>
+                <span className="text-lg font-bold text-amber-600 dark:text-amber-400">
+                  {championPercentage.toFixed(1)}%
+                </span>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-200 dark:border-purple-700">
+                <div className="flex items-center gap-3">
+                  <div className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 shadow-md"></div>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Admins</span>
+                </div>
+                <span className="text-lg font-bold text-purple-600 dark:text-purple-400">
+                  {adminPercentage.toFixed(1)}%
+                </span>
+              </div>
+            </div>
+
+        {/* Users Directory */}
+        <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md rounded-xl">
+          <CardHeader className="pb-4 p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <CardTitle className="text-xl font-bold text-gray-900 dark:text-white mb-1">User Directory</CardTitle>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Showing <span className="font-semibold text-gray-900 dark:text-white">{filteredUsers.length}</span> of <span className="font-semibold text-gray-900 dark:text-white">{users.length}</span> users
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                  {filteredUsers.length}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  {activeTab === 'all' ? 'Total Users' : activeTab.charAt(0).toUpperCase() + activeTab.slice(1) + 's'}
+                </p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="space-y-3">
+              {filteredUsers.length === 0 ? (
+                    <div className="text-center py-16 text-gray-500 dark:text-gray-400">
+                      <div className="mx-auto w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-4">
+                        <Users className="w-10 h-10 text-gray-400 dark:text-gray-600" />
+                      </div>
+                      <p className="text-lg font-medium text-gray-900 dark:text-white mb-1">No users found</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {searchQuery ? `No users match "${searchQuery}"` : 'No users in this category'}
+                      </p>
                     </div>
                   ) : (
                     filteredUsers.map((user) => (
                       <div
                         key={user._id}
-                        className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow gap-3"
+                        className="group relative flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 sm:p-5 bg-gradient-to-br from-white via-gray-50 to-white dark:from-gray-800/50 dark:via-gray-700/30 dark:to-gray-800/50 rounded-xl border-2 border-gray-200 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-500 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] overflow-hidden"
                       >
-                        <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                        {/* Decorative gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        
+                        {/* User Info Section */}
+                        <div className="relative flex items-center gap-3 sm:gap-4 min-w-0 flex-1 w-full sm:w-auto">
                           {user.profileImage ? (
                             <UserAvatar
                               name={user.name}
                               profileImage={user.profileImage}
                               size="md"
-                              className="ring-2 ring-green-400 border border-gray-200 dark:border-gray-600 flex-shrink-0"
+                              className="ring-2 ring-offset-2 ring-green-400 dark:ring-green-500 border-2 border-white dark:border-gray-800 flex-shrink-0 shadow-lg"
                             />
                           ) : (
-                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-200 font-bold text-base sm:text-lg border border-gray-200 dark:border-gray-600 flex-shrink-0">
+                            <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl shadow-lg flex-shrink-0 ${
+                              user.role === 'admin'
+                                ? 'bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700'
+                                : user.role === 'champion'
+                                ? 'bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700'
+                                : 'bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700'
+                            }`}>
                               {user.name.charAt(0).toUpperCase()}
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
-                            <p className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white truncate">{user.name}</p>
-                            <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                            <div className="flex items-center gap-2 mb-1.5">
+                              <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white truncate">
+                                {user.name}
+                              </h3>
+                              {user.role === 'admin' && (
+                                <div className="p-1 bg-purple-100 dark:bg-purple-900/30 rounded-md">
+                                  <Shield className="w-4 h-4 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+                                </div>
+                              )}
+                              {user.role === 'champion' && (
+                                <div className="p-1 bg-amber-100 dark:bg-amber-900/30 rounded-md">
+                                  <Award className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                              <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                              <p className="truncate max-w-[200px] sm:max-w-none">{user.email}</p>
+                            </div>
                           </div>
                         </div>
-                        <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 pl-13 sm:pl-0">
-                          <div className="text-left sm:text-right">
+                        
+                        {/* Actions Section */}
+                        <div className="relative flex items-center justify-between sm:justify-end gap-3 sm:gap-4 w-full sm:w-auto ml-0 sm:ml-auto">
+                          <div className="flex items-center gap-2 sm:gap-3">
                             <Badge
                               variant="outline"
-                              className={`text-xs ${
+                              className={`text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm whitespace-nowrap ${
                                 user.role === 'admin'
-                                  ? 'border-purple-500 text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20'
+                                  ? 'border-purple-300 text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-900/50 dark:border-purple-500'
                                   : user.role === 'champion'
-                                  ? 'border-amber-500 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20'
-                                  : 'border-blue-500 text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                                  ? 'border-amber-300 text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/50 dark:border-amber-500'
+                                  : 'border-blue-300 text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/50 dark:border-blue-500'
                               }`}
                             >
                               {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                             </Badge>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                              {user.totalPoints} points
-                            </p>
+                            <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-lg border border-green-200 dark:border-green-700 shadow-sm">
+                              <div className="w-2 h-2 rounded-full bg-green-500 dark:bg-green-400 animate-pulse"></div>
+                              <span className="font-bold text-sm text-gray-900 dark:text-white">{user.totalPoints.toLocaleString()}</span>
+                              <span className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400">pts</span>
+                            </div>
                           </div>
                           <Button 
                             variant="ghost" 
                             size="icon" 
-                            className="text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all rounded-xl h-10 w-10 sm:h-11 sm:w-11 flex-shrink-0 shadow-sm hover:shadow-lg"
                             onClick={() => confirmDelete(user._id, user.name)}
                             disabled={deletingUserId === user._id}
+                            title="Delete user"
                           >
                             {deletingUserId === user._id ? (
                               <LoaderCircle size="sm" className="inline-block" />
                             ) : (
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                             )}
                           </Button>
                         </div>
                       </div>
                     ))
                   )}
-                </div>
-              </TabsContent>
-            </Tabs>
+            </div>
           </CardContent>
         </Card>
       </div>

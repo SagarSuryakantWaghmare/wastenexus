@@ -227,3 +227,24 @@
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
+
+/* Responsive Tab Utilities */
+@layer utilities {
+  .tab-responsive {
+    @apply min-w-0 max-w-full;
+  }
+  
+  .tab-text-responsive {
+    @apply text-xs sm:text-sm md:text-base;
+  }
+  
+  /* Prevent text overflow in tabs */
+  .tab-content {
+    @apply truncate overflow-hidden text-ellipsis;
+  }
+  
+  /* Better mobile touch targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}

@@ -3,6 +3,7 @@ import dbConnect from '@/lib/mongodb';
 import Job from '@/models/Job';
 import User from '@/models/User';
 import { verifyToken } from '@/lib/auth';
+import { awardPoints, calculateJobPoints } from '@/lib/rewards';
 
 export const dynamic = 'force-dynamic';
 
@@ -156,14 +157,27 @@ export async function PUT(request: NextRequest) {
     }
     await job.save();
 
-    // Award points to client when job is verified (25 points)
+    // Award points to client when job is verified
     let pointsAwarded = 0;
+    let rewardResult = null;
+    
     if (status === 'verified') {
-      pointsAwarded = 25;
-      await User.findByIdAndUpdate(
-        job.clientId,
-        { $inc: { totalPoints: pointsAwarded } }
-      );
+      pointsAwarded = calculateJobPoints(job.category, job.urgency);
+      
+      rewardResult = await awardPoints({
+        userId: job.clientId,
+        type: 'job_verified',
+        amount: pointsAwarded,
+        description: `Job verified: ${job.title}`,
+        referenceId: job._id,
+        referenceModel: 'Job',
+        adminId: decoded.userId,
+        metadata: {
+          category: job.category,
+          urgency: job.urgency,
+          estimatedWeight: job.estimatedWeight,
+        },
+      });
     }
 
     const updatedJob = await Job.findById(jobId)
@@ -177,6 +191,8 @@ export async function PUT(request: NextRequest) {
           : `Job ${status} successfully`,
         job: updatedJob,
         pointsAwarded,
+        transaction: rewardResult?.transaction,
+        newTotalPoints: rewardResult?.newTotalPoints,
       },
       { status: 200 }
     );

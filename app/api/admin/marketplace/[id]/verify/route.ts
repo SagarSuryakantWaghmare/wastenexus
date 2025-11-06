@@ -3,6 +3,7 @@ import dbConnect from '@/lib/mongodb';
 import MarketplaceItem from '@/models/MarketplaceItem';
 import User from '@/models/User';
 import { verifyToken } from '@/lib/auth';
+import { awardPoints, REWARD_CONFIG } from '@/lib/rewards';
 
 // PUT /api/admin/marketplace/[id]/verify - Approve or reject item
 export async function PUT(
@@ -71,19 +72,32 @@ export async function PUT(
       item.approvedBy = decoded.userId as never;
       item.rejectionReason = undefined;
 
-      // Award points to seller for approved marketplace item (30 points)
-      const pointsToAward = 30;
-      await User.findByIdAndUpdate(
-        item.sellerId,
-        { $inc: { totalPoints: pointsToAward } }
-      );
-
       await item.save();
+
+      // Award points to seller for approved marketplace item
+      const pointsToAward = REWARD_CONFIG.MARKETPLACE_APPROVED.BASE_POINTS;
+      
+      const rewardResult = await awardPoints({
+        userId: item.seller,
+        type: 'marketplace_approved',
+        amount: pointsToAward,
+        description: `Marketplace item approved: ${item.title}`,
+        referenceId: item._id,
+        referenceModel: 'MarketplaceItem',
+        adminId: decoded.userId,
+        metadata: {
+          category: item.category,
+          condition: item.condition,
+          price: item.price,
+        },
+      });
 
       return NextResponse.json({
         message: `Item approved successfully! +${pointsToAward} points awarded to seller`,
         item,
         pointsAwarded: pointsToAward,
+        transaction: rewardResult.transaction,
+        newTotalPoints: rewardResult.newTotalPoints,
       });
     } else {
       item.status = 'rejected';

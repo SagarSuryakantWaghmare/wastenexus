@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense, lazy } from 'react';
+import { useState, Suspense, lazy, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -27,6 +27,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Briefcase,
+  Receipt,
 } from 'lucide-react';
 import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
 
@@ -85,6 +86,12 @@ const adminRoutes = [
     href: '/dashboard/admin/jobs',
     color: 'text-teal-500',
   },
+  {
+    label: 'Transactions',
+    icon: Receipt,
+    href: '/dashboard/admin/transactions',
+    color: 'text-yellow-500',
+  },
 ];
 
 export function AdminSidebar({ userName = 'Admin', isOpen = false, onClose }: AdminSidebarProps) {
@@ -103,6 +110,20 @@ export function AdminSidebar({ userName = 'Admin', isOpen = false, onClose }: Ad
     }
   };
 
+  // Transaction loading indicator state
+  const [transactionLoading, setTransactionLoading] = useState(false);
+
+  // Listen for transaction loading events (simple global event for demo)
+  useEffect(() => {
+    const handleLoading = (e: CustomEvent) => {
+      setTransactionLoading(e.detail.loading);
+    };
+    window.addEventListener('transaction-loading', handleLoading as EventListener);
+    return () => {
+      window.removeEventListener('transaction-loading', handleLoading as EventListener);
+    };
+  }, []);
+
   return (
     <>
       {/* Desktop Sidebar */}
@@ -120,6 +141,15 @@ export function AdminSidebar({ userName = 'Admin', isOpen = false, onClose }: Ad
                 WasteNexus
               </h1>
               <p className="text-xs text-gray-400 mt-1 dark:text-gray-300">Admin Panel</p>
+              {transactionLoading && (
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-xs text-green-400 animate-pulse">Loading transactions...</span>
+                  <svg className="w-4 h-4 text-green-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                  </svg>
+                </div>
+              )}
             </div>
           )}
           <Button
