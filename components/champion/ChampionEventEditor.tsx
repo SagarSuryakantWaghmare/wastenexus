@@ -1,77 +1,6 @@
 "use client";
-// AddressAutocompleteInput component using Google Places API (for future use)
-import { useState as useInputState } from 'react';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function AddressAutocompleteInput({ value, onSelect }: { value: string; onSelect: (address: string) => void }) {
-    const [query, setQuery] = useInputState(value || '');
-    const [suggestions, setSuggestions] = useInputState<Array<{ 
-        description: string; 
-        place_id: string;
-        structured_formatting?: {
-            main_text: string;
-            secondary_text: string;
-        };
-    }>>([]);
-    const [loading, setLoading] = useInputState(false);
-    const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
-    const fetchSuggestions = async (input: string) => {
-        if (!input) {
-            setSuggestions([]);
-            return;
-        }
-        setLoading(true);
-        try {
-            const res = await fetch(
-                `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(input)}&key=${GOOGLE_API_KEY}&types=address`
-            );
-            const data = await res.json();
-            setSuggestions(data.predictions || []);
-        } catch {
-            setSuggestions([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <div className="relative">
-            <input
-                id="addressInput"
-                value={query}
-                onChange={e => {
-                    setQuery(e.target.value);
-                    fetchSuggestions(e.target.value);
-                }}
-                placeholder="Type address..."
-                className="w-full border-2 border-gray-300 bg-white rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-base"
-                autoComplete="off"
-            />
-            {loading && <div className="text-xs text-gray-400 mt-2">Loading suggestions...</div>}
-            {suggestions.length > 0 && (
-                <ul className="absolute z-10 bg-white border-2 border-gray-200 rounded-lg shadow-lg mt-2 max-h-56 overflow-y-auto w-full">
-                    {suggestions.map(suggestion => (
-                        <li
-                            key={suggestion.place_id}
-                            className="px-4 py-3 cursor-pointer hover:bg-green-50 transition-colors border-b border-gray-100 last:border-b-0"
-                            onClick={() => {
-                                setQuery(suggestion.description);
-                                setSuggestions([]);
-                                onSelect(suggestion.description);
-                            }}
-                        >
-                            <p className="font-semibold text-gray-900 text-sm">{suggestion.structured_formatting?.main_text || suggestion.description}</p>
-                            <p className="text-xs text-gray-500 mt-0.5">{suggestion.structured_formatting?.secondary_text || ''}</p>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
-    );
-}
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApi } from '@/hooks/useApi';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -86,25 +15,40 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Plus, Calendar, MapPin } from 'lucide-react';
+import { Calendar, MapPin, Save } from 'lucide-react';
 import { LoaderCircle } from '@/components/ui/loader';
 import { toast } from 'sonner';
 
-interface ChampionEventCreatorProps {
-    onEventCreated: () => void;
+interface EventData {
+    title: string;
+    description: string;
+    wasteFocus: string;
+    eventDate: string;
+    locationName?: string;
+    locationAddress?: string;
+    imageUrl?: string;
 }
 
-export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorProps) {
+interface ChampionEventEditorProps {
+    eventId: string;
+    initialData: EventData;
+    onEventUpdated: () => void;
+}
+
+export function ChampionEventEditor({ eventId, initialData, onEventUpdated }: ChampionEventEditorProps) {
     const { apiCall } = useApi();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        wasteFocus: '',
-        eventDate: '',
+        title: initialData.title || '',
+        description: initialData.description || '',
+        wasteFocus: initialData.wasteFocus || '',
+        eventDate: initialData.eventDate ? new Date(initialData.eventDate).toISOString().slice(0, 16) : '',
     });
-    const [location, setLocation] = useState<{ name: string; address: string }>({ name: '', address: '' });
+    const [location, setLocation] = useState<{ name: string; address: string }>({
+        name: initialData.locationName || '',
+        address: initialData.locationAddress || ''
+    });
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [detectingLocation, setDetectingLocation] = useState(false);
 
@@ -130,42 +74,43 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
             return;
         }
 
-        if (!imageFile) {
-            toast.error('Please upload an event image');
-            return;
-        }
-
         setIsSubmitting(true);
 
         try {
-            const form = new FormData();
-            form.append('title', formData.title);
-            form.append('description', formData.description);
-            form.append('wasteFocus', formData.wasteFocus);
-            form.append('locationName', location.name);
-            form.append('locationAddress', location.address);
-            form.append('date', formData.eventDate);
-            form.append('image', imageFile);
+            // If there's a new image, upload it first
+            let imageUrl = initialData.imageUrl;
+            if (imageFile) {
+                const form = new FormData();
+                form.append('image', imageFile);
 
-            await apiCall('/api/events', {
-                method: 'POST',
-                body: form,
-                headers: {},
+                const uploadRes = await apiCall('/api/upload', {
+                    method: 'POST',
+                    body: form,
+                    headers: {},
+                });
+
+                imageUrl = uploadRes.secure_url;
+            }
+
+            // Update the event
+            await apiCall(`/api/events/${eventId}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    title: formData.title,
+                    description: formData.description,
+                    wasteFocus: formData.wasteFocus,
+                    locationName: location.name,
+                    locationAddress: location.address,
+                    eventDate: formData.eventDate,
+                    imageUrl: imageUrl,
+                }),
             });
 
-            toast.success('Event created successfully!');
-            setFormData({
-                title: '',
-                description: '',
-                wasteFocus: '',
-                eventDate: '',
-            });
-            setLocation({ name: '', address: '' });
-            setImageFile(null);
-            onEventCreated();
+            toast.success('Event updated successfully!');
+            onEventUpdated();
         } catch (error) {
-            console.error('Error creating event:', error);
-            toast.error(error instanceof Error ? error.message : 'Failed to create event');
+            console.error('Error updating event:', error);
+            toast.error(error instanceof Error ? error.message : 'Failed to update event');
         } finally {
             setIsSubmitting(false);
         }
@@ -178,10 +123,10 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                     <div className="p-2 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg">
                         <Calendar className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
                     </div>
-                    <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-gray-100">Create New Event</CardTitle>
+                    <CardTitle className="text-xl sm:text-2xl text-gray-900 dark:text-gray-100">Edit Event</CardTitle>
                 </div>
                 <CardDescription className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-                    Organize a waste management event for your community
+                    Update your event details
                 </CardDescription>
             </CardHeader>
 
@@ -337,11 +282,28 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                             Event Image
                         </h3>
                         <div className="space-y-3">
-                            <Label htmlFor="eventImage" className="text-gray-700 dark:text-gray-300 font-semibold text-sm sm:text-base">Event Image *</Label>
+                            <Label htmlFor="eventImage" className="text-gray-700 dark:text-gray-300 font-semibold text-sm sm:text-base">
+                                Update Event Image {!imageFile && '(Optional - keep current image)'}
+                            </Label>
+                            {!imageFile && initialData.imageUrl && (
+                                <div className="mb-3">
+                                    <div className="relative w-full h-48 sm:h-64 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
+                                        <img 
+                                            src={initialData.imageUrl} 
+                                            alt="Current event" 
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute top-2 right-2 bg-emerald-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow">
+                                            Current Image
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Upload a new image to replace this one</p>
+                                </div>
+                            )}
                             <FileUpload onChange={(files) => setImageFile(files[0] || null)} />
                             {imageFile && (
-                                <div className="flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 rounded-lg">
-                                    <span className="text-emerald-700 dark:text-emerald-400 font-semibold text-sm">✓ Selected:</span>
+                                <div className="flex items-center gap-2 p-3 bg-emerald-50 dark:bg-emerald-900/20 border-2 border-emerald-300 dark:border-emerald-700 rounded-lg">
+                                    <span className="text-emerald-700 dark:text-emerald-400 font-semibold text-sm">✓ New image selected:</span>
                                     <span className="text-emerald-600 dark:text-emerald-400 text-sm truncate">{imageFile.name}</span>
                                 </div>
                             )}
@@ -351,23 +313,6 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                         <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => {
-                                setFormData({
-                                    title: '',
-                                    description: '',
-                                    wasteFocus: '',
-                                    eventDate: '',
-                                });
-                                setLocation({ name: '', address: '' });
-                                setImageFile(null);
-                            }}
-                            className="flex-1 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold py-2.5 rounded-lg transition-all text-sm sm:text-base"
-                        >
-                            Clear Form
-                        </Button>
-                        <Button
                             type="submit"
                             disabled={isSubmitting}
                             className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 text-sm sm:text-base"
@@ -375,12 +320,12 @@ export function ChampionEventCreator({ onEventCreated }: ChampionEventCreatorPro
                             {isSubmitting ? (
                                 <>
                                     <LoaderCircle size="sm" className="inline-block" />
-                                    Creating...
+                                    Updating...
                                 </>
                             ) : (
                                 <>
-                                    <Plus className="h-4 w-4" />
-                                    Create Event
+                                    <Save className="h-4 w-4" />
+                                    Save Changes
                                 </>
                             )}
                         </Button>

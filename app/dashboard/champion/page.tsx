@@ -75,24 +75,24 @@ export default function ChampionDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col transition-colors duration-300">
       <Navbar />
-      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10">
+      <div className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Champion Dashboard</h1>
-              <p className="text-gray-600 dark:text-gray-400 text-lg">Organize and manage community events</p>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Champion Dashboard</h1>
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-400">Organize and manage community events</p>
             </div>
-            <div className="flex gap-2">
-              <Badge className="bg-green-600 hover:bg-green-700 text-white text-lg py-2 px-4">
+            <div className="flex flex-wrap gap-2">
+              <Badge className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm sm:text-base lg:text-lg py-2 px-3 sm:px-4">
                 {user?.totalPoints || 0} points
               </Badge>
               {(() => {
                 const rewardTier = getRewardTier(user?.totalPoints || 0);
                 return (
-                  <Badge className={`${rewardTier.color} bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold text-lg py-2 px-4`}>
+                  <Badge className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm sm:text-base lg:text-lg py-2 px-3 sm:px-4">
                     {rewardTier.badge} {rewardTier.tier}
                   </Badge>
                 );
@@ -102,47 +102,45 @@ export default function ChampionDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <Card className="bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">My Events</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">My Events</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <p className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">{myEvents.length}</p>
-                <div className="p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
-                  <Calendar className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+                <p className="text-2xl sm:text-3xl font-bold text-emerald-700 dark:text-emerald-400">{myEvents.length}</p>
+                <div className="p-2 sm:p-3 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
+                  <Calendar className="h-6 w-6 sm:h-8 sm:w-8 text-emerald-600 dark:text-emerald-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-200">
+          <Card className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Participants</CardTitle>
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Total Participants</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <p className="text-3xl font-bold text-teal-700 dark:text-teal-400">
+                <p className="text-2xl sm:text-3xl font-bold text-teal-700 dark:text-teal-400">
                   {myEvents.reduce((sum, e) => sum + (e.participantCount || 0), 0)}
                 </p>
-                <div className="p-3 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
-                  <Users className="h-8 w-8 text-teal-600 dark:text-teal-400" />
+                <div className="p-2 sm:p-3 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
+                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-teal-600 dark:text-teal-400" />
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Pending reports section removed per request */}
-
         {/* Event Management Section */}
-        <div className="space-y-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Event Management</h2>
+        <div className="space-y-6 sm:space-y-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">Event Management</h2>
             <Button
               onClick={() => router.push('/dashboard/champion/create-event')}
-              className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white shadow-md"
+              className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white shadow-md font-semibold w-full sm:w-auto"
             >
               Create New Event
             </Button>
@@ -150,7 +148,7 @@ export default function ChampionDashboard() {
 
           {/* Event List */}
           <div>
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">My Events</h3>
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">My Events</h3>
             <ChampionEventList
               events={myEvents}
               loading={loadingEvents}

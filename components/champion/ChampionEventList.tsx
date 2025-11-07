@@ -356,7 +356,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
               />
             </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="edit-imageUrl">Image URL (Optional)</Label>
               <Input
                 id="edit-imageUrl"
@@ -365,7 +365,7 @@ export function ChampionEventList({ events, loading, onRefresh }: ChampionEventL
                 onChange={(e) => setEditFormData({ ...editFormData, imageUrl: e.target.value })}
                 className="border-emerald-200 dark:border-emerald-700"
               />
-            </div>
+            </div> */}
           </div>
 
           <DialogFooter>
