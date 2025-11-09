@@ -120,17 +120,6 @@ export default function FAQSection() {
             ))}
           </div>
 
-          <div className="mt-12 text-center">
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Still have questions?
-            </p>
-            <a
-              href="mailto:support@wastenexus.com"
-              className="inline-flex items-center justify-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
-            >
-              Contact Support
-            </a>
-          </div>
         </div>
       </section>
     </>

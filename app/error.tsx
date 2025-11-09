@@ -61,8 +61,8 @@ export default function Error({
           <div className="text-center text-sm text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-200 dark:border-gray-700">
             <p>
               If this problem persists, please contact support at{' '}
-              <a href="mailto:support@wastenexus.com" className="text-green-600 hover:underline">
-                support@wastenexus.com
+              <a href="mailto:Wastenexusdev@gmail.com" className="text-green-600 hover:underline">
+                Wastenexusdev@gmail.com
               </a>
             </p>
             {error.digest && (
