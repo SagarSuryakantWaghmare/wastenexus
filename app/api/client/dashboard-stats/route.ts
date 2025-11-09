@@ -186,10 +186,15 @@ export async function GET(request: NextRequest) {
       totalWasteCollected: totalWasteCollected[0]?.total || 0
     };
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: stats
     });
+
+    // Add cache headers to prevent excessive requests (cache for 10 seconds)
+    response.headers.set('Cache-Control', 'private, max-age=10, stale-while-revalidate=20');
+    
+    return response;
 
   } catch (error) {
     console.error('Error fetching client dashboard stats:', error);

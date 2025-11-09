@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         user: {
           id: user._id,
@@ -47,6 +47,11 @@ export async function GET(request: NextRequest) {
       },
       { status: 200 }
     );
+
+    // Add cache headers to prevent excessive requests (cache for 5 seconds)
+    response.headers.set('Cache-Control', 'private, max-age=5, stale-while-revalidate=10');
+    
+    return response;
   } catch (error) {
     console.error('Fetch user error:', error);
     return NextResponse.json(

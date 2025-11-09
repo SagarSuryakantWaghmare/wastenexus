@@ -24,7 +24,7 @@ interface UserStats {
 
 export default function RewardsPage() {
   const router = useRouter();
-  const { user, isLoading, token } = useAuth();
+  const { user, isLoading, token, refreshUser } = useAuth();
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -43,6 +43,9 @@ export default function RewardsPage() {
     try {
       setLoading(true);
       setError('');
+      
+      // Refresh user data first to get latest points (debounced in context)
+      await refreshUser();
       
       const response = await fetch('/api/client/rewards-stats', {
         headers: {
@@ -71,11 +74,17 @@ export default function RewardsPage() {
   };
 
   useEffect(() => {
-    if (user && token) {
+    let mounted = true;
+    
+    if (user && token && mounted) {
       fetchUserStats();
     }
+
+    return () => {
+      mounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, token]);
+  }, [token]);
 
   if (isLoading || loading) {
     return (

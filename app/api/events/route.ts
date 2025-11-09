@@ -139,6 +139,7 @@ export async function GET(request: NextRequest) {
     // Get query parameters
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get('status');
+    const limit = searchParams.get('limit');
 
     // Build query
     const query: Record<string, unknown> = {};
@@ -146,10 +147,17 @@ export async function GET(request: NextRequest) {
       query.status = status;
     }
 
-    const events = await Event.find(query)
+    let eventsQuery = Event.find(query)
       .populate('championId', 'name email')
-      .sort({ date: 1 })
-      .limit(100);
+      .sort({ createdAt: -1 }); // Sort by most recent first
+
+    if (limit) {
+      eventsQuery = eventsQuery.limit(parseInt(limit));
+    } else {
+      eventsQuery = eventsQuery.limit(100);
+    }
+
+    const events = await eventsQuery;
 
     return NextResponse.json(
       {
@@ -159,8 +167,12 @@ export async function GET(request: NextRequest) {
           title: event.title,
           description: event.description,
           location: event.location,
+          locationName: event.locationName,
+          locationAddress: event.locationAddress,
+          wasteFocus: event.wasteFocus,
           coordinates: event.coordinates,
           date: event.date,
+          images: event.images,
           participantCount: event.participants.length,
           status: event.status,
           createdAt: event.createdAt,

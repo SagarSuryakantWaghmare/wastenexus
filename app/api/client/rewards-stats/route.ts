@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
       { $group: { _id: null, total: { $sum: '$pointsAwarded' } } }
     ]);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: {
         totalPoints,
@@ -124,6 +124,11 @@ export async function GET(request: NextRequest) {
         }
       }
     });
+
+    // Add cache headers to prevent excessive requests (cache for 10 seconds)
+    response.headers.set('Cache-Control', 'private, max-age=10, stale-while-revalidate=20');
+    
+    return response;
 
   } catch (error) {
     console.error('Error fetching rewards stats:', error);

@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import UserAvatar from '@/components/UserAvatar';
+import RecentEventsModal from '@/components/RecentEventsModal';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -31,9 +32,10 @@ interface DashboardStats {
 
 export default function ClientDashboard() {
   const router = useRouter();
-  const { user, isLoading, token } = useAuth();
+  const { user, isLoading, token, refreshUser } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [showEventsModal, setShowEventsModal] = useState(false);
 
   const fetchDashboardStats = useCallback(async () => {
     if (!token) return;
@@ -56,10 +58,19 @@ export default function ClientDashboard() {
   }, [token]);
 
   useEffect(() => {
-    if (token) {
+    let mounted = true;
+    
+    if (token && mounted) {
+      // Refresh user data to get latest points (debounced in context)
+      refreshUser();
       fetchDashboardStats();
     }
-  }, [token, fetchDashboardStats]);
+
+    return () => {
+      mounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -68,6 +79,17 @@ export default function ClientDashboard() {
       router.push('/dashboard/champion');
     }
   }, [user, isLoading, router]);
+
+  // Show events modal after 10 seconds for client role
+  useEffect(() => {
+    if (user && user.role === 'client' && !statsLoading) {
+      const timer = setTimeout(() => {
+        setShowEventsModal(true);
+      }, 10000); // 10 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [user, statsLoading]);
 
   if (isLoading) {
     return (
@@ -399,6 +421,12 @@ export default function ClientDashboard() {
         </div>
       </main>
       <Footer />
+
+      {/* Recent Events Modal */}
+      <RecentEventsModal
+        show={showEventsModal}
+        onClose={() => setShowEventsModal(false)}
+      />
     </div>
   );
 }

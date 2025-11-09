@@ -26,7 +26,7 @@ interface WasteReportFormProps {
 
 export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
   const router = useRouter();
-  const { token } = useAuth();
+  const { token, refreshUser } = useAuth();
   const { apiCall } = useApi();
 
   const [type, setType] = useState('');
@@ -126,6 +126,10 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
       setLocation(null);
 
       toast.success('🎉 Waste report submitted successfully!');
+      
+      // Refresh user data to update points
+      await refreshUser();
+      
       onSuccess();
       setTimeout(() => {
         router.push('/');
