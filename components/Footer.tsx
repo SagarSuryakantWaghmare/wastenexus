@@ -1,48 +1,71 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 border-t border-green-200 dark:border-gray-700 py-12 mt-20 transition-colors duration-300">
+    <footer className="bg-white dark:bg-gray-900 border-t-2 border-gray-200 dark:border-gray-700 py-8 sm:py-12 mt-12 sm:mt-20 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Top Section */}
-        <div className="flex items-center justify-between mb-8 pb-8 border-b border-green-200 dark:border-gray-700">
-          <div className="flex items-center gap-2">
-            <Image 
-              src="/assets/logo/recycle-symbol.png" 
-              alt="WasteNexus Logo" 
-              width={24} 
-              height={24}
-              className="h-6 w-6 object-contain"
-            />
-            <span className="text-lg font-bold text-green-700 dark:text-green-400">Waste Nexus</span>
+        {/* Main Content */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          
+          {/* Logo & Brand */}
+          <div className="flex flex-col items-center sm:items-start">
+            <div className="flex items-center gap-2 mb-3">
+              <Image 
+                src="/assets/logo/recycle-symbol.png" 
+                alt="WasteNexus Logo" 
+                width={32} 
+                height={32}
+                className="h-8 w-8 object-contain"
+              />
+              <span className="text-xl font-bold text-emerald-700 dark:text-emerald-400">WasteNexus</span>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 text-sm text-center sm:text-left">
+              &copy; {currentYear} WasteNexus. All rights reserved.
+            </p>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 text-sm max-w-md">
-            Transforming waste into opportunity. Together for a sustainable future.
-          </p>
+
+          {/* Get Started Links */}
+          <div className="flex flex-col items-center sm:items-start">
+            <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Get Started</h3>
+            <div className="flex flex-col gap-2 items-center sm:items-start">
+              <Link href="/auth/signin" className="text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                Sign In
+              </Link>
+              <Link href="/auth/signup" className="text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                Sign Up
+              </Link>
+            </div>
+          </div>
+
+          {/* Join As Links */}
+          <div className="flex flex-col items-center sm:items-start">
+            <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Join As</h3>
+            <div className="flex flex-col gap-2 items-center sm:items-start">
+              <Link href="/auth/signup?role=client" className="text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                Client
+              </Link>
+              <Link href="/auth/signup?role=worker" className="text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                Worker
+              </Link>
+              <Link href="/auth/signup?role=champion" className="text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                Champion
+              </Link>
+            </div>
+          </div>
+
         </div>
 
-        {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">
-            &copy; {currentYear} Waste Nexus. All rights reserved.
+        {/* Bottom Border */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-500 text-center">
+            Transforming waste into opportunity. Together for a sustainable future.
           </p>
-          
-          <div className="flex items-center gap-8 text-sm">
-            <a href="/privacy" className="text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-200 font-medium">
-              Privacy Policy
-            </a>
-            <a href="/terms" className="text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-200 font-medium">
-              Terms of Service
-            </a>
-            <a href="/contact" className="text-gray-600 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 transition-colors duration-200 font-medium">
-              Contact Us
-            </a>
-          </div>
         </div>
 
       </div>
