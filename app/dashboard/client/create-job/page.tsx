@@ -117,20 +117,20 @@ export default function CreateJobPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+      <div className="min-h-screen flex items-center justify-center bg-emerald-50 dark:bg-gray-900 transition-colors duration-300">
         <PageLoader />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col transition-colors duration-300">
+    <div className="min-h-screen bg-emerald-50 dark:bg-gray-900 flex flex-col transition-colors duration-300">
       <Navbar />
-      <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <BackButton href="/dashboard/client" label="Back to Dashboard" />
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
-            <Briefcase className="w-10 h-10 text-green-600 dark:text-green-400" />
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+            <Briefcase className="w-12 h-12 text-emerald-600 dark:text-emerald-400" />
             Post a Job
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
@@ -155,13 +155,13 @@ export default function CreateJobPage() {
 
         <form onSubmit={handleSubmit}>
           <Card className="bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 transition-colors duration-300">
-            <CardHeader>
-              <CardTitle className="text-gray-900 dark:text-gray-100">Job Details</CardTitle>
+            <CardHeader className="bg-emerald-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 py-4 px-6">
+              <CardTitle className="text-gray-900 dark:text-gray-100 text-lg font-bold">Job Details</CardTitle>
               <CardDescription className="text-gray-600 dark:text-gray-400">
                 Provide information about the waste collection job. All jobs require admin verification before becoming visible to workers.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 py-6 px-6">
               {/* Title */}
               <div>
                 <Label htmlFor="title" className="text-gray-900 dark:text-gray-100">
@@ -174,7 +174,7 @@ export default function CreateJobPage() {
                   placeholder="e.g., Large Cardboard Collection Needed"
                   maxLength={100}
                   required
-                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                  className="h-12 px-3 rounded-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 />
               </div>
 
@@ -191,7 +191,7 @@ export default function CreateJobPage() {
                   rows={4}
                   maxLength={1000}
                   required
-                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                  className="min-h-[110px] p-3 rounded-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                   {formData.description.length}/1000 characters
@@ -203,18 +203,18 @@ export default function CreateJobPage() {
                 <Label className="text-gray-900 dark:text-gray-100">
                   Category <span className="text-red-500 dark:text-red-400">*</span>
                 </Label>
-                <div className="grid grid-cols-3 gap-4 mt-2">
+                <div className="grid grid-cols-3 gap-4">
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, category: 'home' })}
-                    className={`p-4 border-2 rounded-lg flex flex-col items-center gap-2 transition-all ${
+                    className={`p-4 border rounded-lg flex flex-col items-center gap-2 transition-all ${
                       formData.category === 'home'
-                        ? 'border-green-600 dark:border-green-500 bg-green-50 dark:bg-green-900/30'
-                        : 'border-gray-200 dark:border-gray-600 hover:border-green-300 dark:hover:border-green-500'
+                        ? 'border-emerald-600 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
+                        : 'border-gray-200 dark:border-gray-600 hover:border-emerald-300 dark:hover:border-emerald-500'
                     }`}
                   >
-                    <Home className={`w-8 h-8 ${formData.category === 'home' ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'}`} />
-                    <span className={`font-medium ${formData.category === 'home' ? 'text-green-700 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                    <Home className={`w-8 h-8 ${formData.category === 'home' ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500'}`} />
+                    <span className={`font-medium ${formData.category === 'home' ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400'}`}>
                       Home
                     </span>
                   </button>
@@ -222,14 +222,14 @@ export default function CreateJobPage() {
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, category: 'industry' })}
-                    className={`p-4 border-2 rounded-lg flex flex-col items-center gap-2 transition-all ${
+                    className={`p-4 border rounded-lg flex flex-col items-center gap-2 transition-all ${
                       formData.category === 'industry'
-                        ? 'border-green-600 dark:border-green-500 bg-green-50 dark:bg-green-900/30'
-                        : 'border-gray-200 dark:border-gray-600 hover:border-green-300 dark:hover:border-green-500'
+                        ? 'border-emerald-600 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
+                        : 'border-gray-200 dark:border-gray-600 hover:border-emerald-300 dark:hover:border-emerald-500'
                     }`}
                   >
-                    <Building2 className={`w-8 h-8 ${formData.category === 'industry' ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'}`} />
-                    <span className={`font-medium ${formData.category === 'industry' ? 'text-green-700 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                    <Building2 className={`w-8 h-8 ${formData.category === 'industry' ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500'}`} />
+                    <span className={`font-medium ${formData.category === 'industry' ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400'}`}>
                       Industry
                     </span>
                   </button>
@@ -237,14 +237,14 @@ export default function CreateJobPage() {
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, category: 'other' })}
-                    className={`p-4 border-2 rounded-lg flex flex-col items-center gap-2 transition-all ${
+                    className={`p-4 border rounded-lg flex flex-col items-center gap-2 transition-all ${
                       formData.category === 'other'
-                        ? 'border-green-600 dark:border-green-500 bg-green-50 dark:bg-green-900/30'
-                        : 'border-gray-200 dark:border-gray-600 hover:border-green-300 dark:hover:border-green-500'
+                        ? 'border-emerald-600 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
+                        : 'border-gray-200 dark:border-gray-600 hover:border-emerald-300 dark:hover:border-emerald-500'
                     }`}
                   >
-                    <Package className={`w-8 h-8 ${formData.category === 'other' ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'}`} />
-                    <span className={`font-medium ${formData.category === 'other' ? 'text-green-700 dark:text-green-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                    <Package className={`w-8 h-8 ${formData.category === 'other' ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500'}`} />
+                    <span className={`font-medium ${formData.category === 'other' ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-600 dark:text-gray-400'}`}>
                       Other
                     </span>
                   </button>
@@ -263,7 +263,7 @@ export default function CreateJobPage() {
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   placeholder="Full address including landmark"
                   required
-                  className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                  className="h-12 px-3 rounded-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 />
               </div>
 
@@ -278,10 +278,10 @@ export default function CreateJobPage() {
                       key={type}
                       type="button"
                       onClick={() => toggleWasteType(type)}
-                      className={`px-4 py-2 border-2 rounded-lg capitalize font-medium transition-all ${
+                      className={`px-4 py-2 border rounded-lg capitalize font-medium transition-all ${
                         formData.wasteTypes.includes(type)
-                          ? 'border-green-600 dark:border-green-500 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400'
-                          : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-green-300 dark:hover:border-green-500'
+                          ? 'border-emerald-600 dark:border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400'
+                          : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-emerald-300 dark:hover:border-emerald-500'
                       }`}
                     >
                       {type}
@@ -302,7 +302,7 @@ export default function CreateJobPage() {
                     value={formData.estimatedWeight}
                     onChange={(e) => setFormData({ ...formData, estimatedWeight: e.target.value })}
                     placeholder="e.g., 50"
-                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    className="h-12 px-3 rounded-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                   />
                 </div>
 
@@ -315,7 +315,7 @@ export default function CreateJobPage() {
                     value={formData.budget}
                     onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
                     placeholder="e.g., 500"
-                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    className="h-12 px-3 rounded-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                   />
                 </div>
               </div>
@@ -328,7 +328,7 @@ export default function CreateJobPage() {
                     id="urgency"
                     value={formData.urgency}
                     onChange={(e) => setFormData({ ...formData, urgency: e.target.value as 'low' | 'medium' | 'high' })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full px-3 h-12 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -344,7 +344,7 @@ export default function CreateJobPage() {
                     value={formData.scheduledDate}
                     onChange={(e) => setFormData({ ...formData, scheduledDate: e.target.value })}
                     min={new Date().toISOString().split('T')[0]}
-                    className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    className="h-12 px-3 rounded-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                   />
                 </div>
               </div>
@@ -361,7 +361,7 @@ export default function CreateJobPage() {
                       value={formData.contactName}
                       onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
                       placeholder="Your name"
-                      className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                      className="h-12 px-3 rounded-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                     />
                   </div>
 
@@ -373,7 +373,7 @@ export default function CreateJobPage() {
                       value={formData.contactPhone}
                       onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
                       placeholder="e.g., +91 9876543210"
-                      className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                      className="h-12 px-3 rounded-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                     />
                   </div>
 
@@ -385,7 +385,7 @@ export default function CreateJobPage() {
                       value={formData.contactEmail}
                       onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
                       placeholder="your@email.com"
-                      className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                      className="h-12 px-3 rounded-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                     />
                   </div>
                 </div>
@@ -398,13 +398,13 @@ export default function CreateJobPage() {
                   variant="outline"
                   onClick={() => router.back()}
                   disabled={loading}
-                  className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                  className="h-12 px-4 rounded-lg border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="flex-1 bg-green-600 hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 flex items-center justify-center gap-2"
+                  className="flex-1 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-600 flex items-center justify-center gap-2 text-white font-semibold h-12 rounded-lg"
                   disabled={loading}
                 >
                   {loading && <LoaderCircle size="sm" />}
