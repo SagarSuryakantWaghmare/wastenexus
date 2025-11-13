@@ -86,8 +86,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         console.warn('refreshUser: non-ok response', response.status);
       }
-    } catch (error) {
-      if ((error as any).name === 'AbortError') {
+    } catch (error: unknown) {
+      if (typeof error === 'object' && error !== null && 'name' in error && (error as { name?: unknown }).name === 'AbortError') {
         console.warn('refreshUser aborted due to timeout');
       } else {
         console.error('Failed to refresh user:', error);
