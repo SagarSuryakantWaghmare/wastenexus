@@ -11,6 +11,7 @@ import RewardsSection from "@/components/Home/RewardsSection";
 import FAQSection from "@/components/Home/FAQSection";
 import { Footer } from "@/components/Footer";
 import { AppLoader } from "@/components/AppLoader";
+import GallerySection from "@/components/Home/GallerySection";
 
 export default function Home() {
   // JSON-LD for Homepage
@@ -46,6 +47,7 @@ export default function Home() {
             <HeroSection />
             <FeaturesSection />
             <HowItWorksSection />
+            <GallerySection /> 
             <AIFeaturesSection />
             <RolesSection />
             <RewardsSection />
