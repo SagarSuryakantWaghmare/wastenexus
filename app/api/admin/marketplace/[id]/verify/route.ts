@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import MarketplaceItem from '@/models/MarketplaceItem';
-import User from '@/models/User';
 import { verifyToken } from '@/lib/auth';
 import { awardPoints, REWARD_CONFIG } from '@/lib/rewards';
 

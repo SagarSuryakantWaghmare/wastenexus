@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
 import { useApi } from '@/hooks/useApi';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -288,10 +289,11 @@ export function ChampionEventEditor({ eventId, initialData, onEventUpdated }: Ch
                             {!imageFile && initialData.imageUrl && (
                                 <div className="mb-3">
                                     <div className="relative w-full h-48 sm:h-64 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
-                                        <img 
-                                            src={initialData.imageUrl} 
-                                            alt="Current event" 
-                                            className="w-full h-full object-cover"
+                                        <Image
+                                            src={initialData.imageUrl || ''}
+                                            alt="Current event"
+                                            fill
+                                            className="object-cover"
                                         />
                                         <div className="absolute top-2 right-2 bg-emerald-600 text-white text-xs font-semibold px-2 py-1 rounded-md shadow">
                                             Current Image

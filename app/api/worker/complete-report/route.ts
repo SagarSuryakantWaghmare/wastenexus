@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Report from '@/models/Report';
 import WorkerTask from '@/models/WorkerTask';
-import User from '@/models/User';
 import jwt from 'jsonwebtoken';
 import { awardPoints, REWARD_CONFIG } from '@/lib/rewards';
 

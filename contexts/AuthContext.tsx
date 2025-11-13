@@ -101,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [token]);
+  }, [token, refreshUser]);
 
   const login = async (email: string, password: string) => {
     const response = await fetch('/api/auth/login', {

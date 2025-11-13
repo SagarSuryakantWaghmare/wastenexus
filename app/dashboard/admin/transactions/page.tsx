@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Receipt, TrendingUp, Users, DollarSign, Filter, Search } from 'lucide-react';
+import { Loader2, Receipt, TrendingUp, Users, DollarSign, Search } from 'lucide-react';
 
 interface Transaction {
   _id: string;

@@ -5,8 +5,17 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, MapPin, Calendar } from "lucide-react";
 import { LoaderCircle } from "@/components/ui/loader";
 
+type GalleryItem = {
+  name: string;
+  title: string;
+  location: string;
+  date: string;
+  description: string;
+  image: string;
+};
+
 export default function GallerySection () {
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<GalleryItem[]>([]);
   const [current, setCurrent] = useState(0);
 
   // Mock gallery items (replace with real URLs / API later)
@@ -38,7 +47,7 @@ export default function GallerySection () {
       },
     ];
 
-    setItems(mock);
+    setItems(mock as GalleryItem[]);
   }, []);
 
   // Auto slide every 4 sec (4000ms)

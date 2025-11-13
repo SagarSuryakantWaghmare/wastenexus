@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import { verifyToken } from '@/lib/auth';
 import Report from '@/models/Report';
-import User from '@/models/User';
 import { awardPoints, calculateReportPoints } from '@/lib/rewards';
 
 export async function GET(request: NextRequest) {
