@@ -17,6 +17,7 @@ type GalleryItem = {
 export default function GallerySection () {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [current, setCurrent] = useState(0);
+  const [noTransition, setNoTransition] = useState(false);
 
   // Mock gallery items (replace with real URLs / API later)
   useEffect(() => {
@@ -50,22 +51,44 @@ export default function GallerySection () {
     setItems(mock as GalleryItem[]);
   }, []);
 
-  // Auto slide every 4 sec (4000ms)
+  // Auto slide every 8 sec (8000ms) with proper wrap handling
   useEffect(() => {
     if (items.length === 0) return;
     const timer = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % items.length);
+      setCurrent((prev) => {
+        if (prev === items.length - 1) {
+          setNoTransition(true);
+          // jump to start without animation
+          setTimeout(() => setNoTransition(false), 50);
+          return 0;
+        }
+        return prev + 1;
+      });
     }, 8000);
 
     return () => clearInterval(timer);
   }, [items]);
 
   const nextSlide = () => {
-    setCurrent((prev) => (prev + 1) % items.length);
+    setCurrent((prev) => {
+      if (prev === items.length - 1) {
+        setNoTransition(true);
+        setTimeout(() => setNoTransition(false), 50);
+        return 0;
+      }
+      return prev + 1;
+    });
   };
 
   const prevSlide = () => {
-    setCurrent((prev) => (prev - 1 + items.length) % items.length);
+    setCurrent((prev) => {
+      if (prev === 0) {
+        setNoTransition(true);
+        setTimeout(() => setNoTransition(false), 50);
+        return items.length - 1;
+      }
+      return (prev - 1 + items.length) % items.length;
+    });
   };
 
   if (items.length === 0)
@@ -93,7 +116,7 @@ export default function GallerySection () {
 
       <div className="overflow-hidden">
         <div
-          className="flex transition-transform duration-700 ease-in-out"
+          className={`flex ${noTransition ? 'transition-none' : 'transition-transform duration-700 ease-in-out'}`}
           style={{ transform: `translateX(-${current * 100}%)` }}
         >
           {items.map((item, index) => (

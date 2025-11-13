@@ -48,15 +48,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const now = Date.now();
     if (now - lastRefreshRef.current < 5000) {
       console.log('Skipping refresh - debounced (< 5s since last refresh)');
-      return; // Skip if refreshed less than 5 seconds ago
+      return;
     }
 
+    lastRefreshRef.current = now;
+
+    // Use AbortController to avoid long hanging requests
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+
     try {
-      lastRefreshRef.current = now;
       console.log('Refreshing user data...');
-      const response = await fetch('/api/user', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const url = typeof window !== 'undefined' ? `${window.location.origin}/api/user` : '/api/user';
+      const response = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${token}` },
+        signal: controller.signal,
       });
+
+      clearTimeout(timeout);
+
+      if (response.status === 401) {
+        // Unauthorized - clear stored auth
+        console.warn('refreshUser: token unauthorized, logging out');
+        setUser(null);
+        setToken(null);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        return;
+      }
 
       if (response.ok) {
         const data = await response.json();
@@ -64,9 +83,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUser(data.user);
           console.log('User data refreshed successfully');
         }
+      } else {
+        console.warn('refreshUser: non-ok response', response.status);
       }
     } catch (error) {
-      console.error('Failed to refresh user:', error);
+      if ((error as any).name === 'AbortError') {
+        console.warn('refreshUser aborted due to timeout');
+      } else {
+        console.error('Failed to refresh user:', error);
+      }
+    } finally {
+      clearTimeout(timeout);
     }
   }, [token]);
 
@@ -90,7 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (document.visibilityState === 'visible' && token) {
         // Delay refresh by 2 seconds to avoid rapid calls
         timeoutId = setTimeout(() => {
-          refreshUser();
+          void refreshUser().catch((err) => console.error('refreshUser error:', err));
         }, 2000);
       }
     };

@@ -62,8 +62,20 @@ export default function ClientDashboard() {
     
     if (token && mounted) {
       // Refresh user data to get latest points (debounced in context)
-      refreshUser();
-      fetchDashboardStats();
+      (async () => {
+        try {
+          await refreshUser();
+        } catch (err) {
+          console.error('refreshUser error:', err);
+        }
+
+        // Fetch stats after attempting to refresh user
+        try {
+          await fetchDashboardStats();
+        } catch (err) {
+          console.error('fetchDashboardStats error:', err);
+        }
+      })();
     }
 
     return () => {
