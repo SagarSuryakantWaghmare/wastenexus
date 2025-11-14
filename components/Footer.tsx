@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -18,7 +19,7 @@ export function Footer() {
           {/* Logo & Brand */}
           <div className="flex flex-col items-center sm:items-start">
             <div className="flex items-center gap-2 mb-3">
-              <Image 
+              <Image
                 src="/assets/logo/recycle-symbol.png"
                 alt="WasteNexus Logo"
                 width={32}
@@ -66,17 +67,59 @@ export function Footer() {
             </>
           )}
 
-          {/* If signed in → Show motivational message */}
+          {/* If signed in → Show motivational message + quote card */}
           {user && (
-            <div className="flex flex-col items-center sm:items-start p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700">
-              <h3 className="text-base font-semibold text-emerald-700 dark:text-emerald-300 mb-2">
-                You&apos;re Already Creating Impact 🌱
-              </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400 text-center sm:text-left leading-relaxed">
-                Thank you for being part of the WasteNexus revolution.  
-              </p>
+            <div className="flex flex-col items-start p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-700 justify-self-center sm:justify-self-end gap-3">
+              <div>
+                <h3 className="text-base font-semibold text-emerald-700 dark:text-emerald-300 mb-2">
+                  You&apos;re Already Creating Impact 🌱
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 text-left leading-relaxed">
+                  Thank you for being part of the WasteNexus revolution.
+                </p>
+              </div>
             </div>
           )}
+
+          {
+            user && (
+              <div className="w-full bg-white dark:bg-gray-800 border border-emerald-100 dark:border-emerald-700 rounded-md p-3">
+                <blockquote className="text-sm italic text-gray-700 dark:text-gray-300 mb-2">
+                  “Let’s make the future green — every small action adds up.”
+                </blockquote>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Share the site with others or inspire the community.</p>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const url = 'https://wastenexus.vercel.app/';
+                      try {
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                          await navigator.clipboard.writeText(url);
+                        } else {
+                          const textarea = document.createElement('textarea');
+                          textarea.value = url;
+                          document.body.appendChild(textarea);
+                          textarea.select();
+                          document.execCommand('copy');
+                          document.body.removeChild(textarea);
+                        }
+                        toast.success('Link copied to clipboard');
+                      } catch (err) {
+                        console.error('Copy failed', err);
+                        toast.error('Failed to copy link');
+                      }
+                    }}
+                    aria-label="Copy WasteNexus link"
+                    title="Copy WasteNexus link"
+                    className="ml-3 inline-block text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-md"
+                  >
+                    Share
+                  </button>
+                </div>
+              </div>
+            )
+          }
 
         </div>
 
