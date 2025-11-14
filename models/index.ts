@@ -7,3 +7,4 @@ export { default as MarketplaceItem } from './MarketplaceItem';
 export { default as WorkerApplication } from './WorkerApplication';
 export { default as WorkerTask } from './WorkerTask';
 export { default as Transaction } from './Transaction';
+export { default as Gallery } from './Gallery';
