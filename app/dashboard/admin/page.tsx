@@ -11,7 +11,8 @@ import {
   FileText,
   Award,
   Briefcase,
-  AlertCircle
+  AlertCircle,
+  Images
 } from 'lucide-react';
 import { LoaderCircle } from '@/components/ui/loader';
 import Link from 'next/link';
@@ -162,6 +163,15 @@ export default function AdminDashboard() {
       color: 'from-emerald-500 to-emerald-600',
       bgColor: 'bg-emerald-900/30',
       stats: 'Pending applications',
+    },
+    {
+      title: 'Gallery Management',
+      description: 'Manage homepage gallery showcase items',
+      icon: Images,
+      href: '/dashboard/admin/gallery',
+      color: 'from-indigo-500 to-indigo-600',
+      bgColor: 'bg-indigo-900/30',
+      stats: 'Gallery items',
     },
   ];
 
@@ -329,6 +339,7 @@ export default function AdminDashboard() {
                         module.color.includes('emerald') ? 'text-emerald-600 dark:text-emerald-400' :
                         module.color.includes('pink') ? 'text-pink-600 dark:text-pink-400' :
                         module.color.includes('orange') ? 'text-orange-600 dark:text-orange-400' :
+                        module.color.includes('indigo') ? 'text-indigo-600 dark:text-indigo-400' :
                         'text-teal-600 dark:text-teal-400'
                       }`} />
                     </div>

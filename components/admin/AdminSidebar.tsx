@@ -21,6 +21,7 @@ import {
   Users,
   BarChart3,
   FileText,
+  Images,
   Award,
   Home,
   LogOut,
@@ -79,6 +80,12 @@ const adminRoutes = [
     icon: Award,
     href: '/dashboard/admin/events',
     color: 'text-pink-500',
+  },
+  {
+    label: 'Gallery',
+    icon: Images,
+    href: '/dashboard/admin/gallery',
+    color: 'text-indigo-500',
   },
   {
     label: 'Jobs Management',
@@ -192,7 +199,7 @@ export function AdminSidebar({ userName = 'Admin', isOpen = false, onClose }: Ad
         )}
 
         {/* Navigation */}
-        <ScrollArea className="flex-1 py-4">
+        <ScrollArea className="flex-1 py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
           <div className="space-y-1 px-3">
             {adminRoutes.map((route) => (
               <Link key={route.href} href={route.href}>
@@ -270,7 +277,7 @@ export function AdminSidebar({ userName = 'Admin', isOpen = false, onClose }: Ad
           </div>
 
           {/* Mobile Navigation */}
-          <ScrollArea className="h-[calc(100vh-200px)] py-4">
+          <ScrollArea className="h-[calc(100vh-200px)] py-4 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
             <div className="space-y-1 px-3">
               {adminRoutes.map((route) => (
                 <Link key={route.href} href={route.href}>
