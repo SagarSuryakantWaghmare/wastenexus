@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { SkipToMainContent } from "@/components/ui/semantic";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { WebVitalsReporter } from "@/components/WebVitalsReporter";
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import "./globals.css";
 
 // Viewport configuration for mobile optimization
@@ -37,6 +38,13 @@ export const metadata: Metadata = {
     template: "%s | WasteNexus"
   },
   description: "Join WasteNexus, India's leading gamified waste management platform. Report waste, earn rewards, buy sustainable products, and participate in community cleanup events. AI-powered waste classification & eco-friendly marketplace.",
+  applicationName: "WasteNexus",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "WasteNexus",
+  },
+  manifest: "/manifest.json",
   keywords: [
     "waste management",
     "recycling",
@@ -146,6 +154,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* PWA Meta Tags */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="WasteNexus" />
+        
+        {/* Apple Touch Icons */}
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
+        <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-192x192.png" />
+        
         {/* JSON-LD Structured Data */}
         <script
           type="application/ld+json"
@@ -169,6 +190,7 @@ export default function RootLayout({
             <div id="main-content">
               {children}
             </div>
+            <PWAInstallPrompt />
           </ThemeProvider>
         </AuthProvider>
         <Toaster />
