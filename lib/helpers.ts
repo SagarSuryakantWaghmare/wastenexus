@@ -1,7 +1,19 @@
 /**
- * Calculate points based on waste weight
- * Base rate: 10 points per kg
- * Bonus multipliers for specific waste types
+ * Helper utilities for the WasteNexus application
+ * Provides point calculation, reward tier determination, and date formatting
+ */
+
+/**
+ * Calculate points based on waste weight and type
+ * Base rate: 10 points per kg with multipliers for specific waste types
+ * 
+ * @param weightKg - Weight of waste in kilograms
+ * @param wasteType - Type of waste (plastic, cardboard, e-waste, etc.)
+ * @returns Calculated points
+ * 
+ * @example
+ * calculatePoints(5, 'plastic') // Returns 75 (5kg * 10 * 1.5)
+ * calculatePoints(2, 'e-waste') // Returns 40 (2kg * 10 * 2.0)
  */
 export function calculatePoints(weightKg: number, wasteType: string): number {
   const basePointsPerKg = 10;
@@ -25,6 +37,13 @@ export function calculatePoints(weightKg: number, wasteType: string): number {
 
 /**
  * Determine reward tier based on total points
+ * Tiers range from Beginner (0-499) to Diamond (10,000+)
+ * 
+ * @param totalPoints - User's total accumulated points
+ * @returns Object containing tier name, badge emoji, and color class
+ * 
+ * @example
+ * getRewardTier(750) // Returns { tier: 'Bronze', badge: '🥉', color: 'text-green-300' }
  */
 export function getRewardTier(totalPoints: number): {
   tier: string;
@@ -47,7 +66,13 @@ export function getRewardTier(totalPoints: number): {
 }
 
 /**
- * Format date for display
+ * Format date for display in a user-friendly format
+ * 
+ * @param date - Date to format
+ * @returns Formatted date string (e.g., "Jan 15, 2024")
+ * 
+ * @example
+ * formatDate(new Date('2024-01-15')) // Returns "Jan 15, 2024"
  */
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('en-US', {
@@ -58,7 +83,13 @@ export function formatDate(date: Date): string {
 }
 
 /**
- * Format date with time
+ * Format date with time for detailed display
+ * 
+ * @param date - Date to format
+ * @returns Formatted date and time string (e.g., "Jan 15, 2024, 02:30 PM")
+ * 
+ * @example
+ * formatDateTime(new Date('2024-01-15T14:30:00')) // Returns "Jan 15, 2024, 02:30 PM"
  */
 export function formatDateTime(date: Date): string {
   return new Intl.DateTimeFormat('en-US', {

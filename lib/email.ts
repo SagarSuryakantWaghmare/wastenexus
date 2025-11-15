@@ -1,4 +1,10 @@
+/**
+ * Email service utilities
+ * Handles sending emails for various platform notifications
+ */
+
 import nodemailer from 'nodemailer';
+import { logger } from './logger';
 
 // Create transporter
 const transporter = nodemailer.createTransport({
@@ -15,7 +21,18 @@ interface EmailOptions {
   html: string;
 }
 
+/**
+ * Sends an email using the configured transporter
+ * @param options - Email options (to, subject, html)
+ * @throws Error if email sending fails
+ */
 export async function sendEmail({ to, subject, html }: EmailOptions): Promise<void> {
+  // Check if email is configured
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    logger.warn('Email service not configured, skipping email send', { to, subject });
+    return;
+  }
+
   try {
     await transporter.sendMail({
       from: `"WasteNexus" <${process.env.EMAIL_USER}>`,
@@ -23,10 +40,10 @@ export async function sendEmail({ to, subject, html }: EmailOptions): Promise<vo
       subject,
       html,
     });
-    console.log(`Email sent successfully to ${to}`);
+    logger.info('Email sent successfully', { to, subject });
   } catch (error) {
-    console.error('Error sending email:', error);
-    throw error;
+    logger.error('Error sending email', error, { to, subject });
+    throw new Error('Failed to send email');
   }
 }
 
