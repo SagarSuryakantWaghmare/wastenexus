@@ -51,6 +51,8 @@ export default function EventsPage() {
   const [showImagesDialog, setShowImagesDialog] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState<{ id: string; title?: string } | null>(null);
 
   // Validate image URL - accept Cloudinary URLs or valid absolute URLs
   const isValidImageUrl = (url?: string): boolean => {
@@ -135,9 +137,15 @@ export default function EventsPage() {
     }
   };
 
-  const handleDelete = async (eventId: string) => {
-    if (!confirm('Are you sure you want to delete this event?')) return;
+  const handleDelete = (eventId: string, title?: string) => {
+    // Open modal confirmation instead of using browser confirm
+    setEventToDelete({ id: eventId, title });
+    setShowDeleteDialog(true);
+  };
 
+  const confirmDelete = async () => {
+    if (!eventToDelete) return;
+    const eventId = eventToDelete.id;
     try {
       setProcessing(eventId);
       const response = await fetch(`/api/admin/events?eventId=${eventId}`, {
@@ -156,7 +164,14 @@ export default function EventsPage() {
       toast.error('An error occurred while deleting event');
     } finally {
       setProcessing(null);
+      setShowDeleteDialog(false);
+      setEventToDelete(null);
     }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteDialog(false);
+    setEventToDelete(null);
   };
 
   const openImagesDialog = (event: Event) => {
@@ -504,13 +519,14 @@ export default function EventsPage() {
                               </Button>
                             )}
                             <Button
-                              onClick={() => handleDelete(event._id)}
+                              onClick={() => handleDelete(event._id, event.title)}
                               disabled={processing === event._id}
                               variant="destructive"
                               size="sm"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
+                            
                           </div>
                         </div>
                       </div>
@@ -531,15 +547,13 @@ export default function EventsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 bg-white dark:bg-gray-800 rounded-b-lg">
-              <div className="relative w-full">
-                {/* Gradient fade for scroll indicator */}
-                <div className="pointer-events-none absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white dark:from-gray-800 to-transparent z-10" />
-                <div className="flex gap-3 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-700 scrollbar-track-gray-100 dark:scrollbar-track-gray-800 pr-8" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <div className="w-full">
+                <div className="flex flex-wrap gap-3">
                   {locations.map((location, index) => (
-                    <Badge 
-                      key={index} 
-                      variant="outline" 
-                      className="px-3 py-2 bg-white dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
+                    <Badge
+                      key={index}
+                      variant="outline"
+                      className="px-3 py-2 bg-white dark:bg-gray-700/50 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <MapPin className="w-4 h-4 mr-1.5 text-emerald-600 dark:text-emerald-400" />
                       {location}
@@ -553,7 +567,7 @@ export default function EventsPage() {
 
         {/* Images Dialog */}
         <Dialog open={showImagesDialog} onOpenChange={setShowImagesDialog}>
-          <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto bg-white dark:bg-gray-800">
+          <DialogContent className="max-w-6xl max-h-[95vh] overflow-y-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl">
             <DialogHeader>
               <DialogTitle className="text-2xl flex items-center gap-2">
                 <Eye className="w-6 h-6 text-green-600 dark:text-emerald-400" />
@@ -771,6 +785,34 @@ export default function EventsPage() {
           </DialogContent>
         </Dialog>
 
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <DialogContent className="max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <DialogHeader>
+              <DialogTitle className="text-lg text-gray-900 dark:text-gray-100">Delete Event</DialogTitle>
+            </DialogHeader>
+            <div className="p-4">
+              <p className="text-sm text-gray-700 dark:text-gray-100">
+                Are you sure you want to delete{' '}
+                <span className="font-semibold">{eventToDelete?.title || 'this event'}</span>?
+                This action cannot be undone.
+              </p>
+              <div className="mt-4 flex justify-end gap-2">
+                <Button variant="outline" onClick={cancelDelete}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={confirmDelete}
+                  disabled={processing === eventToDelete?.id}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Fullscreen Image Viewer */}
         {isFullscreen && selectedEvent && (() => {
           const currentImage = validImages[Math.min(currentImageIndex, validImages.length - 1)];
@@ -837,3 +879,10 @@ export default function EventsPage() {
     </div>
   );
 }
+
+// Delete confirmation dialog placed after component so it doesn't interrupt render flow
+
+/** Exported small component for delete modal markup is not necessary; include inline JSX via portal in the page component render.
+ * However, to keep this file minimal we will append the dialog JSX at the end of the file by reusing Dialog components already imported above.
+ */
+
