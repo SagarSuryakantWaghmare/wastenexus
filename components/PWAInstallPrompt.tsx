@@ -15,30 +15,33 @@ export function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
+    // Do not show when already installed (standalone)
     if (window.matchMedia('(display-mode: standalone)').matches) {
       return;
     }
 
-    // Check if user has dismissed the prompt before
-    const isDismissed = localStorage.getItem('pwa-install-dismissed');
-    if (isDismissed) {
+    // Cooldown logic: store timestamp when user dismisses; allow re-show after cooldown
+    const DISMISS_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+    const lastDismissed = Number(localStorage.getItem('pwa-install-dismissed-at') || '0');
+    const now = Date.now();
+    if (lastDismissed && now - lastDismissed < DISMISS_COOLDOWN_MS) {
+      // still in cooldown window -> don't register the prompt handler now
       return;
     }
 
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      // Show prompt after 3 seconds delay for better UX
+      // Show prompt after 10 seconds delay for slightly less intrusive UX
       setTimeout(() => {
         setShowPrompt(true);
-      }, 3000);
+      }, 10000);
     };
 
-    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('beforeinstallprompt', handler as EventListener);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener('beforeinstallprompt', handler as EventListener);
     };
   }, []);
 
@@ -55,10 +58,15 @@ export function PWAInstallPrompt() {
         toast.success('WasteNexus installed successfully!', {
           description: 'You can now access the app from your home screen.',
         });
+        // Clear any dismissal cooldown so we don't re-show
+        localStorage.removeItem('pwa-install-dismissed-at');
       } else {
         toast.info('Installation cancelled', {
           description: 'You can install later from your browser menu.',
         });
+        // If user explicitly dismissed the install prompt via browser choice,
+        // set a cooldown so we don't nag them immediately.
+        localStorage.setItem('pwa-install-dismissed-at', Date.now().toString());
       }
 
       setDeferredPrompt(null);
@@ -71,7 +79,8 @@ export function PWAInstallPrompt() {
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    localStorage.setItem('pwa-install-dismissed', 'true');
+    // Use timestamp-based dismissal to allow re-show after cooldown
+    localStorage.setItem('pwa-install-dismissed-at', Date.now().toString());
     toast.info('Install prompt hidden', {
       description: 'You can still install from your browser menu.',
     });
