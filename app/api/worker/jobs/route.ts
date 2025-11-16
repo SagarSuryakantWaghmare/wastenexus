@@ -4,6 +4,7 @@ import Job from '@/models/Job';
 import User from '@/models/User';
 import mongoose from 'mongoose';
 import { verifyToken } from '@/lib/auth';
+import { awardPoints, REWARD_CONFIG } from '@/lib/rewards';
 
 export const dynamic = 'force-dynamic';
 
@@ -229,11 +230,23 @@ export async function PUT(request: NextRequest) {
       job.completedDate = new Date();
       await job.save();
 
-      // Award points to worker for completing the job (40 points)
-      await User.findByIdAndUpdate(
-        decoded.userId,
-        { $inc: { totalPoints: 40 } }
-      );
+      // Award points to worker for completing the job using proper reward system
+      const pointsToAward = 40; // Base points for job completion
+      
+      const rewardResult = await awardPoints({
+        userId: decoded.userId,
+        type: 'task_completed',
+        amount: pointsToAward,
+        description: `Completed job: ${job.title}`,
+        referenceId: job._id,
+        referenceModel: 'Job',
+        metadata: {
+          jobId: job._id,
+          jobTitle: job.title,
+          category: job.category,
+          urgency: job.urgency,
+        },
+      });
 
       const updatedJob = await Job.findById(jobId)
         .populate('clientId', 'name email phone')
@@ -241,8 +254,11 @@ export async function PUT(request: NextRequest) {
 
       return NextResponse.json(
         {
-          message: 'Job completed successfully! +40 points earned',
+          message: `Job completed successfully! +${pointsToAward} points earned`,
           job: updatedJob,
+          pointsEarned: pointsToAward,
+          transaction: rewardResult.transaction,
+          newTotalPoints: rewardResult.newTotalPoints,
         },
         { status: 200 }
       );

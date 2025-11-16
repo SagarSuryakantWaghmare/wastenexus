@@ -73,7 +73,7 @@ interface Job {
 }
 
 export default function WorkerDashboard() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [verifiedReports, setVerifiedReports] = useState<VerifiedReport[]>([]);
   const [stats, setStats] = useState({
@@ -230,10 +230,19 @@ export default function WorkerDashboard() {
 
       if (!response.ok) throw new Error('Failed to update job');
       
+      const data = await response.json();
+      
       // Refresh job lists
       fetchAvailableJobs();
       fetchMyJobs();
-      toast.success(`Job ${action}ed successfully!`);
+      
+      // If job was completed, refresh user data to update points display
+      if (action === 'complete') {
+        await refreshUser();
+        toast.success(data.message || `Job completed successfully! +${data.pointsEarned || 40} points earned`);
+      } else {
+        toast.success(`Job ${action}ed successfully!`);
+      }
     } catch (error) {
       console.error('Error updating job:', error);
       toast.error('Failed to update job. Please try again.');
@@ -259,6 +268,8 @@ export default function WorkerDashboard() {
 
       if (!response.ok) throw new Error('Failed to complete report');
       
+      const data = await response.json();
+      
       // Remove from UI immediately (optimistic update)
       setVerifiedReports(prev => prev.filter(report => report._id !== reportId));
       setReportsStats(prev => ({
@@ -266,7 +277,10 @@ export default function WorkerDashboard() {
         total: Math.max(0, prev.total - 1)
       }));
       
-      toast.success('Report marked as completed successfully!');
+      // Refresh user data to update points display
+      await refreshUser();
+      
+      toast.success(data.message || `Report completed successfully! +${data.pointsEarned || 20} points earned`);
       
       // Refresh to get accurate data
       fetchVerifiedReports();
