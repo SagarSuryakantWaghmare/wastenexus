@@ -18,6 +18,8 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: [true, 'Please provide a name'],
       trim: true,
+      minlength: [2, 'Name must be at least 2 characters'],
+      maxlength: [100, 'Name must not exceed 100 characters'],
     },
     email: {
       type: String,
@@ -25,15 +27,19 @@ const UserSchema = new Schema<IUser>(
       unique: true,
       lowercase: true,
       trim: true,
+      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address'],
     },
     password: {
       type: String,
       required: [true, 'Please provide a password'],
-      minlength: 6,
+      minlength: [6, 'Password must be at least 6 characters'],
     },
     role: {
       type: String,
-      enum: ['client', 'champion', 'admin', 'worker'],
+      enum: {
+        values: ['client', 'champion', 'admin', 'worker'],
+        message: '{VALUE} is not a valid role',
+      },
       required: [true, 'Please specify a role'],
       default: 'client',
     },
@@ -44,13 +50,22 @@ const UserSchema = new Schema<IUser>(
     totalPoints: {
       type: Number,
       default: 0,
-      min: 0,
+      min: [0, 'Points cannot be negative'],
     },
   },
   {
     timestamps: true,
   }
 );
+
+// Indexes for better query performance
+UserSchema.index({ email: 1 });
+UserSchema.index({ totalPoints: -1 }); // For leaderboard queries
+UserSchema.index({ role: 1 });
+UserSchema.index({ createdAt: -1 });
+
+// Compound index for role-based queries with sorting
+UserSchema.index({ role: 1, totalPoints: -1 });
 
 // Prevent model recompilation in development
 const User = models.User || model<IUser>('User', UserSchema);

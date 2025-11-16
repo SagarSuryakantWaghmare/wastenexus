@@ -1,4 +1,10 @@
+/**
+ * Google Gemini AI integration for waste classification
+ * Provides AI-powered waste type detection and insights
+ */
+
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { logger } from './logger';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
@@ -10,7 +16,18 @@ export interface WasteClassification {
   suggestions: string[];
 }
 
+/**
+ * Classifies waste from an image URL using Google Gemini AI
+ * @param imageUrl - URL of the waste image to classify
+ * @returns Waste classification result
+ */
 export async function classifyWaste(imageUrl: string): Promise<WasteClassification> {
+  // Check if AI is configured
+  if (!process.env.GEMINI_API_KEY) {
+    logger.warn('Gemini API not configured, returning default classification');
+    return getDefaultClassification();
+  }
+
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
@@ -40,32 +57,59 @@ Be precise and only return valid JSON. If you cannot identify the waste type cle
     // Extract JSON from response (remove markdown code blocks if present)
     const jsonMatch = response.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('Invalid response from AI');
+      logger.error('Invalid AI response format', undefined, { response });
+      return getDefaultClassification();
     }
 
     const classification: WasteClassification = JSON.parse(jsonMatch[0]);
+    logger.info('Waste classified successfully', { type: classification.type, confidence: classification.confidence });
     return classification;
   } catch (error) {
-    console.error('Gemini classification error:', error);
-    
-    // Return a default classification if AI fails
-    return {
-      type: 'plastic',
-      confidence: 0.5,
-      description: 'Unable to classify automatically. Please verify manually.',
-      recyclable: true,
-      suggestions: ['Please ensure proper waste segregation'],
-    };
+    logger.error('Gemini classification error', error);
+    return getDefaultClassification();
   }
 }
 
+/**
+ * Fetches an image and converts it to base64
+ * @param imageUrl - URL of the image to fetch
+ * @returns Base64 encoded image data
+ */
 async function fetchImageAsBase64(imageUrl: string): Promise<string> {
-  const response = await fetch(imageUrl);
-  const buffer = await response.arrayBuffer();
-  return Buffer.from(buffer).toString('base64');
+  try {
+    const response = await fetch(imageUrl);
+    const buffer = await response.arrayBuffer();
+    return Buffer.from(buffer).toString('base64');
+  } catch (error) {
+    logger.error('Failed to fetch image for AI classification', error, { imageUrl });
+    throw new Error('Failed to fetch image');
+  }
 }
 
+/**
+ * Returns a default classification when AI is unavailable
+ */
+function getDefaultClassification(): WasteClassification {
+  return {
+    type: 'plastic',
+    confidence: 0.5,
+    description: 'Unable to classify automatically. Please verify manually.',
+    recyclable: true,
+    suggestions: ['Please ensure proper waste segregation'],
+  };
+}
+
+/**
+ * Generates insights based on waste report history
+ * @param reports - Array of waste reports
+ * @returns AI-generated insights
+ */
 export async function generateWasteInsights(reports: Array<{ type: string; weightKg: number }>): Promise<string> {
+  if (!process.env.GEMINI_API_KEY) {
+    logger.warn('Gemini API not configured, skipping insights generation');
+    return 'AI insights are currently unavailable. Please configure the Gemini API key.';
+  }
+
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
@@ -83,9 +127,11 @@ Breakdown by type: ${JSON.stringify(typeBreakdown)}
 Provide insights in a concise, bullet-point format. Focus on environmental impact and improvement suggestions.`;
 
     const result = await model.generateContent(prompt);
-    return result.response.text();
+    const insights = result.response.text();
+    logger.info('Waste insights generated successfully');
+    return insights;
   } catch (error) {
-    console.error('Gemini insights error:', error);
+    logger.error('Gemini insights error', error);
     return 'Unable to generate insights at this time.';
   }
 }
