@@ -4,7 +4,7 @@ import Job from '@/models/Job';
 import User from '@/models/User';
 import mongoose from 'mongoose';
 import { verifyToken } from '@/lib/auth';
-import { awardPoints, REWARD_CONFIG } from '@/lib/rewards';
+import { awardPoints } from '@/lib/rewards';
 
 export const dynamic = 'force-dynamic';
 

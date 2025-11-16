@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const locationFilter = searchParams.get('location'); // City/area name from worker
 
-    let query: any = { status: 'verified' };
+    const query: { status: string } = { status: 'verified' };
 
     // Fetch all verified reports
     const allReports = await Report.find(query)

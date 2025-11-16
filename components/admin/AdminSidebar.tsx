@@ -19,7 +19,6 @@ const ProfileModal = lazy(() => import('../ProfileModal'));
 import {
   ShoppingBag,
   Users,
-  BarChart3,
   FileText,
   Images,
   Award,
