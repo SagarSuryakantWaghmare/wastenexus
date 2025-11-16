@@ -107,7 +107,9 @@ export default function WorkerDashboard() {
       const savedLocation = localStorage.getItem('workerLocation');
       if (savedLocation) {
         setWorkerLocation(savedLocation);
-        toast.info(`Using saved location: ${savedLocation}`);
+        setGettingLocation(false);
+        // Don't show toast here - we'll show reports directly
+        return;
       }
 
       if (navigator.geolocation) {
@@ -125,7 +127,7 @@ export default function WorkerDashboard() {
               localStorage.setItem('workerLocation', locationName);
               setLocationError(null);
               setGettingLocation(false);
-              toast.success(`Location obtained: ${locationName}`);
+              toast.success(`Location detected: ${locationName}`);
             } catch (error) {
               console.error('Error getting address:', error);
               setLocationError('Unable to determine your location address.');
@@ -135,29 +137,20 @@ export default function WorkerDashboard() {
           },
           (error) => {
             console.error('Error getting location:', error);
-            let errorMsg = 'Unable to get your location.';
+            let errorMsg = 'Location unavailable. Showing all reports.';
             if (error.code === 1) {
-              errorMsg = 'Location permission denied. Please enable location access in your browser settings.';
-            } else if (error.code === 2) {
-              errorMsg = 'Location information unavailable.';
-            } else if (error.code === 3) {
-              errorMsg = 'Location request timed out.';
+              errorMsg = 'Location permission denied. Showing all reports.';
             }
             setLocationError(errorMsg);
             setGettingLocation(false);
-            toast.error(errorMsg);
-            
-            // Only use saved location if current location fails
-            if (!savedLocation) {
-              toast.warning('Showing all reports without location filter.');
-            }
+            toast.warning(errorMsg);
           },
           { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
         );
       } else {
         setLocationError('Geolocation is not supported by your browser.');
         setGettingLocation(false);
-        toast.error('Geolocation not supported. Showing all reports.');
+        toast.warning('Geolocation not supported. Showing all reports.');
       }
     };
 

@@ -172,6 +172,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    
+    // Redirect to signin page
+    if (typeof window !== 'undefined') {
+      window.location.href = '/auth/signin';
+    }
   };
 
   return (
