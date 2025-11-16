@@ -234,12 +234,16 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
                   </div>
                 ) : (
                   <div className="flex items-center justify-center h-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/50 overflow-hidden relative p-8">
-                    <Image
-                      src="/gif/report.gif"
-                      alt="Classification preview"
-                      fill
-                      className="object-cover rounded-lg"
-                    />
+                    <div className="w-full flex justify-center">
+                      <Image
+                        src="/gif/report.gif"
+                        alt="Classification preview"
+                        width={320}
+                        height={180}
+                        className="object-contain rounded-lg w-full max-w-xs sm:max-w-sm md:max-w-md h-auto max-h-48 sm:max-h-56 md:max-h-64"
+                        priority
+                      />
+                    </div>
                   </div>
                 )}
               </div>
