@@ -64,12 +64,6 @@ const adminRoutes = [
     color: 'text-emerald-500',
   },
   {
-    label: 'Analytics',
-    icon: BarChart3,
-    href: '/dashboard/admin/analytics',
-    color: 'text-green-500',
-  },
-  {
     label: 'Waste Reports',
     icon: FileText,
     href: '/dashboard/admin/reports',
