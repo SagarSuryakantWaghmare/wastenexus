@@ -7,10 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Users, Clock, CheckCircle, XCircle, Eye, Package, Award, MapPin, User } from "lucide-react";
+import { Loader2, Users, Clock, CheckCircle, XCircle, Eye, Package, Award, MapPin, User, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 import { PageLoader } from "@/components/ui/loader";
+import { DeleteConfirmModal } from '@/components/ui/delete-confirm-modal';
 
 interface WorkerApplication {
   _id: string;
@@ -80,6 +81,9 @@ export default function WorkerApplicationsPage() {
   const [tasks, setTasks] = useState<WorkerTask[]>([]);
   const [taskStats, setTaskStats] = useState<TaskStats>({ total: 0, pending: 0, inProgress: 0, completed: 0 });
   const [tasksLoading, setTasksLoading] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deletingWorkerId, setDeletingWorkerId] = useState<string | null>(null);
+  const [workerToDelete, setWorkerToDelete] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
     if (!isLoading && (!user || user.role !== 'admin')) {
@@ -168,6 +172,47 @@ export default function WorkerApplicationsPage() {
       setTasksLoading(false);
     }
   };
+
+    const confirmDelete = (id: string, name: string) => {
+      setWorkerToDelete({ id, name });
+      setShowDeleteDialog(true);
+    };
+
+    const handleDelete = async () => {
+      if (!workerToDelete) return;
+      try {
+        setDeletingWorkerId(workerToDelete.id);
+
+        const response = await fetch(`/api/admin/workers/${workerToDelete.id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.error || 'Failed to delete worker');
+        }
+
+        // Remove from UI list and recalc stats
+        setApplications((prev) => prev.filter((a) => a._id !== workerToDelete.id));
+        const remaining = applications.filter((a) => a._id !== workerToDelete.id);
+        setStats({
+          total: remaining.length,
+          pending: remaining.filter((r) => r.status === 'pending').length,
+          verified: remaining.filter((r) => r.status === 'verified').length,
+          rejected: remaining.filter((r) => r.status === 'rejected').length,
+        });
+
+        toast.success('Worker deleted successfully');
+        setShowDeleteDialog(false);
+        setWorkerToDelete(null);
+      } catch (err) {
+        console.error('Error deleting worker:', err);
+        toast.error(err instanceof Error ? err.message : 'Failed to delete worker');
+      } finally {
+        setDeletingWorkerId(null);
+      }
+    };
 
   const filteredApplications = applications.filter((app) => {
     if (activeTab === 'all') return true;
@@ -394,6 +439,15 @@ export default function WorkerApplicationsPage() {
                                   <Eye className="w-4 h-4 mr-2" />
                                   View Details
                                 </Button>
+                                <Button
+                                  onClick={() => confirmDelete(application._id, application.name)}
+                                  variant="outline"
+                                  size="sm"
+                                  className="border-red-400 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                >
+                                  <Trash2 className="w-4 h-4 mr-2" />
+                                  Delete
+                                </Button>
                               </div>
                             </div>
                           </div>
@@ -510,6 +564,20 @@ export default function WorkerApplicationsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmModal
+        open={showDeleteDialog}
+        onOpenChange={(open) => {
+          setShowDeleteDialog(open);
+          if (!open) setWorkerToDelete(null);
+        }}
+        onConfirm={handleDelete}
+        title={`Delete Worker${workerToDelete ? `: ${workerToDelete.name}` : ''}`}
+        description={`Are you sure you want to permanently delete this worker? This action cannot be undone.`}
+        isDeleting={!!deletingWorkerId}
+      />
+
     </div>
   );
 }
