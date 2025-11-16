@@ -39,13 +39,30 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Get location parameters from query string
+    const { searchParams } = new URL(request.url);
+    const locationFilter = searchParams.get('location'); // City/area name from worker
+
+    let query: any = { status: 'verified' };
+
     // Fetch all verified reports
-    const reports = await Report.find({ status: 'verified' })
+    const allReports = await Report.find(query)
       .populate('userId', 'name email')
       .sort({ createdAt: -1 });
 
+    // Filter by location address if worker location is provided
+    let filteredReports = allReports;
+    if (locationFilter) {
+      // Filter reports where location.address contains the worker's city/area
+      filteredReports = allReports.filter((report) => {
+        if (!report.location?.address) return false;
+        // Case-insensitive partial match for city/area
+        return report.location.address.toLowerCase().includes(locationFilter.toLowerCase());
+      });
+    }
+
     // Get all completed worker tasks for these reports
-    const reportIds = reports.map(r => r._id);
+    const reportIds = filteredReports.map(r => r._id);
     const completedTasks = await WorkerTask.find({
       reportId: { $in: reportIds },
       status: 'completed'
@@ -57,7 +74,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Add workerCompletedAt to each report
-    const reportsWithStatus = reports.map(report => {
+    const reportsWithStatus = filteredReports.map(report => {
       const reportObj = report.toObject();
       const completedDate = completedMap.get(report._id.toString());
       return {
@@ -89,6 +106,7 @@ export async function GET(request: NextRequest) {
         reports: reportsWithStatus,
         stats,
         typeBreakdown,
+        locationFilter: locationFilter || 'all',
       },
       { status: 200 }
     );

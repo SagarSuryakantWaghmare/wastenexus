@@ -94,13 +94,86 @@ export default function WorkerDashboard() {
   const [jobsLoading, setJobsLoading] = useState(false);
   const [activeView, setActiveView] = useState<'tasks' | 'available-jobs' | 'my-jobs'>('tasks');
   const [completingReports, setCompletingReports] = useState<Set<string>>(new Set());
+  const [workerLocation, setWorkerLocation] = useState<string | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [gettingLocation, setGettingLocation] = useState(true);
 
   useEffect(() => {
-    fetchVerifiedReports();
+    // Get worker location first - this is critical for filtering
+    const getLocation = async () => {
+      setGettingLocation(true);
+      
+      // Try to use saved location first
+      const savedLocation = localStorage.getItem('workerLocation');
+      if (savedLocation) {
+        setWorkerLocation(savedLocation);
+        toast.info(`Using saved location: ${savedLocation}`);
+      }
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            try {
+              // Reverse geocode to get address
+              const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+              );
+              const data = await response.json();
+              // Extract city, state, or area from address
+              const locationName = data.address?.city || data.address?.state_district || data.address?.state || data.address?.county || 'Unknown';
+              setWorkerLocation(locationName);
+              localStorage.setItem('workerLocation', locationName);
+              setLocationError(null);
+              setGettingLocation(false);
+              toast.success(`Location obtained: ${locationName}`);
+            } catch (error) {
+              console.error('Error getting address:', error);
+              setLocationError('Unable to determine your location address.');
+              setGettingLocation(false);
+              toast.error('Unable to get location address. Showing all reports.');
+            }
+          },
+          (error) => {
+            console.error('Error getting location:', error);
+            let errorMsg = 'Unable to get your location.';
+            if (error.code === 1) {
+              errorMsg = 'Location permission denied. Please enable location access in your browser settings.';
+            } else if (error.code === 2) {
+              errorMsg = 'Location information unavailable.';
+            } else if (error.code === 3) {
+              errorMsg = 'Location request timed out.';
+            }
+            setLocationError(errorMsg);
+            setGettingLocation(false);
+            toast.error(errorMsg);
+            
+            // Only use saved location if current location fails
+            if (!savedLocation) {
+              toast.warning('Showing all reports without location filter.');
+            }
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
+        );
+      } else {
+        setLocationError('Geolocation is not supported by your browser.');
+        setGettingLocation(false);
+        toast.error('Geolocation not supported. Showing all reports.');
+      }
+    };
+
+    getLocation();
     fetchTasks();
     fetchAvailableJobs();
     fetchMyJobs();
   }, []);
+
+  // Fetch reports when worker location is obtained or when location getting finishes
+  useEffect(() => {
+    if (!gettingLocation) {
+      fetchVerifiedReports();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workerLocation, gettingLocation]);
 
   const fetchVerifiedReports = async () => {
     try {
@@ -111,7 +184,13 @@ export default function WorkerDashboard() {
         return;
       }
 
-      const response = await fetch('/api/worker/verified-reports', {
+      // Build query params with location if available
+      const params = new URLSearchParams();
+      if (workerLocation) {
+        params.append('location', workerLocation);
+      }
+
+      const response = await fetch(`/api/worker/verified-reports?${params.toString()}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -336,6 +415,57 @@ export default function WorkerDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Location Status Indicator */}
+        {activeView === 'tasks' && (
+          <div className="mb-4">
+            {gettingLocation ? (
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 flex items-center gap-3">
+                <LoaderCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                    Getting your location...
+                  </p>
+                  <p className="text-xs text-blue-700 dark:text-blue-300">
+                    This helps us show you nearby waste collection tasks
+                  </p>
+                </div>
+              </div>
+            ) : workerLocation ? (
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 flex items-center gap-3">
+                <MapPin className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-green-900 dark:text-green-100">
+                    Showing tasks in your area
+                  </p>
+                  <p className="text-xs text-green-700 dark:text-green-300">
+                    Location: {workerLocation} • {reportsStats.total} tasks available
+                  </p>
+                </div>
+              </div>
+            ) : locationError ? (
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 flex items-center gap-3">
+                <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-yellow-900 dark:text-yellow-100">
+                    Location unavailable
+                  </p>
+                  <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                    {locationError}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => window.location.reload()}
+                  className="text-xs border-yellow-300 dark:border-yellow-700 hover:bg-yellow-100 dark:hover:bg-yellow-900/30"
+                >
+                  Retry
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        )}
 
         {/* View Switcher */}
         <div className="mb-4 sm:mb-6 overflow-x-auto pb-2">
