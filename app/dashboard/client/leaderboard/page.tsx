@@ -440,10 +440,16 @@ export default function LeaderboardPage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
               >
-                <button className="px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-green-700 dark:text-green-400 rounded-lg border border-green-200 dark:border-green-900/50 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors">
+                <button 
+                  onClick={() => router.push('/dashboard/client/report-waste')}
+                  className="px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-green-700 dark:text-green-400 rounded-lg border border-green-200 dark:border-green-900/50 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors"
+                >
                   Report Waste
                 </button>
-                <button className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-sm font-medium text-white rounded-lg hover:opacity-90 transition-opacity shadow-md shadow-green-500/20">
+                <button 
+                  onClick={() => router.push('/dashboard/client/rewards')}
+                  className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-sm font-medium text-white rounded-lg hover:opacity-90 transition-opacity shadow-md shadow-green-500/20"
+                >
                   View Challenges
                 </button>
               </motion.div>
