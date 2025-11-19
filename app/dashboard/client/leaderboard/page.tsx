@@ -199,7 +199,7 @@ export default function LeaderboardPage() {
                 </div>
                 <p className="text-3xl font-bold">{leaderboard.length}</p>
                 <div className="mt-2 text-xs text-white/80">
-                  You're in the top {Math.round((getUserRank() / leaderboard.length) * 100)}%!
+                  You&apos;re in the top {Math.round((getUserRank() / leaderboard.length) * 100)}%!
                 </div>
               </div>
             </motion.div>
@@ -253,7 +253,7 @@ export default function LeaderboardPage() {
                   <Search className="h-8 w-8 text-gray-400" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">No matches found</h3>
-                <p className="text-gray-500 dark:text-gray-400">Try adjusting your search or filter to find what you're looking for.</p>
+                <p className="text-gray-500 dark:text-gray-400">Try adjusting your search or filter to find what you&apos;re looking for.</p>
               </motion.div>
             ) : (
               <div className="divide-y divide-gray-100 dark:divide-gray-700/50">
