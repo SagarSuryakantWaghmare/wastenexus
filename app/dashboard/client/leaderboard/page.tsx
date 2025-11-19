@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,6 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Search, Zap, Crown, Award, ChevronUp, Star, Flame, Leaf } from "lucide-react";
 import { PageLoader } from "@/components/ui/loader";
 import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function LeaderboardPage() {
   const router = useRouter();
@@ -73,7 +72,7 @@ export default function LeaderboardPage() {
   };
 
   const getUserPoints = () => {
-    const userEntry = leaderboard.find(entry => entry.id === user.id);
+    const userEntry = leaderboard.find((entry) => entry.id === user.id);
     return userEntry?.totalPoints || 0;
   };
 
@@ -124,7 +123,7 @@ export default function LeaderboardPage() {
               </h1>
             </motion.div>
             <p className="text-gray-600 dark:text-gray-400 text-base md:text-lg font-medium max-w-2xl mx-auto">
-              Compete with fellow environmental champions and climb the ranks with every contribution! 🌱
+              Compete with fellow environmental champions and climb the ranks with every contribution! 
             </p>
           </motion.div>
 
@@ -230,7 +229,7 @@ export default function LeaderboardPage() {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   <span className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                    ✕
+                    
                   </span>
                 </button>
               )}
@@ -296,7 +295,7 @@ export default function LeaderboardPage() {
                         )}>
                           {index < 3 ? (
                             <span className="text-xl">
-                              {index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉"}
+                              {index === 0 ? "" : index === 1 ? "" : ""}
                             </span>
                           ) : (
                             <span className="font-bold">{entry.rank}</span>
@@ -397,10 +396,10 @@ export default function LeaderboardPage() {
                 <div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
                     {getUserRank() <= 3 
-                      ? "🏆 You're a Top Performer!" 
+                      ? "" 
                       : getUserRank() <= 10 
-                        ? "🌟 You're Doing Great!" 
-                        : "🌱 Keep Going!"}
+                        ? "" 
+                        : ""}
                   </h3>
                   <p className="text-gray-700 dark:text-gray-300">
                     {getUserRank() <= 3 
