@@ -7,7 +7,7 @@ import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { LogOut, Trophy, ChevronDown, Menu, User, LayoutDashboard } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import UserAvatar from './UserAvatar';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import Image from 'next/image';
@@ -21,8 +21,12 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 export function Navbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Check if current path is dashboard
+  const isDashboard = pathname?.startsWith('/dashboard');
 
   const dashboardLink = user?.role === 'client' ? '/dashboard/client' :
     user?.role === 'worker' ? '/dashboard/worker' :
@@ -31,9 +35,9 @@ export function Navbar() {
     '/dashboard/client';
 
   return (
-    <nav className="sticky top-0 z-50 border-b-2 border-green-200 dark:border-green-800 bg-gradient-to-r from-white via-green-50/30 to-white dark:from-gray-900 dark:via-green-950/20 dark:to-gray-900 shadow-lg backdrop-blur-md bg-opacity-95 dark:bg-opacity-95 transition-all duration-300">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
+    <nav className="sticky top-0 z-50 border-b-2 border-green-200 dark:border-green-800 bg-gradient-to-r from-white via-green-50/30 to-white dark:from-gray-900 dark:via-green-950/20 dark:to-gray-900 shadow-lg backdrop-blur-md bg-opacity-95 dark:bg-opacity-95 transition-all duration-300 min-h-[64px] flex items-center">
+      <div className="w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-full">
           {/* Logo and Brand */}
           <div className="flex items-center gap-2.5 group">
             <div className="p-1.5 bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/40 dark:to-emerald-900/40 rounded-xl shadow-sm group-hover:shadow-md transition-all duration-200">
@@ -58,7 +62,10 @@ export function Navbar() {
                 {/* Dashboard Link */}
                 <Link
                   href={dashboardLink}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 ${isDashboard 
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white border-transparent' 
+                    : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/50 border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-600'} 
+                    font-semibold shadow-md hover:shadow-lg transition-all duration-200`}
                 >
                   <LayoutDashboard className="h-4 w-4" />
                   Dashboard
@@ -130,14 +137,12 @@ export function Navbar() {
               {/* Mobile Menu Button */}
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="lg:hidden text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/30"
+                  <button
+                    className="lg:hidden text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/30 h-10 w-10 flex items-center justify-center rounded-md"
                     aria-label="Open menu"
                   >
                     <Menu className="h-6 w-6" />
-                  </Button>
+                  </button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-[85vw] max-w-[320px] bg-white dark:bg-gray-800 border-l-2 border-gray-200 dark:border-gray-700 p-0">
                   <div className="flex flex-col h-full">
@@ -174,11 +179,14 @@ export function Navbar() {
                     </div>
 
                     {/* Mobile Navigation Links */}
-                    <div className="flex-1 overflow-y-auto px-3 py-4 space-y-2">
+                    <div className="flex-1 overflow-y-auto px-3 py-4 space-y-3">
                       <SheetClose asChild>
                         <Link
                           href={dashboardLink}
-                          className="flex items-center gap-3 px-3 py-2.5 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-lg shadow-sm transition-all duration-200 font-medium text-sm"
+                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg border-2 shadow-sm transition-all duration-200 font-medium text-sm ${isDashboard 
+                            ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white border-transparent hover:from-green-600 hover:to-emerald-600' 
+                            : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/50 border-gray-300 dark:border-gray-600 hover:border-green-400 dark:hover:border-green-600'}
+                            hover:shadow-md`}
                         >
                           <LayoutDashboard className="h-4 w-4 flex-shrink-0" />
                           <span>Dashboard</span>
@@ -204,10 +212,10 @@ export function Navbar() {
 
                       <button
                         onClick={() => {
-                          setShowProfileModal(true);
                           setMobileMenuOpen(false);
+                          setShowProfileModal(true);
                         }}
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors duration-200 font-medium text-sm"
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-lg transition-all duration-200 text-sm font-medium hover:shadow-sm"
                       >
                         <User className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0" />
                         <span>Your Account</span>
@@ -249,7 +257,6 @@ export function Navbar() {
                   aria-label="Toggle theme"
                 />
                 <Button
-                  variant="outline"
                   className="border-2 border-green-500 dark:border-green-600 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 font-semibold transition-all duration-200 rounded-lg px-6"
                   onClick={() => router.push('/auth/signin')}
                 >
@@ -267,7 +274,6 @@ export function Navbar() {
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button
-                    variant="ghost"
                     size="icon"
                     className="sm:hidden text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/30"
                     aria-label="Open menu"
