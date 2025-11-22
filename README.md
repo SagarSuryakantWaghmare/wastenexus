@@ -844,7 +844,7 @@ We welcome contributions! Here's how you can help:
       <img src="https://github.com/Kkrishhh.png" width="100px" alt="Soham Pawar"/><br />
       <sub><b>Soham Pawar</b></sub><br />
       <sub>Frontend Developer</sub><br />
-      <a href="#">GitHub</a>
+      <a href="https://github.com/kkrishhh">GitHub</a>
     </td>
   </tr>
 </table>
