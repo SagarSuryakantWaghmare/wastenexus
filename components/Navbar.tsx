@@ -253,11 +253,11 @@ export function Navbar() {
               {/* Desktop - Not logged in */}
               <div className="hidden sm:flex items-center gap-4">
                 <AnimatedThemeToggler
-                  className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 rounded-lg p-2"
+                  className="border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300   transition-all duration-200 rounded-lg p-2"
                   aria-label="Toggle theme"
                 />
                 <Button
-                  className="border-2 border-green-500 dark:border-green-600 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 font-semibold transition-all duration-200 rounded-lg px-6"
+                  className="border-2 border-green-500 dark:border-green-600 text-green-700 dark:text-green-400 bg-green-50  font-semibold transition-all duration-200 rounded-lg px-6"
                   onClick={() => router.push('/auth/signin')}
                 >
                   Sign In

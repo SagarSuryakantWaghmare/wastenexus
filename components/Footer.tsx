@@ -46,6 +46,9 @@ export function Footer() {
                   <Link href="/auth/signup" className="text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
                     Sign Up
                   </Link>
+                  <Link href="/about" className="text-sm text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
+                    About Us
+                  </Link>
                 </div>
               </div>
 
