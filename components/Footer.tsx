@@ -77,9 +77,15 @@ export function Footer() {
                 <h3 className="text-base font-semibold text-emerald-700 dark:text-emerald-300 mb-2">
                   You&apos;re Already Creating Impact 🌱
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 text-left leading-relaxed">
+                <p className="text-sm text-gray-600 dark:text-gray-400 text-left leading-relaxed mb-3">
                   Thank you for being part of the WasteNexus revolution.
                 </p>
+                <Link 
+                  href="/about" 
+                  className="text-sm text-emerald-600 dark:text-emerald-400 hover:underline transition-colors"
+                >
+                  About Us
+                </Link>
               </div>
             </div>
           )}
