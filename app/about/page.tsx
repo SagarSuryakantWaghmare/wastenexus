@@ -6,7 +6,6 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ChevronLeft, Github } from 'lucide-react';
 import { SpinningText } from "@/components/ui/spinning-text";
-import { PixelImage } from "@/components/ui/pixel-image";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { ScrollVelocityContainer, ScrollVelocityRow } from "@/components/ui/scroll-based-velocity";
 import { useState, Suspense } from 'react';
@@ -76,8 +75,7 @@ const MissionVisionSection = () => (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
       <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Our Mission</h2>
       <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-        At WasteNexus, we're on a mission to transform waste management through innovative technology and community engagement. 
-        We believe in creating sustainable solutions that make a real difference in how communities handle waste.
+        At WasteNexus, we&apos;re on a mission to transform waste management through innovative technology and community engagement. We believe in creating sustainable solutions that make a real difference in how communities handle waste.
       </p>
     </div>
 
@@ -85,7 +83,7 @@ const MissionVisionSection = () => (
       <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Our Vision</h2>
       <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
         We envision a future where waste is no longer a problem but a valuable resource. 
-        Through our platform, we're building a cleaner, greener world where every piece of waste is properly managed and recycled.
+        Through our platform, we&apos;re building a cleaner, greener world where every piece of waste is properly managed and recycled.
       </p>
     </div>
   </div>

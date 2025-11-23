@@ -89,7 +89,6 @@ export function SmoothCursor({
     restDelta: 0.001,
   },
 }: SmoothCursorProps) {
-  const [isMoving, setIsMoving] = useState(false)
   const lastMousePos = useRef<Position>({ x: 0, y: 0 })
   const velocity = useRef<Position>({ x: 0, y: 0 })
   const lastUpdateTime = useRef(Date.now())
@@ -111,8 +110,8 @@ export function SmoothCursor({
 
   useEffect(() => {
     const updateVelocity = (currentPos: Position) => {
-      const currentTime = Date.now()
-      const deltaTime = currentTime - lastUpdateTime.current
+      const now = Date.now()
+      const deltaTime = now - lastUpdateTime.current
 
       if (deltaTime > 0) {
         velocity.current = {
@@ -121,7 +120,7 @@ export function SmoothCursor({
         }
       }
 
-      lastUpdateTime.current = currentTime
+      lastUpdateTime.current = now
       lastMousePos.current = currentPos
     }
 
@@ -149,11 +148,8 @@ export function SmoothCursor({
         previousAngle.current = currentAngle
 
         scale.set(0.95)
-        setIsMoving(true)
-
         const timeout = setTimeout(() => {
           scale.set(1)
-          setIsMoving(false)
         }, 150)
 
         return () => clearTimeout(timeout)

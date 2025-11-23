@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import Image from "next/image"
 
 import { cn } from "@/lib/utils"
 
@@ -105,20 +106,24 @@ export const PixelImage = ({
             transitionDuration: `${pixelFadeInDuration}ms`,
           }}
         >
-          <img
-            src={src}
-            alt={`Pixel image piece ${index + 1}`}
-            className={cn(
-              "z-1 rounded-[2.5rem] object-cover",
-              grayscaleAnimation && (showColor ? "grayscale-0" : "grayscale")
-            )}
-            style={{
-              transition: grayscaleAnimation
-                ? `filter ${pixelFadeInDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`
-                : "none",
-            }}
-            draggable={false}
-          />
+          <div className="relative w-full h-full">
+            <Image
+              src={src}
+              alt={`Pixel image piece ${index + 1}`}
+              fill
+              className={cn(
+                "z-1 rounded-[2.5rem] object-cover",
+                grayscaleAnimation && (showColor ? "grayscale-0" : "grayscale")
+              )}
+              style={{
+                transition: grayscaleAnimation
+                  ? `filter ${pixelFadeInDuration}ms cubic-bezier(0.4, 0, 0.2, 1)`
+                  : "none",
+              }}
+              draggable={false}
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
         </div>
       ))}
     </div>
