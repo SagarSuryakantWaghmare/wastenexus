@@ -138,7 +138,7 @@ export function Navbar() {
               <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <button
-                    className="lg:hidden text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/30 h-10 w-10 flex items-center justify-center rounded-md"
+                    className="lg:hidden bg-white dark:bg-gray-900 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 h-10 w-10 flex items-center justify-center rounded-md border-2 border-emerald-200 dark:border-emerald-700 hover:border-emerald-400 dark:hover:border-emerald-500 transition-all duration-200"
                     aria-label="Open menu"
                   >
                     <Menu className="h-6 w-6" />
@@ -257,13 +257,13 @@ export function Navbar() {
                   aria-label="Toggle theme"
                 />
                 <Button
-                  className="border-2 border-green-500 dark:border-green-600 text-green-700 dark:text-green-400 bg-green-50  font-semibold transition-all duration-200 rounded-lg px-6"
+                  className="border-2 border-emerald-500 dark:border-emerald-600 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 font-semibold transition-all duration-200 rounded-lg px-6"
                   onClick={() => router.push('/auth/signin')}
                 >
                   Sign In
                 </Button>
                 <Button
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 dark:from-green-600 dark:to-emerald-600 dark:hover:from-green-500 dark:hover:to-emerald-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg px-6"
+                  className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 dark:from-emerald-500 dark:to-green-500 dark:hover:from-emerald-600 dark:hover:to-green-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg px-6"
                   onClick={() => router.push('/auth/signup')}
                 >
                   Sign Up
@@ -275,7 +275,7 @@ export function Navbar() {
                 <SheetTrigger asChild>
                   <Button
                     size="icon"
-                    className="sm:hidden text-gray-700 dark:text-gray-300 hover:bg-green-50 dark:hover:bg-green-900/30"
+                    className="sm:hidden bg-white dark:bg-gray-900 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 border-2 border-emerald-200 dark:border-emerald-700 hover:border-emerald-400 dark:hover:border-emerald-500 transition-all duration-200"
                     aria-label="Open menu"
                   >
                     <Menu className="h-6 w-6" />
@@ -301,7 +301,7 @@ export function Navbar() {
                     <div className="flex-1 flex flex-col justify-center p-4 space-y-4">
                       <Button
                         variant="outline"
-                        className="w-full border-2 border-green-500 dark:border-green-600 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/30 font-semibold transition-all duration-200 py-5 rounded-lg"
+                        className="w-full border-2 border-emerald-500 dark:border-emerald-600 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 font-semibold transition-all duration-200 py-5 rounded-lg"
                         onClick={() => {
                           router.push('/auth/signin');
                           setMobileMenuOpen(false);
@@ -310,7 +310,7 @@ export function Navbar() {
                         Sign In
                       </Button>
                       <Button
-                        className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 py-5 rounded-lg border-0"
+                        className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 dark:from-emerald-500 dark:to-green-500 dark:hover:from-emerald-600 dark:hover:to-green-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 py-5 rounded-lg border-0"
                         onClick={() => {
                           router.push('/auth/signup');
                           setMobileMenuOpen(false);
