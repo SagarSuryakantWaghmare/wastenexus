@@ -125,11 +125,10 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
       setAiClassification(null);
       setLocation(null);
 
-      toast.success('🎉 Waste report submitted successfully!');
-      
-      // Refresh user data to update points
+      toast.success('Waste report submitted successfully!');
+
       await refreshUser();
-      
+
       onSuccess();
       setTimeout(() => {
         router.push('/');
@@ -159,16 +158,12 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
 
       <CardContent className="pt-8">
         <form onSubmit={handleSubmit} className="space-y-10">
-          
-          {/* Section 1: Upload & AI Classification Result */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <span className="flex items-center justify-center w-6 h-6 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-bold">1</span>
               Waste Classification
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              {/* Upload Section */}
               <div className="flex flex-col gap-4">
                 <div>
                   <Label className="text-gray-700 dark:text-gray-100 font-semibold mb-3 block">Waste Image (Optional)</Label>
@@ -203,7 +198,6 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
                 </Button>
               </div>
 
-              {/* Classification Result */}
               <div className="transition-all duration-300">
                 {aiClassification ? (
                   <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-700 border-2 border-green-200 dark:border-gray-600 rounded-lg p-5 space-y-3 h-full flex flex-col justify-center">
@@ -227,7 +221,7 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
                       <div className="flex items-center gap-2 pt-1">
                         <span className="text-gray-700 dark:text-gray-300 font-medium">Recyclable:</span>
                         <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${aiClassification.recyclable ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'}`}>
-                          {aiClassification.recyclable ? 'Yes ♻️' : 'No'}
+                          {aiClassification.recyclable ? 'Yes' : 'No'}
                         </span>
                       </div>
                     </div>
@@ -250,7 +244,6 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
             </div>
           </div>
 
-          {/* Section 2: Location */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <span className="flex items-center justify-center w-6 h-6 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-bold">2</span>
@@ -264,68 +257,45 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
               <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
                 <MapPin className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                 <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                  {location?.address ? location.address : 'Select location on map to continue'}
+                  {location?.address ? location.address : 'Select location on map or use auto-detect'}
                 </span>
               </div>
-              {/* Manual Address Input */}
-              <div className="flex gap-2 items-center mt-2">
-                <Button
-                  type="button"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold"
-                  onClick={async () => {
-                    if (navigator.geolocation) {
-                      navigator.geolocation.getCurrentPosition(async (pos) => {
-                        const { latitude, longitude } = pos.coords;
-                        let address = '';
-                        try {
-                          // Use a free reverse geocoding API (OpenStreetMap Nominatim)
-                          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
-                          const data = await res.json();
-                          address = data.display_name || '';
-                        } catch {
-                          address = '';
-                        }
-                        setLocation({ latitude, longitude, address });
-                        toast.success('Location detected!');
-                      }, () => {
-                        toast.error('Unable to detect location');
-                      });
-                    } else {
-                      toast.error('Geolocation not supported');
-                    }
-                  }}
-                >
-                  Auto Detect Location
-                </Button>
-                <Label htmlFor="manual-address" className="text-gray-700 dark:text-gray-100 font-semibold">Or enter address manually</Label>
-              </div>
-              <input
-                id="manual-address"
-                type="text"
-                value={location?.address || ''}
-                onChange={e => {
-                  const address = e.target.value;
-                  setLocation(prev => ({
-                    latitude: prev?.latitude || 0,
-                    longitude: prev?.longitude || 0,
-                    address,
-                  }));
+              <Button
+                type="button"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold w-full"
+                onClick={async () => {
+                  if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async (pos) => {
+                      const { latitude, longitude } = pos.coords;
+                      let address = '';
+                      try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`);
+                        const data = await res.json();
+                        address = data.display_name || '';
+                      } catch {
+                        address = '';
+                      }
+                      setLocation({ latitude, longitude, address });
+                      toast.success('Location detected!');
+                    }, () => {
+                      toast.error('Unable to detect location');
+                    });
+                  } else {
+                    toast.error('Geolocation not supported');
+                  }
                 }}
-                placeholder="Type address here..."
-                className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-gray-100 shadow-sm px-4 py-2.5 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-base"
-              />
+              >
+                Auto Detect Location
+              </Button>
             </div>
           </div>
 
-          {/* Section 3: Waste Details */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <span className="flex items-center justify-center w-6 h-6 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-bold">3</span>
               Waste Details
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              {/* Waste Type */}
               <div className="space-y-2">
                 <Label htmlFor="type" className="text-gray-700 dark:text-gray-100 font-semibold">Waste Type *</Label>
                 <Select value={type} onValueChange={setType}>
@@ -348,7 +318,6 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
                 </Select>
               </div>
 
-              {/* Weight */}
               <div className="space-y-2">
                 <Label htmlFor="weight" className="text-gray-700 dark:text-gray-100 font-semibold">Weight (kg) *</Label>
                 <input
@@ -366,14 +335,12 @@ export function WasteReportForm({ onSuccess }: WasteReportFormProps) {
             </div>
           </div>
 
-          {/* Error Message */}
           {error && (
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg font-medium">
-              ⚠️ {error}
+              {error}
             </div>
           )}
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
             <Button
               type="submit"
