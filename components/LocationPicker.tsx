@@ -84,16 +84,6 @@ export function LocationPicker({ onLocationSelect, initialLocation }: LocationPi
         <Label>Location</Label>
         {/* Removed getCurrentLocation button for autocomplete-only picker */}
       </div>
-
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={markerPosition}
-        zoom={12}
-        onClick={onMapClick}
-      >
-        <Marker position={markerPosition} />
-      </GoogleMap>
-
       <Input
         value={address}
         onChange={(e) => setAddress(e.target.value)}
