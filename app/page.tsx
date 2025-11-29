@@ -12,6 +12,7 @@ import FAQSection from "@/components/Home/FAQSection";
 import { Footer } from "@/components/Footer";
 import { AppLoader } from "@/components/AppLoader";
 import GallerySection from "@/components/Home/GallerySection";
+import FloatingActionButton from "@/components/ui/FloatingActionButton";
 
 export default function Home() {
   // JSON-LD for Homepage
@@ -54,6 +55,7 @@ export default function Home() {
             <FAQSection />
           </main>
           <Footer />
+          <FloatingActionButton />
         </div>
       </Suspense>
     </>
