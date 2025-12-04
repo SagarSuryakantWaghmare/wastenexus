@@ -71,7 +71,7 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen relative overflow-hidden">
       <div className="absolute inset-0 -z-10">
-        <Image src="/assets/authbg.jpg" alt="Background" fill className="object-cover" />
+        <Image src="/assets/bg2.jpg" alt="Background" fill className="object-cover" />
       </div>
 
       <div className="container mx-auto px-4 min-h-screen flex items-center justify-center relative z-10">
